@@ -1,0 +1,1806 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Compagnon du Sorceleur</title>
+<meta name="description" content="Le lore des livres de Sapkowski au rythme de votre partie de The Witcher 3 : codex sans spoilers, bestiaire, ordre de lecture et quiz à partager entre amis.">
+<meta name="theme-color" content="#17262c">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Compagnon du Sorceleur">
+<meta property="og:description" content="Le lore des livres de Sapkowski au rythme de votre partie de The Witcher 3 : codex sans spoilers, bestiaire, ordre de lecture et quiz à partager entre amis.">
+<meta property="og:url" content="https://couefficguillaume-collab.github.io/Witcher-lore/">
+<meta property="og:image" content="https://couefficguillaume-collab.github.io/Witcher-lore/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
+/* Mise en page : une colonne de lecture de 720 px, la progression dans le jeu collée en haut,
+   une barre d'onglets à icônes fixée en bas, pensée d'abord pour le téléphone posé à côté de la manette.
+   Bleu : ce qui vient des livres. Ambre : ce qui vient du jeu. */
+:root{
+  --bg:#e8ecea;--sf:#f6f8f7;--ink:#17262c;--mu:#52666a;--ln:#c3cecb;
+  --ac:#8a5a0b;--bk:#2f6482;--ok:#2d6a46;--ko:#a3392b;
+  --serif:"IM Fell English",Georgia,"Times New Roman",serif;
+  --sans:"Alegreya Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141b1f;--sf:#1c262b;--ink:#e4e9e7;--mu:#8fa1a2;--ln:#2b3a40;--ac:#e2b04a;--bk:#8fb8d1;--ok:#7cc79a;--ko:#ec8a7a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141b1f;--sf:#1c262b;--ink:#e4e9e7;--mu:#8fa1a2;--ln:#2b3a40;--ac:#e2b04a;--bk:#8fb8d1;--ok:#7cc79a;--ko:#ec8a7a;color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.w{max-width:720px;margin:0 auto;padding-left:16px;padding-right:16px}
+h1{font:400 clamp(28px,7.4vw,38px)/1.08 var(--serif);margin:0;text-wrap:balance}
+h2{font:400 30px/1.15 var(--serif);margin:.3em 0;text-wrap:balance}
+h3{font:700 16px/1.3 var(--sans);margin:1.7em 0 .5em;text-wrap:balance}
+p{margin:.5em 0}
+.mu{color:var(--mu)}
+.sm{font-size:15px}
+.eb{font-variant-numeric:lining-nums;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin:1.2em 0 0}
+.ct{font:400 23px/1.2 var(--serif);margin:.2em 0}
+
+/* En-tête */
+.hd{padding-block:20px 4px}
+.hr{display:flex;align-items:center;gap:12px}
+.em{flex:0 0 auto;width:44px;height:44px;color:var(--ink)}
+.hr h1{flex:1;min-width:0}
+.tag{margin:8px 0 2px;text-wrap:pretty}
+.ib{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;border:1px solid var(--ln);background:var(--sf);border-radius:99px;padding:6px 13px;font-size:15px;font-weight:700}
+.ib svg,.ch svg,.pr svg{width:16px;height:16px;flex:0 0 auto}
+.pf{margin:8px 0 2px}.pf summary{cursor:pointer;color:var(--mu)}.pf label{display:flex;gap:8px;align-items:baseline;padding:6px 0}
+
+/* Progression dans le jeu */
+.rt{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:var(--bg);border-bottom:1px solid var(--ln);margin-top:8px}
+#route{position:relative;display:flex;overflow-x:auto;scrollbar-width:none}
+#route::-webkit-scrollbar{display:none}
+.st{position:relative;flex:1 0 auto;min-width:76px;background:none;border:0;padding:10px 8px;color:var(--mu);font-size:14px;white-space:nowrap}
+.st::before{content:"";position:absolute;top:18px;left:0;right:0;height:2px;background:var(--ln)}
+.st:first-child::before{left:50%}.st:last-child::before{right:50%}
+.st.done::before{background:var(--ac)}
+.st.on::before{background:linear-gradient(90deg,var(--ac) 50%,var(--ln) 50%)}
+.st:first-child.on::before{background:var(--ln)}.st:last-child.on::before{background:var(--ac)}
+.st i{display:block;position:relative;z-index:1;width:18px;height:18px;margin:0 auto 5px;border-radius:50%;border:2px solid var(--ln);background:var(--bg)}
+.st.done i{border-color:var(--ac)}
+.st.on{color:var(--ink);font-weight:700}
+.st.on i{border-color:var(--ac);background:var(--ac)}
+.st.on i::after{content:"";position:absolute;left:50%;top:50%;width:4px;height:12px;margin:-6px 0 0 -2px;border-radius:50%;background:var(--bg)}
+
+main{padding-block:6px 120px}
+
+/* Barre d'onglets */
+.bn{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--sf);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bn .w{display:flex;padding-left:4px;padding-right:4px}
+.bn button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;border-top:3px solid transparent;margin-top:-1px;padding:8px 0 9px;font-size:12.5px;color:var(--mu)}
+.bn button svg{width:22px;height:22px}
+.bn button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bn button.on{color:var(--ink);font-weight:700;border-top-color:var(--ac)}
+
+/* Listes */
+.ro{position:relative;display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--ln);padding:11px 0 11px 16px}
+.ro::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:5px;border-radius:3px;background:var(--bk)}
+.ro.J::before{background:var(--ac)}.ro.LJ::before{background:linear-gradient(var(--bk) 50%,var(--ac) 50%)}
+.ro b{display:block}.ro small{display:block;color:var(--mu);font-size:15px}
+.gh{display:flex;align-items:baseline;gap:8px;font:400 22px/1.2 var(--serif);margin:1.4em 0 .2em}
+.gh span{font:700 13px var(--sans);color:var(--mu)}
+
+/* Pastilles et boutons */
+.ch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ln);background:none;font-size:15px;padding:4px 12px;border-radius:99px;text-align:left}
+.ch.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.fl{display:flex;gap:6px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}.fl .ch{flex:0 0 auto}
+.fl::-webkit-scrollbar{display:none}
+.pr{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);border:0;border-radius:6px;padding:10px 18px;font-weight:700}.pr:disabled{opacity:.5;cursor:default}
+.lnk{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline;text-decoration-color:var(--ln);text-underline-offset:3px;text-align:left}
+.lnk:hover{text-decoration-color:currentColor}
+.tb{display:flex;justify-content:space-between;gap:8px;margin:10px 0 2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Blocs de contenu */
+.bl{border-left:3px solid var(--bk);padding:1px 0 1px 13px;margin:12px 0}.bl.j{border-color:var(--ac)}.bl h3{margin:.4em 0 .3em}
+.sp{display:block;width:100%;text-align:left;border:1px dashed var(--mu);background:none;border-radius:6px;padding:10px 12px;margin:12px 0}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:4px 16px 14px;margin:18px 0}
+.card .eb{margin-top:12px}
+.hello{border-color:var(--ac)}
+.gate{border:1px dashed var(--ac);border-radius:8px;padding:4px 16px 16px;margin:18px 0}
+.src.L{color:var(--bk)}.src.J{color:var(--ac)}.src.LJ{color:var(--ink)}
+.kv{margin:.35em 0}.kv b{display:inline-block;min-width:104px;color:var(--mu);font-weight:500}
+.sg{display:inline-flex;align-items:center;gap:5px;margin-right:12px;white-space:nowrap}.sg i{width:9px;height:9px;border-radius:50%}
+input[type=search],input[type=text],textarea{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--ln);border-radius:6px;background:var(--sf);color:var(--ink);margin-top:8px}
+textarea{resize:vertical}
+.out{white-space:pre-wrap;margin:14px 0;min-height:1.5em}
+.lx{border-bottom:1px solid var(--ln);padding:10px 0}
+.lx p{margin:.15em 0}.lx b{font:400 21px var(--serif);margin-right:6px}
+
+/* Frises */
+.tl{border-left:2px solid var(--ln);margin:14px 0 0 6px}
+.ti{position:relative;padding:0 0 20px 18px}
+.ti::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--bk)}
+.ti.J::before{background:var(--ac)}
+.ti b{font:400 19px var(--serif)}
+
+/* Livres */
+.seg{display:flex;gap:4px;border:1px solid var(--ln);border-radius:99px;padding:3px;margin:12px 0 6px;overflow-x:auto;scrollbar-width:none}
+.seg button{flex:1 0 auto;background:none;border:0;border-radius:99px;padding:6px 12px;font-size:15px;color:var(--mu)}
+.seg button.on{background:var(--ink);color:var(--bg);font-weight:700}
+.prog{display:flex;align-items:center;gap:12px;margin:14px 0;font-size:15px;color:var(--mu);font-variant-numeric:lining-nums tabular-nums}
+.bar{flex:1;height:6px;border-radius:3px;background:var(--ln);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ac)}
+.books{list-style:none;margin:0;padding:0}
+.books li{display:grid;grid-template-columns:44px 1fr;gap:4px 10px;border-bottom:1px solid var(--ln);padding:14px 0}
+.books .num{font:400 34px/1 var(--serif);color:var(--bk);font-variant-numeric:lining-nums tabular-nums;padding-top:4px}
+.books li.lu .num{color:var(--ac)}
+.books .bi{min-width:0}
+.books .ct{font-size:22px}
+
+/* Quiz */
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:14px 0}
+.cards .card{margin:0}
+.qq{font:400 23px/1.3 var(--serif);margin:14px 0 10px;text-wrap:balance}
+.opts{display:grid;gap:8px;margin:10px 0}
+.opt{text-align:left;border:1px solid var(--ln);background:var(--sf);border-radius:8px;padding:11px 14px}
+.opt:disabled{cursor:default}
+.opt.good{border-color:var(--ok);box-shadow:inset 4px 0 0 var(--ok)}
+.opt.bad{border-color:var(--ko);box-shadow:inset 4px 0 0 var(--ko)}
+.fb{font-weight:700}.fb.ok{color:var(--ok)}.fb.ko{color:var(--ko)}
+.res{text-align:center;padding-block:10px 18px}
+.big{font:400 72px/1 var(--serif);margin:14px 0 0;font-variant-numeric:lining-nums tabular-nums}.big span{font-size:32px;color:var(--mu)}
+.recap{list-style:none;padding:0;margin:8px 0}
+.recap li{border-bottom:1px solid var(--ln);padding:8px 0 8px 26px;position:relative;font-size:15px}
+.recap li::before{position:absolute;left:0;top:8px;font-weight:700}
+.recap li.ok::before{content:"✓";color:var(--ok)}.recap li.ko::before{content:"✗";color:var(--ko)}
+
+/* Partage */
+.ov{position:fixed;inset:0;z-index:20;background:rgb(10 16 19 / .5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:520px;max-height:90vh;overflow:auto;background:var(--sf);color:var(--ink);border-radius:14px 14px 0 0;padding:6px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgb(0 0 0 / .25)}
+@media (min-width:700px){.ov{align-items:center}.sheet{border-radius:14px;padding-bottom:18px}}
+.shh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cp{display:flex;gap:8px;align-items:stretch}
+.cp input{margin:0;min-width:0;flex:1}
+.qrw{display:flex;flex-direction:column;align-items:center;margin:12px 0 4px}
+.qrw canvas{width:200px;height:200px;border-radius:8px;border:1px solid var(--ln)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;max-width:calc(100% - 32px);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:15px;font-weight:700;text-align:center}
+
+.ft{border-top:1px solid var(--ln);margin-top:40px;padding-top:10px;font-size:14px;color:var(--mu)}
+
+@media (min-width:760px){body{font-size:18px}}
+@media (prefers-reduced-motion:no-preference){.opt,.ch,.seg button{transition:background-color .15s,border-color .15s}}
+</style>
+</head>
+<body>
+<header class="w hd">
+<div class="hr">
+<svg class="em" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="var(--ac)" stroke-width="2"/><circle cx="24" cy="24" r="18.5" fill="none" stroke="var(--ln)" stroke-width="1"/><g fill="none" stroke-linecap="round" stroke-width="2.2"><path d="M16.5 31.2L33 13M31.5 31.2L15 13" stroke="currentColor"/><path d="M13.5 28.5l6 5.4M34.5 28.5l-6 5.4M16.5 31.2l-3.3 3.6M31.5 31.2l3.3 3.6" stroke="var(--ac)"/></g></svg>
+<h1>Compagnon du Sorceleur</h1>
+<button class="ib" id="share-open" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg>Partager</button>
+</div>
+<p class="mu tag">Le lore des livres de Sapkowski, au rythme de votre partie de The Witcher 3.</p>
+<details class="pf"><summary>Réglages de la partie</summary>
+<label><input type="checkbox" id="o-hos"> J'ai commencé Hearts of Stone</label>
+<label><input type="checkbox" id="o-bw"> J'ai commencé Blood and Wine</label>
+<label><input type="checkbox" id="o-sp"> Afficher les spoilers de la fin des livres</label>
+</details>
+</header>
+<div class="rt"><div class="w"><nav id="route" aria-label="Où en êtes-vous dans le jeu ?"></nav></div></div>
+<main class="w" id="main"></main>
+<nav class="bn" aria-label="Sections"><div class="w" id="tabs"></div></nav>
+<div class="ov" id="sheet" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t">
+<div class="shh"><h2 id="sh-t">Partager</h2><button class="ch" id="sh-x">Fermer</button></div>
+<div id="sh-body"></div>
+</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+/* Données du Compagnon du Sorceleur.
+   Chaque fiche du codex a un identifiant unique (id) ; les champs voir, dans, lien,
+   entrees et monstres renvoient à ces identifiants. « npm run build » vérifie
+   qu'aucun renvoi n'est cassé.
+   - src : "L" livres, "J" jeu, "LJ" les deux.
+   - porte : fiche masquée tant que le joueur n'a pas atteint ce chapitre (c)
+     ou commencé cette extension (d).
+   - rev : rebondissements des livres, cachés derrière un bouton.
+   - jeu : notes sur le jeu, chacune visible à partir du chapitre c (ou de l'extension d). */
+window.CODEX = {
+chapitres: [
+  { nom: "Prologue", court: "Prologue", lieux: "Kaer Morhen en rêve, le Verger Blanc, Vizima",
+    intro: "Geralt et Vesemir suivent la trace de Yennefer jusqu'au Verger Blanc, un village temérien tombé sous la coupe de Nilfgaard, avant d'être convoqués par l'empereur en personne.",
+    lire: "« Le Dernier Vœu » pour comprendre ce qui unit Geralt et Yennefer, « Le Sang des elfes » pour l'enfance de Ciri à Kaer Morhen.",
+    lireIds: ["dernier-voeu", "sang-elfes"],
+    entrees: ["geralt", "yennefer", "ciri", "vesemir", "emhyr", "nilfgaard", "chasse", "kaer-morhen", "verger-blanc", "sorceleurs", "signes", "ablette"],
+    monstres: ["m-griffon", "m-noyeurs", "m-goules"] },
+  { nom: "Velen", court: "Velen", lieux: "Velen et ses marais",
+    intro: "Une région misérable, livrée aux déserteurs, aux monstres et aux vieilles légendes. La piste de Ciri y passe par un seigneur de guerre qui en sait plus qu'il ne le dit.",
+    lire: "Velen est une invention du jeu, mais « Le Baptême du feu » peint à merveille un Nord ravagé par la guerre.",
+    lireIds: ["bapteme-feu"],
+    entrees: ["velen", "baron", "dames-bois", "keira", "uma", "ciri", "royaumes-nord"],
+    monstres: ["m-noyeurs", "m-nekkers", "m-spectres", "m-harpies"] },
+  { nom: "Novigrad", court: "Novigrad", lieux: "Novigrad et Oxenfurt",
+    intro: "La plus grande ville du Nord, entre faste, pègre et bûchers. Les mages s'y cachent, les non-humains s'y font discrets, et un ami de Geralt a disparu.",
+    lire: "« Le Feu éternel », dans « L'Épée de la providence » : Novigrad, Jaskier et un certain doppler.",
+    lireIds: ["epee-providence"],
+    entrees: ["novigrad", "oxenfurt", "triss", "jaskier", "zoltan", "dijkstra", "radovid", "feu-eternel", "dudu", "priscilla", "philippa", "non-humains", "roche", "gwynt"],
+    monstres: ["m-doppler", "m-noyeurs"] },
+  { nom: "Skellige", court: "Skellige", lieux: "L'archipel de Skellige",
+    intro: "Des îles de marins et de guerriers, en pleine querelle de succession. Ciri y a des attaches anciennes, et une vieille amie de Geralt l'y attend.",
+    lire: "« Une question de prix », dans « Le Dernier Vœu » : Calanthe, Eist, Mousesack et la naissance du destin de Ciri.",
+    lireIds: ["dernier-voeu"],
+    entrees: ["skellige", "kaer-trolde", "crach", "an-craite", "ermion", "eist", "calanthe", "pavetta", "yennefer"],
+    monstres: ["m-sirenes", "m-harpies", "m-trolls", "m-hym"] },
+  { nom: "Kaer Morhen", court: "Kaer Morhen", lieux: "Kaer Morhen et au-delà",
+    intro: "Retour à la vieille forteresse des sorceleurs, où l'on cherche des réponses et où l'on se prépare au pire.",
+    lire: "« Le Sang des elfes » pour Kaer Morhen, « La Dame du Lac » pour Avallac'h et les Aen Elle.",
+    lireIds: ["sang-elfes", "dame-lac"],
+    entrees: ["kaer-morhen", "vesemir", "eskel", "lambert", "sorceleurs", "epreuve", "uma", "avallach", "lara-dorren", "sang-ancien", "chasse", "generaux"],
+    monstres: ["m-chiens"] },
+  { nom: "Acte final", court: "Acte final", lieux: "Du Nord jusqu'à Skellige",
+    intro: "Les alliances se nouent, les comptes se règlent : tout converge vers l'affrontement avec la Chasse sauvage.",
+    lire: "« La Dame du Lac » éclaire presque tout ce qui se joue dans ce dernier acte.",
+    lireIds: ["dame-lac"],
+    entrees: ["eredin", "aen-elle", "generaux", "gel-blanc", "ithlinne", "loge", "philippa", "emhyr", "radovid", "ile-brumes"],
+    monstres: ["m-chiens"] },
+  { nom: "Jeu terminé", court: "Terminé", lieux: "Après le générique",
+    intro: "Vous avez vu la fin de l'histoire de Geralt et de Ciri, du moins l'une de ses versions. Les livres offrent encore de quoi prolonger l'aventure.",
+    lire: "« La Saison des orages » et « La Croisée des corbeaux », puis une relecture de la saga avec un œil neuf.",
+    lireIds: ["saison-orages", "croisee"],
+    entrees: ["dame-lac", "nimue", "riv", "brenna", "saison-orages", "croisee"] }
+],
+
+dlc: {
+  hos: { nom: "Hearts of Stone",
+    intro: "Un contrat en apparence banal, du côté d'Oxenfurt, lie Geralt à deux hommes qu'il vaut mieux ne pas décevoir.",
+    lire: "Aucun livre n'y correspond : l'extension puise dans les contes de pactes avec le diable.",
+    lireIds: [],
+    entrees: ["gaunter", "olgierd", "shani"] },
+  bw: { nom: "Blood and Wine",
+    intro: "Le duché de Toussaint réclame un sorceleur : une bête s'en prend à ses chevaliers.",
+    lire: "« La Dame du Lac » : l'hiver de Geralt en Toussaint, la duchesse Anna Henrietta et la compagnie de Regis.",
+    lireIds: ["dame-lac"],
+    entrees: ["toussaint", "anna-henrietta", "regis", "vampires", "dettlaff", "syanna"],
+    monstres: ["m-bruxa", "m-vampire", "m-katakan"] }
+},
+
+entrees: [
+/* ---------- Personnages des livres ---------- */
+{ id: "geralt", t: "perso", src: "LJ", nom: "Geralt de Riv", alias: ["Gwynbleidd", "le Loup Blanc", "le Boucher de Blaviken"],
+  role: "Sorceleur formé à Kaer Morhen",
+  resume: "Chasseur de monstres aux cheveux blancs et aux yeux de chat, héros de toute la saga. Il se veut neutre et professionnel, mais sa conscience le pousse sans cesse à prendre parti.",
+  livres: "Enfant, il est confié aux sorceleurs de Kaer Morhen ; les livres laissent entendre que sa mère est Visenna, une guérisseuse-magicienne. Il supporte si bien l'Épreuve des Herbes qu'on lui fait subir des mutations supplémentaires, qui blanchissent ses cheveux. Il s'est choisi lui-même le nom « de Riv » pour inspirer confiance. Le drame de Blaviken lui vaut une sinistre réputation, le djinn du « Dernier Vœu » lie son destin à celui de Yennefer, et la Loi de la Surprise à celui de Ciri. Toutes ses juments s'appellent Ablette.",
+  rev: "Pendant la guerre, il défend la reine Meve lors de la bataille du pont sur la Yaruga ; elle l'adoube, et « Geralt de Riv » devient un vrai titre. À la fin de « La Dame du Lac », il est grièvement blessé lors d'un pogrom à Riv ; Ciri l'emporte avec Yennefer vers une île noyée de brume, dans une fin volontairement ambiguë que les jeux ont prolongée.",
+  jeu: [{ c: 0, t: "Amnésique dans le premier jeu, il a retrouvé la mémoire dans le deuxième. Dans TW3, il suit d'abord la piste de Yennefer, puis celle de Ciri." }],
+  dans: ["dernier-voeu", "epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac", "saison-orages", "croisee"],
+  voir: ["ciri", "yennefer", "jaskier", "vesemir", "sorceleurs", "loi-surprise", "visenna", "renfri", "ablette"] },
+
+{ id: "ciri", t: "perso", src: "LJ", nom: "Ciri", alias: ["Cirilla Fiona Elen Riannon", "Zireael", "Falka", "le Lionceau de Cintra"],
+  role: "Princesse de Cintra, porteuse du Sang Ancien",
+  resume: "Petite-fille de la reine Calanthe et « enfant surprise » de Geralt. Élevée par des sorceleurs, formée à la magie par des magiciennes, elle porte un pouvoir que convoitent les rois, les mages… et un autre monde.",
+  livres: "Rescapée de la chute de Cintra, elle retrouve Geralt, qui l'emmène à Kaer Morhen : les sorceleurs l'entraînent à l'épée, Triss puis Yennefer lui enseignent la magie. Ciri est une Source : le Sang Ancien hérité de l'elfe Lara Dorren lui donne sur l'espace et le temps un pouvoir qu'elle ne contrôle pas encore, et ses transes prennent parfois la forme de prophéties. Les elfes l'appellent Zireael, « hirondelle ».",
+  rev: "Lors du chaos de Thanedd, un portail instable la jette dans le désert de Korath. Elle se fond ensuite parmi les Rats, une bande de jeunes hors-la-loi, sous le nom de Falka, avant d'être capturée par le chasseur de primes Leo Bonhart. Elle lui échappe par la Tour de l'Hirondelle, qui la conduit dans le monde des Aen Elle ; elle y apprend à voyager entre les mondes et les époques, puis revient à temps pour l'assaut de Stygga, où elle tue Bonhart et découvre qui est son père. La saga se referme sur une Ciri voyageuse, de passage dans un monde de chevaliers.",
+  jeu: [
+    { c: 0, t: "Adulte et traquée par la Chasse sauvage, elle est le fil rouge de TW3 : la retrouver occupe tout le jeu, et plusieurs séquences se jouent avec elle." },
+    { c: 5, t: "La Chasse convoite son pouvoir pour échapper au Gel Blanc qui ravage le monde des Aen Elle." },
+    { c: 6, t: "Selon vos choix, le jeu offre à Ciri plusieurs destins : impératrice, sorceleuse, ou une fin plus sombre." }],
+  dans: ["epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
+  voir: ["geralt", "yennefer", "sang-ancien", "lara-dorren", "emhyr", "chasse", "calanthe", "pavetta", "rats", "vysogota", "ihuarraquax"] },
+
+{ id: "yennefer", t: "perso", src: "LJ", nom: "Yennefer de Vengerberg", alias: ["Yen"],
+  role: "Magicienne, grand amour de Geralt",
+  resume: "Magicienne puissante, fière et tranchante, aux yeux violets et vêtue de noir et de blanc. Son lien avec Geralt est le cœur battant de la saga, et elle devient une mère pour Ciri.",
+  livres: "Née bossue, avec du sang elfe, elle est cédée enfant à l'école d'Aretuza, où Tissaia de Vries la forme ; la magie corrige son apparence. Comme beaucoup de magiciennes, elle ne peut pas avoir d'enfant et cherche obstinément un remède, jusqu'à se joindre à une chasse au dragon dans « Les Limites du possible ». Dans « Le Dernier Vœu », elle tente de s'emparer du pouvoir d'un djinn, et le dernier vœu de Geralt les lie. Dans « Le Sang des elfes », elle devient la mentore de Ciri. Son parfum : lilas et groseilles.",
+  rev: "Après Thanedd, soupçonnée de trahison, elle part seule sur la piste de Ciri et tombe aux mains de Vilgefortz, qui la retient prisonnière. Libérée lors de l'assaut de Stygga, elle reste aux côtés de Geralt jusqu'au drame de Riv.",
+  jeu: [{ c: 0, t: "Dans TW3, elle collabore avec l'empereur Emhyr pour retrouver Ciri : c'est sa piste que Geralt suit au Verger Blanc. Romance possible." }],
+  dans: ["dernier-voeu", "epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
+  voir: ["geralt", "ciri", "triss", "tissaia", "vilgefortz", "istredd", "vengerberg"] },
+
+{ id: "triss", t: "perso", src: "LJ", nom: "Triss Merigold", alias: ["la Quatorzième de la Colline"],
+  role: "Magicienne de Temeria",
+  resume: "Magicienne chaleureuse à la chevelure châtain-roux, amie fidèle de Geralt et de Yennefer, et parfois rivale de celle-ci. Elle a joué un rôle clé dans l'éducation de Ciri.",
+  livres: "On la surnomme « la Quatorzième de la Colline » : grièvement blessée à la bataille de Sodden, elle a été crue morte, et son nom figure par erreur sur le monument aux magiciens tombés. Dans « Le Sang des elfes », elle rejoint Kaer Morhen, comprend que Ciri est une Source et commence à la former, avant de prendre la route avec elle et Geralt.",
+  rev: "Après Thanedd, c'est elle qui téléporte Geralt, grièvement blessé, jusqu'à Brokilon. Elle entre ensuite dans la Loge des Magiciennes, tiraillée entre ses amis et les ambitions de la Loge.",
+  jeu: [{ c: 2, t: "Dans TW3, elle se cache à Novigrad, où les chasseurs de sorcières traquent les mages. Romance possible." }],
+  dans: ["sang-elfes", "temps-mepris", "bapteme-feu", "dame-lac"],
+  voir: ["yennefer", "ciri", "loge", "sodden", "novigrad"] },
+
+{ id: "jaskier", t: "perso", src: "LJ", nom: "Jaskier", alias: ["Dandelion", "Julian Alfred Pankratz", "vicomte de Lettenhove"],
+  role: "Barde, meilleur ami de Geralt",
+  resume: "Poète, séducteur incorrigible et témoin bavard des aventures du sorceleur. Ses ballades façonnent la légende de Geralt.",
+  livres: "De son vrai nom Julian Alfred Pankratz, vicomte de Lettenhove, il a étudié à l'académie d'Oxenfurt. Il accompagne Geralt dans de nombreuses nouvelles (« Le Bout du monde », « Le Dernier Vœu », « Le Feu éternel »…), et ses mémoires, « Un demi-siècle de poésie », servent souvent de source dans la saga.",
+  rev: "Il traverse la guerre aux côtés de Geralt, avec Milva, Regis et Cahir, et survit à la saga. Pendant l'hiver en Toussaint, il devient l'amant de la duchesse Anna Henrietta.",
+  jeu: [
+    { c: 0, t: "Le journal de quêtes de TW3 est rédigé de sa plume." },
+    { c: 2, t: "À Novigrad, il a disparu, et Ciri a croisé sa route : le retrouver devient une piste majeure." }],
+  dans: ["dernier-voeu", "epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac", "saison-orages"],
+  voir: ["geralt", "oxenfurt", "anna-henrietta", "novigrad", "dudu", "essi"] },
+
+{ id: "vesemir", t: "perso", src: "LJ", nom: "Vesemir", alias: [],
+  role: "Doyen des sorceleurs de Kaer Morhen",
+  resume: "Le plus âgé des sorceleurs encore en vie : maître d'armes bourru et véritable père de substitution pour Geralt.",
+  livres: "On le voit surtout dans « Le Sang des elfes », quand Ciri passe l'hiver à Kaer Morhen : avec Geralt, Eskel, Lambert et Coën, il veille sur son entraînement. Il incarne une profession sur le déclin, qui ne forme presque plus d'apprentis.",
+  jeu: [
+    { c: 0, t: "Il accompagne Geralt dans le prologue, sur la piste de Yennefer." },
+    { c: 5, t: "Il tombe pendant la bataille de Kaer Morhen, en protégeant Ciri." }],
+  dans: ["sang-elfes"],
+  voir: ["kaer-morhen", "sorceleurs", "eskel", "lambert", "coen"] },
+
+{ id: "eskel", t: "perso", src: "LJ", nom: "Eskel", alias: [],
+  role: "Sorceleur, frère d'armes de Geralt",
+  resume: "Sorceleur de l'école du Loup et ami d'enfance de Geralt : calme, loyal et discret.",
+  livres: "Il passe l'hiver à Kaer Morhen dans « Le Sang des elfes » et participe à l'entraînement de Ciri. Les livres en disent peu sur lui ; les jeux ont largement développé le personnage.",
+  jeu: [{ c: 4, t: "Il attend Geralt à Kaer Morhen." }],
+  dans: ["sang-elfes"],
+  voir: ["vesemir", "lambert", "kaer-morhen"] },
+
+{ id: "lambert", t: "perso", src: "LJ", nom: "Lambert", alias: [],
+  role: "Le plus jeune des sorceleurs de Kaer Morhen",
+  resume: "Sorceleur à la langue acérée, qui ne pardonne rien à son métier ni à son passé.",
+  livres: "Présent à Kaer Morhen dans « Le Sang des elfes », impertinent et volontiers provocateur.",
+  jeu: [{ c: 4, t: "Il retrouve Geralt à Kaer Morhen ; selon vos choix, il peut se rapprocher de Keira Metz." }],
+  dans: ["sang-elfes"],
+  voir: ["vesemir", "eskel", "keira"] },
+
+{ id: "coen", t: "perso", src: "L", nom: "Coën", alias: [],
+  role: "Sorceleur invité à Kaer Morhen",
+  resume: "Sorceleur invité à passer l'hiver à Kaer Morhen, avec Vesemir, Eskel et Lambert.",
+  livres: "Il aide à former Ciri dans « Le Sang des elfes ».",
+  rev: "Il meurt à la bataille de Brenna, dans « La Dame du Lac ».",
+  jeu: [{ c: 0, t: "Absent de TW3." }],
+  dans: ["sang-elfes", "dame-lac"],
+  voir: ["sorceleurs", "kaer-morhen"] },
+
+{ id: "calanthe", t: "perso", src: "L", nom: "Calanthe", alias: ["la Lionne de Cintra"],
+  role: "Reine de Cintra, grand-mère de Ciri",
+  resume: "Souveraine redoutable et fière, surnommée la Lionne de Cintra.",
+  livres: "Dans « Une question de prix », elle préside le banquet où sa fille Pavetta doit choisir un prétendant, jusqu'à l'irruption de Duny. Remariée à Eist Tuirseach de Skellige, elle se méfie longtemps de Geralt et de la Loi de la Surprise qui le lie à sa petite-fille.",
+  rev: "Lors de l'invasion nilfgaardienne, son armée est battue à Marnadal ; elle meurt pendant la prise de Cintra, en refusant d'être capturée.",
+  dans: ["dernier-voeu", "epee-providence"],
+  voir: ["ciri", "pavetta", "eist", "cintra"] },
+
+{ id: "pavetta", t: "perso", src: "L", nom: "Pavetta", alias: [],
+  role: "Princesse de Cintra, mère de Ciri",
+  resume: "Fille unique de Calanthe, discrète et rêveuse, mais dotée d'un don redoutable.",
+  livres: "Elle est promise à Duny, le chevalier maudit, en vertu d'une Loi de la Surprise invoquée des années plus tôt. Lors du banquet de Cintra, ses pouvoirs de Source se déchaînent : c'est d'elle que Ciri tient son don.",
+  rev: "Pavetta et Duny disparaissent dans un naufrage, dans le gouffre de Sedna, alors que Ciri est encore enfant. La vérité sur ce naufrage n'apparaît qu'à la fin de la saga.",
+  dans: ["dernier-voeu"],
+  voir: ["calanthe", "duny", "ciri", "sang-ancien", "sources"] },
+
+{ id: "duny", t: "perso", src: "L", nom: "Duny", alias: ["le Hérisson d'Erlenwald"],
+  role: "Chevalier maudit, époux de Pavetta",
+  resume: "Un chevalier masqué à tête de hérisson qui surgit au banquet de Cintra pour réclamer son dû.",
+  livres: "Victime d'un sort, il a l'apparence d'un hérisson le jour. Au banquet de Cintra, il réclame la main de Pavetta en vertu de la Loi de la Surprise ; Geralt l'aide à faire valoir son droit, et la malédiction est levée. En remerciement, Geralt réclame à son tour ce que Duny possède sans le savoir.",
+  rev: "Duny n'est autre qu'Emhyr var Emreis, héritier déchu de Nilfgaard et futur empereur : le père de Ciri. La saga ne le révèle pleinement qu'à son dénouement.",
+  dans: ["dernier-voeu", "dame-lac"],
+  voir: ["pavetta", "emhyr", "loi-surprise", "calanthe"] },
+
+{ id: "emhyr", t: "perso", src: "LJ", nom: "Emhyr var Emreis", alias: ["Deithwen Addan yn Carn aep Morvudd", "l'Empereur"],
+  role: "Empereur de Nilfgaard",
+  resume: "Souverain froid et calculateur de l'empire du Sud, dont les armées envahissent le Nord. Son nom complet signifie « la Flamme Blanche qui danse sur les tumulus de ses ennemis ».",
+  livres: "Il veut à tout prix mettre la main sur Ciri : ses agents la traquent pendant toute la saga, et Nilfgaard va jusqu'à présenter une fausse Cirilla à la cour.",
+  rev: "Emhyr est Duny, le père de Ciri. Il voulait Ciri pour réaliser la prophétie liée au Sang Ancien ; à Stygga, face à elle, il renonce et la laisse partir, puis épouse la fausse Cirilla pour raisons d'État.",
+  jeu: [
+    { c: 0, t: "Dans le prologue, il reçoit Geralt à Vizima et l'engage pour retrouver Ciri." },
+    { c: 6, t: "Selon vos choix, Ciri peut devenir son héritière." }],
+  dans: ["sang-elfes", "temps-mepris", "tour-hirondelle", "dame-lac"],
+  voir: ["duny", "nilfgaard", "ciri", "cahir"] },
+
+{ id: "eist", t: "perso", src: "L", nom: "Eist Tuirseach", alias: [],
+  role: "Jarl de Skellige, époux de Calanthe",
+  resume: "Jarl des îles Skellige, devenu roi consort de Cintra.",
+  livres: "Présent au banquet d'« Une question de prix », il épouse ensuite Calanthe, scellant l'alliance de Cintra et de Skellige.",
+  rev: "Il tombe à la bataille de Marnadal, face à Nilfgaard.",
+  dans: ["dernier-voeu", "epee-providence"],
+  voir: ["calanthe", "skellige"] },
+
+{ id: "ermion", t: "perso", src: "LJ", nom: "Ermion", alias: ["Mousesack"],
+  role: "Druide de Skellige",
+  resume: "Druide de Skellige, proche de la famille royale de Cintra.",
+  livres: "Sous le nom de Mousesack, il fréquente la cour de Cintra et assiste au banquet d'« Une question de prix ».",
+  jeu: [{ c: 3, t: "Dans TW3, il vit sur Ard Skellig et met son savoir au service de Geralt." }],
+  dans: ["dernier-voeu"],
+  voir: ["skellige", "calanthe", "pavetta"] },
+
+{ id: "crach", t: "perso", src: "LJ", nom: "Crach an Craite", alias: [],
+  role: "Jarl d'Ard Skellig",
+  resume: "Seigneur de guerre des îles, allié de longue date de Cintra.",
+  livres: "Figure secondaire des livres ; les jeux en ont fait un personnage de premier plan.",
+  jeu: [{ c: 3, t: "Il accueille Geralt à Kaer Trolde ; il a connu Ciri enfant et la protège comme sa propre famille." }],
+  voir: ["skellige", "eist", "ciri", "an-craite", "kaer-trolde"] },
+
+{ id: "zoltan", t: "perso", src: "LJ", nom: "Zoltan Chivay", alias: [],
+  role: "Nain, compagnon de route",
+  resume: "Nain jovial, bagarreur et d'une loyauté à toute épreuve.",
+  livres: "Dans « Le Baptême du feu », il conduit une troupe de nains qui fuit la guerre et fait route un temps avec Geralt, Jaskier et Milva.",
+  jeu: [{ c: 2, t: "Il retrouve Geralt à Novigrad, toujours prêt à rendre service, et à jouer aux cartes." }],
+  dans: ["bapteme-feu"],
+  voir: ["mahakam", "geralt", "jaskier"] },
+
+{ id: "regis", t: "perso", src: "LJ", nom: "Regis", alias: ["Emiel Regis Rohellec Terzieff-Godefroy", "le barbier-chirurgien"],
+  role: "Barbier-chirurgien très singulier",
+  resume: "Érudit, courtois et pince-sans-rire, il se présente comme barbier-chirurgien et soigne les blessés de la compagnie.",
+  livres: "Il rejoint Geralt dans « Le Baptême du feu ». Il distille une eau-de-vie de mandragore mémorable et nourrit la route de conversations philosophiques.",
+  rev: "C'est un vampire supérieur, qui a renoncé au sang. Il est détruit par Vilgefortz lors de l'assaut de Stygga.",
+  jeu: [{ d: "bw", c: 1, t: "Dans Blood and Wine, Regis est de retour : un autre vampire supérieur l'a patiemment ramené à la vie." }],
+  dans: ["bapteme-feu", "tour-hirondelle", "dame-lac"],
+  voir: ["vampires", "milva", "cahir", "dettlaff"] },
+
+{ id: "milva", t: "perso", src: "L", nom: "Milva", alias: ["Maria Barring"],
+  role: "Archère, amie des dryades",
+  resume: "Archère hors pair, farouche et généreuse, qui sert de guide aux dryades de Brokilon.",
+  livres: "De son vrai nom Maria Barring, elle conduit les Scoia'tael blessés jusqu'à Brokilon pour qu'ils y soient soignés. Elle rejoint Geralt dans « Le Baptême du feu ».",
+  rev: "Elle meurt lors de l'assaut de Stygga.",
+  jeu: [{ c: 0, t: "Absente de TW3." }],
+  dans: ["bapteme-feu", "tour-hirondelle", "dame-lac"],
+  voir: ["brokilon", "regis", "cahir"] },
+
+{ id: "cahir", t: "perso", src: "L", nom: "Cahir", alias: ["Cahir Mawr Dyffryn aep Ceallach", "le chevalier au heaume ailé"],
+  role: "Chevalier nilfgaardien",
+  resume: "Le chevalier au heaume ailé qui hante les cauchemars de Ciri : c'est lui qui l'a emportée hors de Cintra en flammes.",
+  livres: "Chargé de capturer Ciri, il échoue à Cintra puis à Thanedd, où elle le blesse. Tombé en disgrâce, il finit par rejoindre la compagnie de Geralt, qui l'accepte de mauvaise grâce.",
+  rev: "Il meurt à Stygga, tué par Leo Bonhart.",
+  dans: ["temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
+  voir: ["ciri", "cintra", "nilfgaard", "bonhart"] },
+
+{ id: "angouleme", t: "perso", src: "L", nom: "Angoulême", alias: [],
+  role: "Jeune hors-la-loi",
+  resume: "Gouailleuse et intrépide, elle rejoint la compagnie de Geralt dans la dernière partie de la saga.",
+  rev: "Elle meurt lors de l'assaut de Stygga.",
+  dans: ["tour-hirondelle", "dame-lac"],
+  voir: ["geralt", "milva"] },
+
+{ id: "bonhart", t: "perso", src: "L", nom: "Leo Bonhart", alias: [],
+  role: "Chasseur de primes",
+  resume: "Bretteur redoutable et cruel, peut-être le plus dangereux adversaire de la saga.",
+  livres: "Redoutable bretteur, il traque Ciri à travers un pays en guerre et finit par la capturer.",
+  rev: "Ciri le tue lors de l'affrontement final à Stygga.",
+  dans: ["tour-hirondelle", "dame-lac"],
+  voir: ["ciri", "medaillon", "vilgefortz"] },
+
+{ id: "vilgefortz", t: "perso", src: "L", nom: "Vilgefortz", alias: ["Vilgefortz de Roggeveen"],
+  role: "Magicien du Chapitre",
+  resume: "Brillant, séduisant et respecté, l'un des magiciens les plus puissants du Nord.",
+  livres: "Membre éminent du Chapitre, il passe pour un modèle de sagesse auprès de ses pairs.",
+  rev: "Il orchestre le coup de Thanedd en allié secret de Nilfgaard et écrase Geralt en duel. Son agent Rience traque Ciri depuis « Le Sang des elfes » : il veut s'approprier le pouvoir de son Sang Ancien. Geralt le tue dans son repaire de Stygga.",
+  dans: ["temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
+  voir: ["thanedd", "rience", "conseil", "stygga"] },
+
+{ id: "rience", t: "perso", src: "L", nom: "Rience", alias: [],
+  role: "Espion et mage",
+  resume: "Un mystérieux agent qui recherche Ciri et ne recule devant rien pour obtenir des informations.",
+  livres: "Dans « Le Sang des elfes », il traque ceux qui pourraient savoir où se cache Ciri, à commencer par Jaskier.",
+  rev: "Il travaille pour Vilgefortz.",
+  dans: ["sang-elfes", "temps-mepris"],
+  voir: ["vilgefortz", "jaskier"] },
+
+{ id: "philippa", t: "perso", src: "LJ", nom: "Philippa Eilhart", alias: [],
+  role: "Magicienne de Redanie",
+  resume: "Conseillère du roi de Redanie, ambitieuse et manipulatrice, capable de prendre la forme d'une chouette.",
+  livres: "À Thanedd, elle mène la contre-offensive contre les magiciens traîtres, de concert avec l'espion Dijkstra.",
+  rev: "Elle fonde la Loge des Magiciennes, un cercle secret qui entend tirer les ficelles de la politique du Nord et voit en Ciri un atout.",
+  jeu: [{ c: 5, t: "Dans TW3, Radovid l'a fait aveugler ; elle conspire contre lui." }],
+  dans: ["sang-elfes", "temps-mepris", "bapteme-feu", "dame-lac"],
+  voir: ["loge", "dijkstra", "radovid", "thanedd"] },
+
+{ id: "dijkstra", t: "perso", src: "LJ", nom: "Sigismund Dijkstra", alias: [],
+  role: "Maître espion de Redanie",
+  resume: "Colosse chauve à l'esprit redoutable, chef des services secrets de Redanie.",
+  livres: "Il manœuvre en coulisses dans toute la saga, de Thanedd jusqu'aux tractations de la guerre, souvent à couteaux tirés avec les magiciennes.",
+  jeu: [{ c: 2, t: "Dans TW3, il règne sur la pègre de Novigrad sous le nom de Sigi Reuven, depuis ses bains publics." }],
+  dans: ["sang-elfes", "temps-mepris", "bapteme-feu", "dame-lac"],
+  voir: ["philippa", "novigrad", "radovid"] },
+
+{ id: "radovid", t: "perso", src: "LJ", nom: "Radovid", alias: ["Radovid V"],
+  role: "Roi de Redanie",
+  resume: "Héritier du trône de Redanie, devenu dans les jeux un souverain brillant et paranoïaque.",
+  livres: "Dans les livres, il n'est encore que le jeune fils et héritier du roi Vizimir II de Redanie.",
+  jeu: [{ c: 2, t: "Dans TW3, il mène la guerre contre Nilfgaard, joue aux échecs avec passion et traque sans pitié mages et non-humains." }],
+  voir: ["philippa", "dijkstra", "royaumes-nord"] },
+
+{ id: "foltest", t: "perso", src: "LJ", nom: "Foltest", alias: [],
+  role: "Roi de Temeria",
+  resume: "Souverain de la Temeria, l'un des plus puissants royaumes du Nord.",
+  livres: "Dans la nouvelle « Le Sorceleur », il promet une fortune à qui délivrera sa fille, changée en stryge par une malédiction.",
+  jeu: [{ c: 0, t: "Assassiné dans le deuxième jeu. Dans TW3, la Temeria est occupée par Nilfgaard." }],
+  dans: ["dernier-voeu", "sang-elfes"],
+  voir: ["vizima", "royaumes-nord", "roche"] },
+
+{ id: "avallach", t: "perso", src: "LJ", nom: "Avallac'h", alias: ["Crevan Espane aep Caomhan Macha"],
+  role: "Sage des Aen Elle",
+  resume: "Elfe savant et insaisissable, qui semble toujours en savoir plus qu'il ne le dit.",
+  livres: "Savant et conseiller du roi Auberon, il connaît l'histoire de Lara Dorren et du Sang Ancien mieux que personne. Dans « La Dame du Lac », il accueille Ciri dans le monde des Aen Elle.",
+  rev: "Il joue un double jeu : il veut que Ciri serve à rendre le Sang Ancien à son peuple. Elle finit par lui échapper.",
+  jeu: [{ c: 5, t: "Dans TW3, il protège Ciri pour ses propres desseins ; c'est lui qui se cachait sous les traits d'Uma." }],
+  dans: ["dame-lac"],
+  voir: ["aen-elle", "lara-dorren", "eredin", "uma", "sang-ancien"] },
+
+{ id: "eredin", t: "perso", src: "LJ", nom: "Eredin Bréacc Glas", alias: ["le Roi de la Chasse"],
+  role: "Chef de la Chasse sauvage",
+  resume: "Commandant des cavaliers rouges des Aen Elle, ceux que les humains appellent la Chasse sauvage.",
+  livres: "Il apparaît dans « La Dame du Lac », ambitieux et méprisant envers les humains.",
+  rev: "À la mort du vieux roi Auberon, Eredin s'impose à la tête des siens ; les jeux affirment qu'il l'a empoisonné.",
+  jeu: [{ c: 0, t: "Principal antagoniste de TW3." }],
+  dans: ["dame-lac"],
+  voir: ["chasse", "aen-elle", "auberon", "generaux"] },
+
+{ id: "auberon", t: "perso", src: "L", nom: "Auberon Muircetach", alias: ["le Roi des Aulnes"],
+  role: "Roi des Aen Elle",
+  resume: "Souverain âgé et mélancolique des Aen Elle.",
+  rev: "Il est au cœur des projets d'Avallac'h pour récupérer le Sang Ancien ; sa mort bouleverse la cour de Tir ná Lia.",
+  dans: ["dame-lac"],
+  voir: ["aen-elle", "eredin", "avallach"] },
+
+{ id: "lara-dorren", t: "perso", src: "LJ", nom: "Lara Dorren", alias: ["Lara Dorren aep Shiadhal"],
+  role: "Magicienne elfe, source du Sang Ancien",
+  resume: "Légendaire magicienne elfe porteuse d'un gène unique.",
+  livres: "Son amour pour un humain, le mage Cregennan de Lod, fit scandale chez les elfes comme chez les humains et finit tragiquement. Leur fille Riannon transmit le gène à une lignée humaine qui mène jusqu'à Pavetta et Ciri.",
+  jeu: [{ c: 5, t: "Son nom revient souvent dans TW3, à mesure que l'on comprend ce que la Chasse attend de Ciri." }],
+  dans: ["sang-elfes", "dame-lac"],
+  voir: ["sang-ancien", "avallach", "ciri", "aen-elle"] },
+
+{ id: "ithlinne", t: "perso", src: "LJ", nom: "Ithlinne", alias: ["Ithlinne Aegli aep Aevenien", "la prophétie d'Ithlinne"],
+  role: "Prophétesse elfe",
+  resume: "Voyante elfe dont les prédictions hantent toute la saga.",
+  livres: "Sa prophétie annonce une ère de guerres et de mépris, puis la fin du monde par le Gel Blanc, et le rôle déterminant d'un enfant du Sang Ancien.",
+  jeu: [{ c: 5, t: "TW3 fait de cette prophétie le cœur de l'intrigue." }],
+  dans: ["sang-elfes", "temps-mepris", "dame-lac"],
+  voir: ["gel-blanc", "sang-ancien", "ciri"] },
+
+{ id: "nenneke", t: "perso", src: "L", nom: "Nenneke", alias: [],
+  role: "Grande prêtresse de Melitele",
+  resume: "Prêtresse bourrue et maternelle, confidente de Geralt.",
+  livres: "Elle le soigne dans « La Voix de la raison », le récit qui relie les nouvelles du « Dernier Vœu », puis accueille Ciri au temple pour son éducation.",
+  dans: ["dernier-voeu", "sang-elfes"],
+  voir: ["melitele", "geralt", "ciri"] },
+
+{ id: "tissaia", t: "perso", src: "L", nom: "Tissaia de Vries", alias: [],
+  role: "Rectrice d'Aretuza",
+  resume: "Magicienne d'une rigueur légendaire, à la tête de l'école d'Aretuza et mentore de Yennefer.",
+  rev: "Bouleversée par le coup de Thanedd, elle n'y survit pas.",
+  dans: ["temps-mepris"],
+  voir: ["yennefer", "thanedd", "conseil"] },
+
+{ id: "francesca", t: "perso", src: "L", nom: "Francesca Findabair", alias: ["Enid an Gleanna", "la Pâquerette des Vallées"],
+  role: "Magicienne elfe",
+  resume: "Réputée la plus belle femme du monde, magicienne et défenseure de la cause elfe.",
+  rev: "Pour prix de son ralliement à Nilfgaard, Emhyr lui offre un royaume elfe à Dol Blathanna. Elle rejoint la Loge.",
+  dans: ["temps-mepris", "bapteme-feu", "dame-lac"],
+  voir: ["dol-blathanna", "loge", "scoiatael"] },
+
+{ id: "keira", t: "perso", src: "LJ", nom: "Keira Metz", alias: [],
+  role: "Magicienne du Nord",
+  resume: "Magicienne au tempérament vif, plus habile qu'elle n'en a l'air.",
+  livres: "Membre de la Loge des Magiciennes dans la seconde moitié de la saga.",
+  jeu: [{ c: 1, t: "Dans TW3, elle vit cachée à Velen, où elle joue les guérisseuses de village." }],
+  dans: ["bapteme-feu", "dame-lac"],
+  voir: ["loge", "velen", "lambert"] },
+
+{ id: "fringilla", t: "perso", src: "L", nom: "Fringilla Vigo", alias: [],
+  role: "Magicienne nilfgaardienne",
+  resume: "Magicienne de l'Empire, ambitieuse et brillante.",
+  livres: "Elle siège à la Loge des Magiciennes aux côtés de ses consœurs du Nord.",
+  dans: ["bapteme-feu", "dame-lac"],
+  voir: ["loge", "toussaint", "nilfgaard"] },
+
+{ id: "anna-henrietta", t: "perso", src: "LJ", nom: "Anna Henrietta", alias: [],
+  role: "Duchesse de Toussaint",
+  resume: "Souveraine de Toussaint, fantasque et passionnée.",
+  livres: "Dans « La Dame du Lac », elle accueille la compagnie de Geralt pendant l'hiver.",
+  rev: "Jaskier devient son amant.",
+  jeu: [{ d: "bw", c: 1, t: "Dans Blood and Wine, elle fait appel à Geralt pour mettre fin à une série de meurtres dans son duché." }],
+  dans: ["dame-lac"],
+  voir: ["toussaint", "jaskier", "syanna"] },
+
+{ id: "dudu", t: "perso", src: "LJ", nom: "Dudu Biberveldt", alias: ["Tellico Lunngrevink Letorte", "le doppler"],
+  role: "Doppler",
+  resume: "Un métamorphe capable de copier l'apparence de n'importe qui.",
+  livres: "Dans « Le Feu éternel », à Novigrad, ce doppler se fait passer pour un marchand halfelin et sème la pagaille. Plutôt que de le tuer, Geralt l'aide à se tirer d'affaire.",
+  jeu: [{ c: 2, t: "Il réapparaît à Novigrad, toujours aussi doué pour se glisser dans la peau des autres." }],
+  dans: ["epee-providence"],
+  voir: ["novigrad", "jaskier", "feu-eternel"] },
+
+{ id: "shani", t: "perso", src: "LJ", nom: "Shani", alias: [],
+  role: "Médecin d'Oxenfurt",
+  resume: "Étudiante en médecine à Oxenfurt, au caractère bien trempé.",
+  livres: "Amie de Jaskier, on la retrouve dans « La Dame du Lac » à l'hôpital de campagne de la bataille de Brenna.",
+  jeu: [{ d: "hos", c: 1, t: "Dans Hearts of Stone, Geralt la retrouve lors d'un mariage mémorable. Elle apparaît aussi dans le premier jeu." }],
+  dans: ["dame-lac"],
+  voir: ["oxenfurt", "jaskier", "brenna"] },
+
+{ id: "nimue", t: "perso", src: "L", nom: "Nimue et Condwiramurs", alias: ["la Dame du Lac", "Nimue", "Condwiramurs"],
+  role: "Narratrices venues d'un autre temps",
+  resume: "Deux magiciennes d'une époque bien postérieure, qui étudient la légende du sorceleur et de Ciri.",
+  livres: "Dans « La Dame du Lac », Nimue et son apprentie Condwiramurs, une rêveuse capable de voir le passé, encadrent le récit : l'histoire de Geralt y est déjà devenue une légende.",
+  dans: ["dame-lac", "saison-orages"],
+  voir: ["dame-lac", "ciri"] },
+
+/* ---------- Personnages propres aux jeux ---------- */
+{ id: "baron", t: "perso", src: "J", nom: "Le Baron sanglant", alias: ["Phillip Strenger"], porte: { c: 1 },
+  role: "Seigneur de guerre de Velen",
+  resume: "Création du jeu : un seigneur de guerre qui tient une partie de Velen d'une main de fer et sait quelque chose sur Ciri. Son histoire familiale compte parmi les récits les plus marquants de TW3.",
+  voir: ["velen", "dames-bois", "uma"] },
+
+{ id: "dames-bois", t: "perso", src: "J", nom: "Les Dames du Bois", alias: ["Crones", "Ladies of the Wood"], porte: { c: 1 },
+  role: "Entités de Velen",
+  resume: "Création du jeu, inspirée des contes slaves : trois entités très anciennes que les habitants de Velen vénèrent autant qu'ils les redoutent.",
+  voir: ["velen", "baron"] },
+
+{ id: "uma", t: "perso", src: "J", nom: "Uma", alias: [], porte: { c: 1 },
+  role: "Créature maudite",
+  resume: "Création du jeu : une créature difforme et malmenée que l'on rencontre chez le Baron sanglant.",
+  jeu: [{ c: 5, t: "Uma est Avallac'h, transformé par une malédiction. Une fois libéré, il révèle où se cache Ciri." }],
+  voir: ["baron", "avallach"] },
+
+{ id: "priscilla", t: "perso", src: "J", nom: "Priscilla", alias: [], porte: { c: 2 },
+  role: "Chanteuse et poétesse",
+  resume: "Création du jeu : une artiste adulée de Novigrad, amie de Jaskier.",
+  voir: ["jaskier", "novigrad"] },
+
+{ id: "generaux", t: "perso", src: "J", nom: "Imlerith et Caranthir", alias: ["généraux de la Chasse"], porte: { c: 4 },
+  role: "Lieutenants d'Eredin",
+  resume: "Création du jeu : Imlerith est un colosse en armure, Caranthir un navigateur capable d'ouvrir des passages entre les mondes.",
+  voir: ["eredin", "chasse"] },
+
+{ id: "gaunter", t: "perso", src: "J", nom: "Gaunter O'Dimm", alias: ["Man of Glass"], porte: { d: "hos", c: 1 },
+  role: "Marchand de vœux",
+  resume: "Création du jeu : un homme affable que Geralt a déjà croisé au tout début de TW3, et dont les marchés ne laissent personne indemne. Il puise dans les contes de pactes avec le diable.",
+  voir: ["olgierd"] },
+
+{ id: "olgierd", t: "perso", src: "J", nom: "Olgierd von Everec", alias: [], porte: { d: "hos", c: 1 },
+  role: "Noble déchu",
+  resume: "Création du jeu : un aristocrate ruiné à la tête d'une bande de brigands, aussi insaisissable que mélancolique.",
+  voir: ["gaunter"] },
+
+{ id: "dettlaff", t: "perso", src: "J", nom: "Dettlaff van der Eretein", alias: [], porte: { d: "bw", c: 1 },
+  role: "Vampire supérieur",
+  resume: "Création du jeu : un vampire supérieur, ami de Regis, au cœur de l'intrigue de Toussaint.",
+  voir: ["regis", "vampires", "toussaint"] },
+
+{ id: "syanna", t: "perso", src: "J", nom: "Syanna", alias: ["Sylvia Anna"], porte: { d: "bw", c: 1 },
+  role: "Sœur de la duchesse",
+  resume: "Création du jeu : la sœur cadette d'Anna Henrietta, longtemps tenue à l'écart de la cour.",
+  voir: ["anna-henrietta", "toussaint"] },
+
+/* ---------- Lieux ---------- */
+{ id: "kaer-morhen", t: "lieu", src: "LJ", nom: "Kaer Morhen", alias: [],
+  role: "Forteresse des sorceleurs",
+  resume: "Vieille place forte nichée dans les montagnes de Kaedwen, où l'école du Loup formait ses sorceleurs.",
+  livres: "Ciri y passe un hiver d'entraînement dans « Le Sang des elfes ». Jadis prise d'assaut par des fanatiques, la forteresse n'abrite plus qu'une poignée de sorceleurs, et une partie du savoir des mutations s'est perdue.",
+  jeu: [
+    { c: 0, t: "Elle sert de décor au rêve qui ouvre le jeu." },
+    { c: 4, t: "Geralt y revient pour un chapitre décisif." }],
+  dans: ["sang-elfes", "croisee"],
+  voir: ["sorceleurs", "vesemir", "epreuve"] },
+
+{ id: "cintra", t: "lieu", src: "LJ", nom: "Cintra", alias: [],
+  role: "Royaume de Ciri",
+  resume: "Royaume du Sud, à l'embouchure de la Yaruga, gouverné par la reine Calanthe.",
+  livres: "C'est à la cour de Cintra que se noue le destin de Ciri, dans « Une question de prix ». Sa chute face à Nilfgaard, au début de la saga, est un traumatisme fondateur : Ciri reste hantée par le chevalier au heaume ailé qui l'a emportée hors de la ville en flammes.",
+  jeu: [{ c: 0, t: "Dans TW3, Cintra est sous domination nilfgaardienne depuis des années." }],
+  dans: ["dernier-voeu", "epee-providence", "sang-elfes"],
+  voir: ["calanthe", "ciri", "cahir", "nilfgaard", "yaruga"] },
+
+{ id: "vizima", t: "lieu", src: "LJ", nom: "Vizima", alias: ["Wyzima"],
+  role: "Capitale de la Temeria",
+  resume: "Ville royale de la Temeria, siège du roi Foltest.",
+  livres: "Cadre de la nouvelle « Le Sorceleur » : le roi y promet une récompense à qui délivrera sa fille de la malédiction qui l'a changée en stryge.",
+  jeu: [{ c: 0, t: "Dans TW3, l'empereur Emhyr tient sa cour dans le palais royal : la Temeria est occupée." }],
+  dans: ["dernier-voeu"],
+  voir: ["foltest", "emhyr"] },
+
+{ id: "novigrad", t: "lieu", src: "LJ", nom: "Novigrad", alias: [],
+  role: "Ville libre, premier port du Nord",
+  resume: "Cité marchande immense et cosmopolite, aussi riche que dangereuse.",
+  livres: "Décor du « Feu éternel », où Jaskier et Geralt démêlent les manigances d'un doppler. Le culte du Feu éternel y est très influent.",
+  jeu: [{ c: 2, t: "L'une des grandes villes du jeu. Le fanatisme y a gagné du terrain : les chasseurs de sorcières y brûlent mages et non-humains." }],
+  dans: ["epee-providence"],
+  voir: ["feu-eternel", "dudu", "jaskier", "dijkstra", "triss"] },
+
+{ id: "oxenfurt", t: "lieu", src: "LJ", nom: "Oxenfurt", alias: [],
+  role: "Ville universitaire de Redanie",
+  resume: "Cité étudiante proche de Novigrad, célèbre pour son académie.",
+  livres: "Jaskier y a fait ses études, comme Shani, étudiante en médecine.",
+  jeu: [{ c: 2, t: "Visitable dans TW3, non loin de Novigrad." }],
+  voir: ["jaskier", "shani"] },
+
+{ id: "skellige", t: "lieu", src: "LJ", nom: "Skellige", alias: ["les îles Skellige", "Ard Skellig"],
+  role: "Archipel de guerriers et de navigateurs",
+  resume: "Des îles battues par les vents, peuplées de marins, de guerriers et de druides.",
+  livres: "Alliés de longue date de Cintra : le jarl Eist Tuirseach épouse la reine Calanthe, et le druide Mousesack fréquente la cour.",
+  jeu: [{ c: 3, t: "Région à part entière du jeu : querelles de clans, succession royale et traces de Ciri." }],
+  dans: ["dernier-voeu"],
+  voir: ["eist", "ermion", "crach", "calanthe", "kaer-trolde", "an-craite"] },
+
+{ id: "toussaint", t: "lieu", src: "LJ", nom: "Toussaint", alias: ["Beauclair"],
+  role: "Duché du vin et de la chevalerie",
+  resume: "Petit duché vassal de Nilfgaard, ensoleillé, raffiné et obsédé par les codes chevaleresques.",
+  livres: "Dans « La Dame du Lac », la compagnie de Geralt y passe l'hiver sous l'œil de la duchesse Anna Henrietta : une parenthèse dorée, où Geralt s'attarde plus que de raison.",
+  jeu: [{ d: "bw", c: 1, t: "Cadre de l'extension Blood and Wine." }],
+  dans: ["dame-lac"],
+  voir: ["anna-henrietta", "regis", "fringilla", "dame-lac"] },
+
+{ id: "brokilon", t: "lieu", src: "L", nom: "Brokilon", alias: ["les dryades"],
+  role: "Forêt des dryades",
+  resume: "Forêt ancienne et sacrée, gardée par les dryades de la reine Eithné, qui abattent les intrus.",
+  livres: "Geralt y rencontre Ciri enfant dans « L'Épée de la providence », et y soigne ses blessures au début du « Baptême du feu ».",
+  dans: ["epee-providence", "bapteme-feu"],
+  voir: ["eithne", "ciri", "milva"] },
+
+{ id: "thanedd", t: "lieu", src: "L", nom: "Thanedd", alias: ["Aretuza", "Garstang", "Tor Lara", "Gors Velen"],
+  role: "Île des magiciens",
+  resume: "Île proche de la ville de Gors Velen, qui abrite l'école de magie d'Aretuza et le palais de Garstang.",
+  livres: "Théâtre du conclave des magiciens dans « Le Temps du mépris ».",
+  rev: "Le conclave tourne au coup d'État : Vilgefortz et des mages ralliés à Nilfgaard affrontent leurs confrères. Ciri s'enfuit par le portail de la tour de Tor Lara, qui la jette loin de là.",
+  dans: ["temps-mepris"],
+  voir: ["vilgefortz", "tissaia", "conseil", "temps-mepris", "korath"] },
+
+{ id: "sodden", t: "lieu", src: "L", nom: "Sodden", alias: ["la colline de Sodden"],
+  role: "Champ de bataille",
+  resume: "Région du Nord où l'invasion nilfgaardienne fut arrêtée lors de la première guerre.",
+  livres: "Sur la colline de Sodden, les magiciens du Nord stoppent l'armée nilfgaardienne ; quatorze d'entre eux y laissent la vie, et un monument honore leur mémoire.",
+  voir: ["triss", "nilfgaard", "conseil"] },
+
+{ id: "riv", t: "lieu", src: "L", nom: "Riv", alias: ["Rivia"],
+  role: "Ville du royaume de Lyria et Rivia",
+  resume: "Petite ville du royaume de Lyria et Rivia, dont Geralt a fait son « nom de famille ».",
+  rev: "C'est à Riv que s'achève la saga, lors d'un pogrom contre les non-humains.",
+  dans: ["dame-lac"],
+  voir: ["geralt", "dame-lac"] },
+
+{ id: "mahakam", t: "lieu", src: "LJ", nom: "Mahakam", alias: ["les nains"],
+  role: "Montagnes des nains",
+  resume: "Massif montagneux, patrie des nains et des gnomes, célèbre pour ses forges.",
+  livres: "Zoltan et ses compagnons en sont originaires ; on y forge certaines des meilleures lames du monde.",
+  voir: ["zoltan", "non-humains", "gwynt"] },
+
+{ id: "dol-blathanna", t: "lieu", src: "L", nom: "Dol Blathanna", alias: ["la Vallée des Fleurs"],
+  role: "La Vallée des Fleurs",
+  resume: "Vallée autrefois elfe, symbole de tout ce que les elfes ont perdu face aux humains.",
+  livres: "Cadre du « Bout du monde », où Geralt et Jaskier croisent des elfes réduits à la survie.",
+  rev: "Emhyr y offre à Francesca Findabair un royaume elfe, prix de son ralliement.",
+  dans: ["dernier-voeu"],
+  voir: ["francesca", "scoiatael"] },
+
+{ id: "tir-na-lia", t: "lieu", src: "LJ", nom: "Tir ná Lia", alias: [],
+  role: "Cité des Aen Elle",
+  resume: "Capitale des elfes Aen Elle, dans un autre monde que celui de Geralt.",
+  rev: "Ciri y est retenue dans « La Dame du Lac », au cœur des intrigues d'Avallac'h et d'Eredin.",
+  dans: ["dame-lac"],
+  voir: ["aen-elle", "avallach", "eredin"] },
+
+{ id: "stygga", t: "lieu", src: "L", nom: "Le château de Stygga", alias: ["Stygga"],
+  role: "Forteresse isolée",
+  resume: "Château perdu où se joue le dénouement de la saga.",
+  rev: "C'est le repaire de Vilgefortz : la compagnie de Geralt y donne l'assaut, et peu en reviennent.",
+  dans: ["dame-lac"],
+  voir: ["vilgefortz", "dame-lac"] },
+
+{ id: "melitele", t: "lieu", src: "L", nom: "Le temple de Melitele", alias: ["Ellander"],
+  role: "Sanctuaire de la déesse-mère",
+  resume: "Temple de la déesse Melitele, à Ellander, dirigé par la prêtresse Nenneke : un refuge pour Geralt.",
+  livres: "Geralt y est soigné dans « La Voix de la raison », le récit-cadre du « Dernier Vœu ». Ciri y reçoit ensuite une éducation, avant que Yennefer ne la prenne sous son aile.",
+  dans: ["dernier-voeu", "sang-elfes"],
+  voir: ["nenneke", "ciri", "yennefer"] },
+
+{ id: "tor-zireael", t: "lieu", src: "L", nom: "Tor Zireael", alias: ["la Tour de l'Hirondelle"],
+  role: "Tour elfique",
+  resume: "Tour elfique légendaire, que l'on dit capable d'ouvrir des passages vers d'autres mondes.",
+  rev: "Ciri y trouve refuge dans « La Tour de l'Hirondelle » : la tour l'emporte jusque dans le monde des Aen Elle.",
+  dans: ["tour-hirondelle", "dame-lac"],
+  voir: ["ciri", "tour-hirondelle", "aen-elle"] },
+
+{ id: "velen", t: "lieu", src: "J", nom: "Velen", alias: [],
+  role: "Région marécageuse",
+  resume: "Création du jeu : une région pauvre et marécageuse, aux confins de la Temeria, ravagée par la guerre, où règnent déserteurs, monstres et vieilles légendes.",
+  jeu: [{ c: 1, t: "Grande région du jeu, où la piste de Ciri passe par le Baron sanglant et les Dames du Bois." }],
+  voir: ["baron", "dames-bois", "keira"] },
+
+{ id: "verger-blanc", t: "lieu", src: "J", nom: "Le Verger Blanc", alias: ["White Orchard"],
+  role: "Village du prologue",
+  resume: "Création du jeu : un village temérien encore sous le choc de l'invasion nilfgaardienne. C'est là que commence la quête de Geralt dans TW3.",
+  jeu: [{ c: 0, t: "Un griffon y sème la terreur : c'est le premier grand monstre du jeu." }],
+  voir: ["yennefer", "vesemir", "nilfgaard"] },
+
+{ id: "ile-brumes", t: "lieu", src: "J", nom: "L'Île des Brumes", alias: ["Isle of Mists"], porte: { c: 4 },
+  role: "Île légendaire",
+  resume: "Création du jeu : une île perdue dans un brouillard perpétuel, que nul ne trouve sans guide.",
+  jeu: [{ c: 5, t: "C'est là que Geralt retrouve enfin Ciri." }],
+  voir: ["ciri", "avallach"] },
+
+/* ---------- Peuples et factions ---------- */
+{ id: "sorceleurs", t: "faction", src: "LJ", nom: "Les sorceleurs", alias: ["witchers", "écoles de sorceleurs"],
+  role: "Chasseurs de monstres mutants",
+  resume: "Des enfants recueillis, parfois au titre de la Loi de la Surprise, puis transformés pour chasser les monstres. Peu survivent à leur formation.",
+  livres: "Les mutations les rendent stériles, leur donnent des sens et des réflexes hors norme et des yeux de chat, et ralentissent leur vieillissement. Ils portent deux épées : l'acier contre les humains, l'argent contre les monstres. Méprisés autant qu'indispensables, ils sont en voie de disparition à l'époque de la saga.",
+  jeu: [{ c: 0, t: "Les écoles (Loup, Chat, Griffon, Vipère, Ours, puis Manticore) sont surtout développées par les jeux, à travers leurs équipements à retrouver." }],
+  dans: ["dernier-voeu", "sang-elfes", "croisee"],
+  voir: ["epreuve", "signes", "medaillon", "kaer-morhen", "loi-surprise"] },
+
+{ id: "nilfgaard", t: "faction", src: "LJ", nom: "Nilfgaard", alias: ["l'Empire", "les Noirs", "Nilfgaardiens"],
+  role: "Empire du Sud",
+  resume: "Puissant empire conquérant, discipliné et centralisé, dont les soldats en armure noire portent le soleil sur leurs étendards.",
+  livres: "Sous Emhyr var Emreis, l'Empire envahit Cintra, puis relance la guerre après Thanedd. Il soutient en sous-main les commandos elfes et nourrit une obsession : retrouver Ciri.",
+  jeu: [{ c: 0, t: "Dans TW3, c'est la troisième offensive contre le Nord : la Temeria est occupée et la Redanie résiste." }],
+  dans: ["sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
+  voir: ["emhyr", "cahir", "royaumes-nord", "scoiatael"] },
+
+{ id: "royaumes-nord", t: "faction", src: "LJ", nom: "Les Royaumes du Nord", alias: ["Temeria", "Redanie", "Kaedwen", "Aedirn", "Lyria", "Kovir", "le Nord"],
+  role: "Royaumes humains rivaux",
+  resume: "Temeria, Redanie, Kaedwen, Aedirn, Lyria et Rivia, Kovir : des royaumes rivaux que seule la menace nilfgaardienne pousse à s'entendre.",
+  livres: "Leurs rois, Foltest, Vizimir, Henselt, Demavend ou Meve, complotent autant qu'ils se battent, et la guerre bouleverse la carte du Nord.",
+  jeu: [{ c: 0, t: "Dans TW3, la Redanie du roi Radovid mène la résistance face à Nilfgaard." }],
+  dans: ["sang-elfes", "temps-mepris", "bapteme-feu", "dame-lac"],
+  voir: ["foltest", "radovid", "nilfgaard", "dijkstra"] },
+
+{ id: "conseil", t: "faction", src: "L", nom: "Le Chapitre et le Conseil", alias: ["Chapitre des magiciens", "Conseil des magiciens", "magiciens"],
+  role: "Instances des magiciens",
+  resume: "Les deux assemblées qui encadrent la pratique de la magie dans le Nord.",
+  livres: "Leurs membres conseillent les rois, et leurs rivalités pèsent sur la politique du continent. Le conclave de Thanedd les réunit dans « Le Temps du mépris ».",
+  rev: "Le coup de Thanedd les détruit : la Loge des Magiciennes prend leur place, en coulisses.",
+  dans: ["temps-mepris"],
+  voir: ["thanedd", "loge", "vilgefortz", "tissaia"] },
+
+{ id: "loge", t: "faction", src: "LJ", nom: "La Loge des Magiciennes", alias: ["la Loge"],
+  role: "Cercle secret de magiciennes",
+  resume: "Un cercle secret de magiciennes décidées à tirer les ficelles de la politique.",
+  rev: "Fondée par Philippa Eilhart dans « Le Baptême du feu », elle réunit des magiciennes du Nord, de Nilfgaard et des elfes. Elle entend décider seule du sort du continent, et voit en Ciri une pièce maîtresse.",
+  jeu: [{ c: 5, t: "Dans TW3, la Loge cherche à se relever et peut devenir une alliée, intéressée, contre la Chasse." }],
+  dans: ["bapteme-feu", "tour-hirondelle", "dame-lac"],
+  voir: ["philippa", "triss", "francesca", "fringilla", "keira"] },
+
+{ id: "scoiatael", t: "faction", src: "LJ", nom: "Les Scoia'tael", alias: ["les Écureuils", "commandos elfes"],
+  role: "Guérilla elfe",
+  resume: "Les « Écureuils » : commandos d'elfes et d'autres non-humains qui mènent la guérilla contre les humains du Nord.",
+  livres: "Dans la saga, Nilfgaard les arme en sous-main et s'en sert comme d'une cinquième colonne.",
+  dans: ["sang-elfes", "temps-mepris", "bapteme-feu"],
+  voir: ["nilfgaard", "dol-blathanna", "milva", "non-humains"] },
+
+{ id: "aen-elle", t: "faction", src: "LJ", nom: "Les Aen Elle", alias: ["le Peuple des Aulnes", "elfes"],
+  role: "Elfes d'un autre monde",
+  resume: "Le « Peuple des Aulnes », cousins des elfes du monde de Geralt, qui vivent dans un autre univers.",
+  livres: "Ciri les découvre dans « La Dame du Lac ». Ils se croient supérieurs et, dans leur monde, ont réduit les humains à la servitude.",
+  rev: "Ils veulent récupérer le gène de Lara Dorren, perdu dans une lignée humaine : c'est tout l'enjeu de Ciri à leurs yeux.",
+  jeu: [{ c: 5, t: "Dans TW3, leur monde est menacé par le Gel Blanc : c'est ce qui pousse la Chasse à traquer Ciri." }],
+  dans: ["dame-lac"],
+  voir: ["avallach", "eredin", "auberon", "lara-dorren", "chasse", "tir-na-lia"] },
+
+{ id: "chasse", t: "faction", src: "LJ", nom: "La Chasse sauvage", alias: ["Wild Hunt", "les cavaliers rouges", "la Chasse"],
+  role: "Cavaliers de légende",
+  resume: "Dans les légendes du Nord, une horde fantôme qui traverse le ciel et enlève les vivants. Sa venue passe pour un présage de guerre.",
+  livres: "Ciri l'aperçoit dans ses cauchemars, comme une menace qui la poursuit.",
+  rev: "Dans « La Dame du Lac », on découvre que ce sont des elfes Aen Elle en armure, menés par Eredin.",
+  jeu: [{ c: 0, t: "Principal ennemi de TW3 : la Chasse traque Ciri." }],
+  dans: ["sang-elfes", "dame-lac"],
+  voir: ["eredin", "aen-elle", "generaux", "ciri"] },
+
+{ id: "feu-eternel", t: "faction", src: "LJ", nom: "L'Église du Feu éternel", alias: ["Feu éternel", "chasseurs de sorcières"],
+  role: "Culte de Novigrad",
+  resume: "Une religion née à Novigrad, qui voue un culte à une flamme sacrée et gagne en influence comme en intolérance.",
+  livres: "Elle est présente dès la nouvelle « Le Feu éternel », à Novigrad.",
+  jeu: [{ c: 2, t: "Dans TW3, ses chasseurs de sorcières persécutent mages et non-humains et dressent des bûchers en ville." }],
+  dans: ["epee-providence"],
+  voir: ["novigrad", "triss"] },
+
+{ id: "vampires", t: "concept", src: "LJ", nom: "Les vampires", alias: ["vampire supérieur", "bruxa"],
+  role: "Créatures de la Conjonction",
+  resume: "On distingue les vampires inférieurs, bestiaux, et les vampires supérieurs, intelligents et presque indestructibles.",
+  livres: "Dans « Le Baptême du feu », on apprend que les vampires supérieurs n'ont pas besoin de sang pour vivre : pour eux, c'est une ivresse. Bien des superstitions humaines (ail, soleil, symboles sacrés) n'y changent rien.",
+  jeu: [{ d: "bw", c: 1, t: "Blood and Wine est l'extension des vampires : bruxae, alps, garkains… et vampires supérieurs." }],
+  dans: ["bapteme-feu"],
+  voir: ["regis", "conjonction"] },
+
+/* ---------- Magie et notions ---------- */
+{ id: "conjonction", t: "concept", src: "LJ", nom: "La Conjonction des Sphères", alias: [],
+  role: "Catastrophe cosmique",
+  resume: "Il y a environ 1 500 ans, des mondes sont entrés en collision, laissant dans celui de Geralt des créatures venues d'ailleurs : goules, graveirs, vampires…",
+  livres: "Les sorceleurs ont été créés pour combattre ces reliques de la Conjonction, devenues de plus en plus rares à l'époque de la saga.",
+  voir: ["sorceleurs", "vampires"] },
+
+{ id: "sang-ancien", t: "concept", src: "LJ", nom: "Le Sang Ancien", alias: ["Hen Ichaer", "gène de Lara"],
+  role: "Héritage elfe",
+  resume: "Un gène elfe très rare, hérité de Lara Dorren, qui donne à son porteur un pouvoir sur l'espace et le temps.",
+  livres: "Il se transmet dans la lignée de Cintra : Pavetta en manifeste des éclats, Ciri le porte pleinement. C'est ce qui fait d'elle une pièce maîtresse pour tous ceux qui convoitent son destin.",
+  rev: "Ciri finit par apprendre à maîtriser ce pouvoir et à voyager entre les mondes et les époques.",
+  dans: ["sang-elfes", "dame-lac"],
+  voir: ["lara-dorren", "ciri", "pavetta", "ithlinne", "aen-elle"] },
+
+{ id: "loi-surprise", t: "concept", src: "LJ", nom: "La Loi de la Surprise", alias: ["enfant surprise"],
+  role: "Coutume ancienne",
+  resume: "En échange d'un service, on peut réclamer une chose que l'autre possède sans le savoir encore, souvent un enfant à naître. Le destin, dit-on, lie ensuite les deux parties.",
+  livres: "Duny obtient ainsi la main de Pavetta, et Geralt réclame à son tour son paiement à Cintra. Les sorceleurs recrutaient parfois leurs apprentis de cette façon.",
+  rev: "L'« enfant surprise » de Geralt, c'est Ciri.",
+  dans: ["dernier-voeu", "epee-providence"],
+  voir: ["duny", "pavetta", "ciri", "dernier-voeu"] },
+
+{ id: "gel-blanc", t: "concept", src: "LJ", nom: "Le Gel Blanc", alias: ["White Frost"],
+  role: "Fin des mondes annoncée",
+  resume: "Selon la prophétie d'Ithlinne, une glaciation finira par engloutir le monde.",
+  livres: "Évoqué dans les prophéties citées tout au long de la saga, il donne au Sang Ancien une portée qui dépasse les guerres des hommes.",
+  jeu: [{ c: 5, t: "Dans TW3, le Gel Blanc ravage le monde des Aen Elle et menace tous les autres : c'est la raison d'être de la traque menée par la Chasse." }],
+  voir: ["ithlinne", "sang-ancien", "aen-elle"] },
+
+{ id: "sources", t: "concept", src: "L", nom: "Les Sources", alias: [],
+  role: "Talents magiques innés",
+  resume: "Des personnes nées avec un don magique brut, qui se manifeste de façon incontrôlée.",
+  livres: "Sans formation, une Source court au-devant de la folie, ou pire. Triss comprend dans « Le Sang des elfes » que Ciri en est une, d'une puissance hors du commun.",
+  dans: ["sang-elfes"],
+  voir: ["ciri", "triss", "pavetta"] },
+
+{ id: "epreuve", t: "concept", src: "LJ", nom: "L'Épreuve des Herbes", alias: ["mutations"],
+  role: "Rite de mutation",
+  resume: "Le rite qui transforme les apprentis en sorceleurs, à grand renfort d'herbes et de décoctions. La plupart des enfants n'y survivent pas.",
+  livres: "Geralt l'a si bien supportée qu'il a subi des mutations supplémentaires, d'où ses cheveux blancs. Ciri, elle, n'y est pas soumise à Kaer Morhen.",
+  dans: ["dernier-voeu", "sang-elfes"],
+  voir: ["sorceleurs", "geralt", "kaer-morhen"] },
+
+{ id: "signes", t: "concept", src: "LJ", nom: "Les Signes", alias: ["Aard", "Igni", "Yrden", "Quen", "Axii", "Héliotrope"],
+  role: "Magie des sorceleurs",
+  resume: "Des sorts simples tracés d'un geste de la main : Aard projette une onde de choc, Igni du feu, Yrden pose un piège magique, Quen un bouclier, et Axii agit sur l'esprit.",
+  livres: "Dans les livres, Geralt en use avec parcimonie et en connaît d'autres, comme l'Héliotrope, qui détourne un sort.",
+  jeu: [{ c: 0, t: "Dans TW3, chaque signe possède une forme alternative et se renforce dans l'arbre de compétences." }],
+  voir: ["sorceleurs", "medaillon"] },
+
+{ id: "medaillon", t: "concept", src: "LJ", nom: "Le médaillon", alias: [],
+  role: "Insigne des sorceleurs",
+  resume: "Chaque sorceleur porte un médaillon à l'effigie de son école, qui vibre en présence de magie.",
+  livres: "Celui de Geralt représente une tête de loup.",
+  voir: ["sorceleurs", "bonhart"] },
+
+{ id: "dimeritium", t: "concept", src: "LJ", nom: "Le dimeritium", alias: [],
+  role: "Métal anti-magie",
+  resume: "Un métal rare qui bloque la magie : on en fait des menottes pour neutraliser les magiciens.",
+  livres: "Il joue un rôle clé lors du conclave de Thanedd.",
+  jeu: [{ c: 0, t: "Dans TW3, la bombe de dimeritium affaiblit les créatures magiques et empêche certains ennemis de lancer des sorts." }],
+  dans: ["temps-mepris"],
+  voir: ["thanedd", "conseil"] },
+
+{ id: "langue-ancienne", t: "concept", src: "LJ", nom: "La Langue ancienne", alias: ["Hen Llinge", "elfique"],
+  role: "Langue des elfes",
+  resume: "La langue des elfes, qui a laissé de nombreux noms au monde des humains.",
+  livres: "Quelques mots à retenir : Gwynbleidd, « Loup Blanc » (Geralt) ; Zireael, « hirondelle » (Ciri) ; Dh'oine, « humains » ; Aen Seidhe et Aen Elle, les deux peuples elfes ; Hen Ichaer, le Sang Ancien ; Tedd Deireadh, le temps de la fin ; Va fail, « adieu ».",
+  voir: ["aen-elle", "sang-ancien", "non-humains"] },
+
+{ id: "potions", t: "concept", src: "LJ", nom: "Les potions", alias: ["Hirondelle", "Chat", "Mouette blanche", "alchimie"],
+  role: "Alchimie des sorceleurs",
+  resume: "Des élixirs toxiques pour le commun des mortels, que seuls les sorceleurs supportent.",
+  livres: "Les livres citent notamment l'Hirondelle, qui accélère la guérison, le Chat, pour voir dans le noir, et la Mouette blanche, qui revient souvent dans la bouche des sorceleurs.",
+  jeu: [{ c: 0, t: "Dans TW3, la toxicité limite le nombre de potions actives, et les décoctions de mutagènes offrent des bonus de longue durée." }],
+  voir: ["sorceleurs", "epreuve"] },
+
+/* ---------- Livres ---------- */
+{ id: "dernier-voeu", t: "livre", src: "L", nom: "Le Dernier Vœu", alias: ["Ostatnie życzenie", "The Last Wish"], ordre: 1,
+  genre: "Recueil de nouvelles", vo: "Ostatnie życzenie", annee: 1993, role: "Recueil de nouvelles, 1993",
+  resume: "Le point d'entrée idéal. En convalescence au temple de Melitele, Geralt se remémore quelques contrats marquants : la stryge de Vizima, le drame de Blaviken, le banquet de Cintra et sa rencontre avec Yennefer.",
+  nouvelles: [
+    { t: "Le Sorceleur", d: "Le roi Foltest promet une fortune à qui délivrera sa fille, changée en stryge." },
+    { t: "Un grain de vérité", d: "Un homme métamorphosé en bête vit reclus dans un manoir : une variation sombre de La Belle et la Bête." },
+    { t: "Le Moindre Mal", d: "À Blaviken, Geralt se retrouve pris entre le mage Stregobor et Renfri, une princesse déchue qui veut sa peau : l'origine de son sinistre surnom." },
+    { t: "Une question de prix", d: "Au banquet de Cintra, un mystérieux chevalier réclame la main de la princesse Pavetta." },
+    { t: "Le Bout du monde", d: "Avec Jaskier, Geralt croise un sylvain farceur et des elfes acculés à la survie." },
+    { t: "Le Dernier Vœu", d: "Un djinn, une magicienne nommée Yennefer, et un vœu qui change tout." },
+    { t: "La Voix de la raison", d: "Le récit-cadre, au temple de Melitele, qui relie les nouvelles entre elles." }],
+  rev: "Le « paiement » que Geralt réclame à Cintra n'est autre que Ciri, encore à naître. Et son dernier vœu lie à jamais son destin à celui de Yennefer.",
+  jeu: [
+    { c: 0, t: "Foltest et la Temeria, la cour de Cintra, la naissance du destin de Ciri : bien des fils de TW3 partent de ce recueil." },
+    { c: 3, t: "Le druide Mousesack, présent au banquet de Cintra, n'est autre que l'Ermion de Skellige." }],
+  voir: ["geralt", "yennefer", "calanthe", "duny", "loi-surprise", "renfri", "nivellen", "blaviken"] },
+
+{ id: "epee-providence", t: "livre", src: "L", nom: "L'Épée de la providence", alias: ["Miecz przeznaczenia", "Sword of Destiny"], ordre: 2,
+  genre: "Recueil de nouvelles", vo: "Miecz przeznaczenia", annee: 1992, role: "Recueil de nouvelles, 1992",
+  resume: "Six nouvelles qui creusent la relation tumultueuse de Geralt et Yennefer, et lui font enfin croiser la route de Ciri.",
+  nouvelles: [
+    { t: "Les Limites du possible", d: "Une chasse au dragon où chevaliers, mercenaires et magiciens se disputent la bête." },
+    { t: "Un éclat de glace", d: "Un triangle amoureux entre Geralt, Yennefer et le mage Istredd." },
+    { t: "Le Feu éternel", d: "À Novigrad, Jaskier et Geralt démêlent l'imbroglio d'un marchand halfelin… et de son double." },
+    { t: "Un petit sacrifice", d: "Une sirène, un duc amoureux et la barde Essi Daven." },
+    { t: "L'Épée de la providence", d: "Dans la forêt des dryades, Geralt rencontre une petite fille têtue : Ciri." },
+    { t: "Quelque chose de plus", d: "Blessé et fiévreux, Geralt affronte ses souvenirs pendant que Cintra tombe." }],
+  rev: "« Quelque chose de plus » se clôt sur les retrouvailles de Geralt et de Ciri après la chute de Cintra : le destin a fini par les réunir.",
+  jeu: [{ c: 2, t: "« Le Feu éternel » présente le doppler Dudu, que l'on retrouve à Novigrad." }],
+  voir: ["ciri", "yennefer", "dudu", "brokilon", "borch", "istredd", "essi", "eithne"] },
+
+{ id: "sang-elfes", t: "livre", src: "L", nom: "Le Sang des elfes", alias: ["Krew elfów", "Blood of Elves"], ordre: 3,
+  genre: "Roman, saga tome 1", vo: "Krew elfów", annee: 1994, role: "Roman, 1994, premier tome de la saga",
+  resume: "La guerre gronde entre le Nord et Nilfgaard. Geralt cache Ciri à Kaer Morhen, où les sorceleurs l'entraînent, avant de la confier aux magiciennes. Des agents mystérieux la traquent, et les rois complotent.",
+  rev: "On découvre que Ciri est une Source au potentiel immense. Yennefer devient sa mentore, Triss sa grande sœur, et l'espion Rience laisse entrevoir une conspiration bien plus vaste.",
+  jeu: [{ c: 0, t: "L'hiver de Ciri à Kaer Morhen résonne avec le rêve qui ouvre TW3." }],
+  voir: ["ciri", "kaer-morhen", "triss", "yennefer", "rience"] },
+
+{ id: "temps-mepris", t: "livre", src: "L", nom: "Le Temps du mépris", alias: ["Czas pogardy", "Time of Contempt"], ordre: 4,
+  genre: "Roman, saga tome 2", vo: "Czas pogardy", annee: 1995, role: "Roman, 1995, deuxième tome de la saga",
+  resume: "Les magiciens se réunissent sur l'île de Thanedd, tandis que Nilfgaard prépare une nouvelle offensive. Ciri, sous l'aile de Yennefer, doit entrer à l'école d'Aretuza.",
+  rev: "Le conclave tourne au coup d'État : Vilgefortz trahit, Geralt est grièvement blessé et Ciri, à travers un portail instable, est projetée dans un désert. La guerre reprend, et la Ciri qui en ressort n'est plus une enfant protégée.",
+  jeu: [{ c: 0, t: "Le coup de Thanedd ouvre une longue crise de confiance entre rois et magiciens, dont TW3 montre les conséquences." }],
+  voir: ["thanedd", "vilgefortz", "ciri", "conseil"] },
+
+{ id: "bapteme-feu", t: "livre", src: "L", nom: "Le Baptême du feu", alias: ["Chrzest ognia", "Baptism of Fire"], ordre: 5,
+  genre: "Roman, saga tome 3", vo: "Chrzest ognia", annee: 1996, role: "Roman, 1996, troisième tome de la saga",
+  resume: "Convalescent à Brokilon, Geralt part chercher Ciri à travers un pays en guerre, entouré d'une improbable compagnie : Jaskier, l'archère Milva, une troupe de nains, un barbier très singulier et un chevalier nilfgaardien.",
+  rev: "Les magiciennes fondent la Loge, Geralt gagne au combat son titre « de Riv », et la compagnie découvre que Regis est un vampire supérieur.",
+  jeu: [
+    { c: 2, t: "Zoltan y fait ses débuts ; on le retrouve à Novigrad." },
+    { d: "bw", c: 1, t: "Regis, le barbier-chirurgien, refait surface dans Blood and Wine." }],
+  voir: ["milva", "zoltan", "regis", "cahir", "loge", "meve"] },
+
+{ id: "tour-hirondelle", t: "livre", src: "L", nom: "La Tour de l'Hirondelle", alias: ["Wieża Jaskółki", "The Tower of the Swallow"], ordre: 6,
+  genre: "Roman, saga tome 4", vo: "Wieża Jaskółki", annee: 1997, role: "Roman, 1997, quatrième tome de la saga",
+  resume: "Blessée, Ciri est recueillie par un vieil ermite à qui elle raconte ce qu'elle a vécu depuis Thanedd. Pendant ce temps, Geralt et sa compagnie poursuivent leur route, et des chasseurs de primes resserrent l'étau.",
+  rev: "Ciri survit au massacre des Rats et à Bonhart, puis gagne la tour elfique de Tor Zireael, qui l'emporte hors de son monde. Yennefer, elle, tombe dans le piège de Vilgefortz.",
+  jeu: [{ c: 0, t: "Le parcours de Ciri, seule face au monde, éclaire la jeune femme endurcie que l'on rencontre dans TW3." }],
+  voir: ["ciri", "bonhart", "tor-zireael", "angouleme", "vysogota", "rats"] },
+
+{ id: "dame-lac", t: "livre", src: "L", nom: "La Dame du Lac", alias: ["Pani Jeziora", "The Lady of the Lake"], ordre: 7,
+  genre: "Roman, saga tome 5", vo: "Pani Jeziora", annee: 1999, role: "Roman, 1999, dernier tome de la saga",
+  resume: "Ciri découvre le monde des Aen Elle, la compagnie passe l'hiver en Toussaint, la guerre s'achève à Brenna, et toutes les routes convergent vers le repaire de Vilgefortz.",
+  rev: "À Stygga, une grande partie de la compagnie tombe ; Geralt tue Vilgefortz, Ciri tue Bonhart, et Emhyr se révèle être le père de Ciri. La paix de Cintra est signée. À Riv, Geralt est mortellement blessé lors d'un pogrom, et Ciri l'emmène avec Yennefer vers une île brumeuse.",
+  jeu: [
+    { c: 0, t: "Essentiel pour TW3 : Avallac'h, Eredin, les Aen Elle et la Chasse sauvage y prennent toute leur dimension." },
+    { d: "bw", c: 1, t: "L'hiver en Toussaint et la duchesse Anna Henrietta préparent le terrain de Blood and Wine." }],
+  voir: ["aen-elle", "avallach", "eredin", "toussaint", "stygga", "brenna", "nimue"] },
+
+{ id: "saison-orages", t: "livre", src: "L", nom: "La Saison des orages", alias: ["Sezon burz", "Season of Storms"], ordre: 8,
+  genre: "Roman indépendant", vo: "Sezon burz", annee: 2013, role: "Roman indépendant, 2013",
+  resume: "Une aventure à part, située à l'époque des nouvelles. À Kerack, Geralt se fait voler ses épées et doit les récupérer, entre une magicienne séduisante, Lytta Neyd, dite Corail, et des mages aux expériences douteuses.",
+  
+  jeu: [{ c: 0, t: "Sans lien direct avec TW3 : une aventure à savourer pour elle-même." }],
+  voir: ["geralt", "jaskier", "kerack", "nimue"] },
+
+{ id: "croisee", t: "livre", src: "L", nom: "La Croisée des corbeaux", alias: ["Rozdroże kruków", "Crossroads of Ravens"], ordre: 9,
+  genre: "Roman, préquelle", vo: "Rozdroże kruków", annee: 2024, role: "Roman, 2024 (en français chez Bragelonne en 2025)",
+  resume: "Geralt a dix-huit ans et vient de quitter Kaer Morhen. Un acte de bravoure naïf tourne mal, et il n'échappe à la corde que grâce à Preston Holt, un sorceleur expérimenté au passé trouble.",
+  jeu: [{ c: 0, t: "Antérieur à toute la saga, sans lien direct avec TW3." }],
+  voir: ["geralt", "kaer-morhen", "sorceleurs"] },
+
+/* ---------- Ajouts : personnages des nouvelles et de la saga ---------- */
+{ id: "visenna", t: "perso", src: "L", nom: "Visenna", alias: [],
+  role: "Magicienne guérisseuse, mère de Geralt",
+  resume: "Une guérisseuse itinérante, douée pour la magie, qui confia son fils encore tout petit aux sorceleurs de Kaer Morhen.",
+  livres: "Geralt ne l'a pratiquement pas connue et n'en parle presque jamais. Dans « Quelque chose de plus », blessé et fiévreux, il la revoit en rêve, et la blessure de l'abandon refait surface.",
+  dans: ["epee-providence"],
+  voir: ["geralt", "kaer-morhen", "sorceleurs"] },
+
+{ id: "renfri", t: "perso", src: "L", nom: "Renfri", alias: [],
+  role: "Princesse déchue, cheffe de bande",
+  resume: "Princesse chassée par sa belle-mère et traquée par un mage qui la croit maudite, devenue une redoutable cheffe de bande.",
+  livres: "Dans « Le Moindre Mal », elle arrive à Blaviken pour se venger du mage Stregobor, qui voit en elle une enfant née sous l'éclipse, donc un danger pour le monde. Pris entre les deux, Geralt refuse de choisir le moindre mal.",
+  rev: "Geralt finit par tuer Renfri et ses hommes sur la place du marché. La foule horrifiée le surnomme le Boucher de Blaviken, une réputation qui le suivra toute sa vie.",
+  dans: ["dernier-voeu"],
+  voir: ["blaviken", "geralt"] },
+
+{ id: "istredd", t: "perso", src: "L", nom: "Istredd", alias: [],
+  role: "Mage et archéologue",
+  resume: "Mage érudit, passionné par les vestiges des civilisations disparues, et ancien amant de Yennefer.",
+  livres: "Dans « Un éclat de glace », Geralt et lui se disputent Yennefer, qui refuse de se laisser attribuer comme un prix. La rivalité des deux hommes les mène jusqu'au défi d'un duel.",
+  dans: ["epee-providence"],
+  voir: ["yennefer", "geralt"] },
+
+{ id: "borch", t: "perso", src: "L", nom: "Borch Trois-Choucas", alias: [],
+  role: "Chevalier énigmatique",
+  resume: "Un noble affable et généreux, escorté de deux guerrières zerrikaniennes, qui se joint à la chasse au dragon des « Limites du possible ».",
+  livres: "Il prend Geralt pour compagnon de route et observe avec un intérêt troublant la course au dragon où se pressent chevaliers, nains, mercenaires et magiciens, Yennefer comprise.",
+  rev: "Borch est Villentretenmerth, un dragon d'or capable de prendre forme humaine, la plus rare des créatures. Il est venu défendre la dragonne traquée et son petit.",
+  dans: ["epee-providence"],
+  voir: ["m-dragon", "yennefer", "geralt"] },
+
+{ id: "essi", t: "perso", src: "L", nom: "Essi Daven", alias: [],
+  role: "Barde, amie de Jaskier",
+  resume: "Jeune poétesse au talent éclatant, qui accompagne Jaskier et Geralt dans « Un petit sacrifice ».",
+  livres: "Une nouvelle douce-amère, où se répondent l'amour impossible d'un duc pour une sirène et celui d'Essi pour Geralt, qui reste attaché à Yennefer.",
+  rev: "La nouvelle se clôt sur une note grave : Essi mourra jeune, quelques années plus tard, emportée par une épidémie.",
+  dans: ["epee-providence"],
+  voir: ["jaskier", "geralt", "m-sirenes"] },
+
+{ id: "nivellen", t: "perso", src: "L", nom: "Nivellen", alias: [],
+  role: "Homme maudit à tête de bête",
+  resume: "Un ancien chef de bande changé en bête par la malédiction d'une prêtresse, qui vit reclus dans son manoir.",
+  livres: "Dans « Un grain de vérité », Geralt découvre un hôte affable sous une apparence monstrueuse. Des marchands lui ont confié leurs filles en échange de sa fortune ; la dernière venue, Vereena, semble l'aimer sincèrement.",
+  rev: "Vereena est une bruxa, responsable des meurtres qui ensanglantent la région. Geralt la tue ; parce qu'elle l'aimait vraiment, Nivellen retrouve aussitôt forme humaine.",
+  dans: ["dernier-voeu"],
+  voir: ["m-bruxa", "geralt"] },
+
+{ id: "eithne", t: "perso", src: "L", nom: "Eithné", alias: [],
+  role: "Reine des dryades",
+  resume: "Souveraine de Brokilon, gardienne inflexible de la dernière grande forêt des dryades.",
+  livres: "Dans « L'Épée de la providence », Geralt croise dans sa forêt une petite fille têtue : Ciri. Eithné voudrait en faire une dryade. Elle accueille à nouveau Geralt, blessé, au début du « Baptême du feu ».",
+  dans: ["epee-providence", "bapteme-feu"],
+  voir: ["brokilon", "ciri", "milva"] },
+
+{ id: "vysogota", t: "perso", src: "L", nom: "Vysogota de Corvo", alias: [],
+  role: "Ermite et ancien savant",
+  resume: "Vieil érudit retiré dans les marais, qui recueille Ciri grièvement blessée.",
+  livres: "« La Tour de l'Hirondelle » est construit autour de leurs conversations : Ciri lui raconte tout ce qu'elle a vécu depuis Thanedd.",
+  dans: ["tour-hirondelle"],
+  voir: ["ciri", "tour-hirondelle"] },
+
+{ id: "meve", t: "perso", src: "LJ", nom: "Meve", alias: [],
+  role: "Reine de Lyria et de Rivia",
+  resume: "Souveraine d'un petit royaume du Nord, pragmatique et intrépide, qui prend elle-même la tête de ses troupes face à Nilfgaard.",
+  livres: "Son royaume envahi, elle mène une guerre de partisans contre l'Empire dans « Le Baptême du feu ».",
+  rev: "Au pont sur la Yaruga, Geralt défend sa position ; elle l'adoube sur-le-champ, et « Geralt de Riv » devient enfin un vrai titre.",
+  jeu: [{ c: 0, t: "Héroïne de Thronebreaker (2018), un jeu de rôle et de cartes tiré du gwynt, qui raconte sa guerre contre Nilfgaard." }],
+  dans: ["bapteme-feu"],
+  voir: ["geralt", "yaruga", "royaumes-nord", "gwynt"] },
+
+{ id: "ihuarraquax", t: "perso", src: "L", nom: "Ihuarraquax", alias: [],
+  role: "Licorne",
+  resume: "Une jeune licorne blessée, que Ciri soigne alors qu'elle-même est perdue.",
+  rev: "Dans le désert de Korath, Ciri et la licorne se sauvent mutuellement la vie. Dans « La Dame du Lac », Ihuarraquax et les siens l'aident à échapper aux Aen Elle.",
+  dans: ["temps-mepris", "dame-lac"],
+  voir: ["ciri", "korath", "aen-elle"] },
+
+/* ---------- Ajouts : personnages propres aux jeux ---------- */
+{ id: "roche", t: "perso", src: "J", nom: "Vernon Roche", alias: [], porte: { c: 2 },
+  role: "Patriote temérien",
+  resume: "Création des jeux : un commandant des forces spéciales temériennes, rugueux et loyal, apparu dans The Witcher 2.",
+  jeu: [{ c: 2, t: "Dans TW3, il mène la résistance d'une Temeria occupée et peut devenir un allié précieux." }],
+  voir: ["royaumes-nord", "foltest", "nilfgaard"] },
+
+{ id: "letho", t: "perso", src: "J", nom: "Letho de Gulet", alias: ["le Régicide"], porte: { c: 2 },
+  role: "Sorceleur de l'école de la Vipère",
+  resume: "Création des jeux : un sorceleur colossal, assassin de rois et grand antagoniste de The Witcher 2.",
+  jeu: [{ c: 2, t: "Selon les choix faits dans The Witcher 2, on peut le recroiser dans TW3, traqué à son tour." }],
+  voir: ["sorceleurs", "foltest"] },
+
+{ id: "an-craite", t: "perso", src: "J", nom: "Cerys et Hjalmar an Craite", alias: ["Cerys", "Hjalmar"], porte: { c: 3 },
+  role: "Enfants du jarl Crach",
+  resume: "Création du jeu : Hjalmar, fougueux et avide de gloire, et sa sœur Cerys, fine et réfléchie, tous deux candidats au trône de Skellige.",
+  voir: ["crach", "skellige", "kaer-trolde"] },
+
+/* ---------- Ajouts : lieux ---------- */
+{ id: "blaviken", t: "lieu", src: "L", nom: "Blaviken", alias: [],
+  role: "Bourgade côtière",
+  resume: "Petite ville du bord de mer, où Geralt arrive un jour avec la carcasse d'une kikimore à vendre.",
+  livres: "Cadre du « Moindre Mal » : le sorceleur y croise le mage Stregobor et la princesse déchue Renfri.",
+  rev: "Le drame qui s'y joue vaut à Geralt le surnom de Boucher de Blaviken.",
+  dans: ["dernier-voeu"],
+  voir: ["renfri", "geralt", "m-kikimores"] },
+
+{ id: "vengerberg", t: "lieu", src: "L", nom: "Vengerberg", alias: [],
+  role: "Capitale de l'Aedirn",
+  resume: "Ville royale du royaume d'Aedirn, dont Yennefer porte le nom.",
+  livres: "Yennefer y est née. L'Aedirn compte parmi les premiers royaumes frappés quand la guerre reprend, après Thanedd.",
+  dans: ["temps-mepris"],
+  voir: ["yennefer", "royaumes-nord"] },
+
+{ id: "kerack", t: "lieu", src: "L", nom: "Kerack", alias: [],
+  role: "Petit royaume côtier",
+  resume: "Royaume marchand en bord de mer, aussi pittoresque que corrompu.",
+  livres: "Cadre principal de « La Saison des orages », où Geralt se fait voler ses épées et croise la magicienne Lytta Neyd, dite Corail.",
+  dans: ["saison-orages"],
+  voir: ["saison-orages", "geralt"] },
+
+{ id: "brenna", t: "lieu", src: "L", nom: "Brenna", alias: ["bataille de Brenna"],
+  role: "Champ de la dernière grande bataille",
+  resume: "Une petite localité qui donne son nom à la plus grande bataille de la guerre contre Nilfgaard.",
+  livres: "« La Dame du Lac » la raconte sous plusieurs angles, notamment depuis un hôpital de campagne où travaille Shani.",
+  rev: "Les armées du Nord y écrasent celles de l'Empire, et la paix de Cintra suit peu après. Le sorceleur Coën compte parmi les morts.",
+  dans: ["dame-lac"],
+  voir: ["shani", "coen", "nilfgaard", "dame-lac"] },
+
+{ id: "korath", t: "lieu", src: "L", nom: "Le désert de Korath", alias: ["Korath"],
+  role: "Désert brûlant",
+  resume: "Une étendue aride et brûlante, réputée infranchissable.",
+  rev: "Projetée là par le portail de Tor Lara, dans « Le Temps du mépris », Ciri manque d'y mourir de soif, jusqu'à sa rencontre avec une licorne.",
+  dans: ["temps-mepris"],
+  voir: ["ihuarraquax", "thanedd", "ciri"] },
+
+{ id: "yaruga", t: "lieu", src: "LJ", nom: "La Yaruga", alias: [],
+  role: "Grand fleuve du Sud",
+  resume: "Le grand fleuve qui se jette dans la mer près de Cintra et marque, pour beaucoup, la frontière entre le Nord et l'Empire.",
+  livres: "La guerre se joue souvent sur ses rives, et ses ponts deviennent des enjeux stratégiques.",
+  rev: "Geralt y gagne son titre de chevalier en défendant un pont aux côtés de la reine Meve.",
+  jeu: [{ c: 0, t: "Dans TW3, la guerre a depuis longtemps franchi le fleuve : Nilfgaard occupe la Temeria." }],
+  dans: ["bapteme-feu"],
+  voir: ["cintra", "meve", "nilfgaard"] },
+
+{ id: "kaer-trolde", t: "lieu", src: "J", nom: "Kaer Trolde", alias: [], porte: { c: 3 },
+  role: "Forteresse du clan an Craite",
+  resume: "Création du jeu : la forteresse du jarl Crach an Craite, dressée au-dessus du port d'Ard Skellig.",
+  jeu: [{ c: 3, t: "Point de départ de l'aventure à Skellige, où se prépare la succession du trône." }],
+  voir: ["crach", "an-craite", "skellige"] },
+
+/* ---------- Ajouts : peuples et notions ---------- */
+{ id: "rats", t: "faction", src: "L", nom: "Les Rats", alias: [],
+  role: "Bande de jeunes hors-la-loi",
+  resume: "Six jeunes brigands de la province de Geso, insolents, cruels et inséparables.",
+  rev: "Ciri les rejoint sous le nom de Falka et partage un temps leur vie de pillages. Leo Bonhart finit par les massacrer et capture Ciri.",
+  dans: ["temps-mepris", "tour-hirondelle"],
+  voir: ["ciri", "bonhart"] },
+
+{ id: "non-humains", t: "faction", src: "LJ", nom: "Les non-humains", alias: ["nains", "elfes", "gnomes", "halfelins", "Aen Seidhe"],
+  role: "Les anciens peuples du continent",
+  resume: "Elfes, nains, gnomes et halfelins vivaient sur le continent bien avant l'arrivée des humains, qui les ont peu à peu repoussés.",
+  livres: "Les elfes du monde de Geralt, les Aen Seidhe, ont perdu presque toutes leurs terres, et certains rejoignent les commandos Scoia'tael. Les nains de Mahakam ont su se rendre indispensables, sans échapper pour autant aux pogroms.",
+  jeu: [{ c: 2, t: "À Novigrad, les non-humains vivent sous la menace des chasseurs de sorcières et des émeutes." }],
+  dans: ["dernier-voeu", "sang-elfes", "bapteme-feu", "dame-lac"],
+  voir: ["scoiatael", "mahakam", "dol-blathanna", "aen-elle", "zoltan"] },
+
+{ id: "ablette", t: "concept", src: "LJ", nom: "Ablette", alias: ["Roach"],
+  role: "La jument de Geralt",
+  resume: "Le nom que Geralt donne à toutes ses montures, de livre en livre et de jeu en jeu.",
+  livres: "Peu importe la jument : Geralt l'appelle toujours Ablette.",
+  jeu: [{ c: 0, t: "Dans TW3, elle accourt d'un coup de sifflet, et elle a une fâcheuse tendance à apparaître perchée sur les toits." }],
+  voir: ["geralt"] },
+
+{ id: "gwynt", t: "concept", src: "LJ", nom: "Le gwynt", alias: ["Gwent", "jeu de cartes"],
+  role: "Jeu de cartes des tavernes",
+  resume: "Un jeu de cartes venu des nains, que l'on retrouve dans toutes les tavernes du Nord.",
+  livres: "Le nom vient des livres, qui l'évoquent en passant comme un jeu de cartes nain.",
+  jeu: [{ c: 0, t: "Dans TW3, c'est un mini-jeu culte : on défie aubergistes et marchands pour compléter son paquet. Il a donné naissance à Gwent et à Thronebreaker, en 2018." }],
+  voir: ["zoltan", "meve", "mahakam"] }
+],
+
+classes: {
+  "Nécrophages": "contre les nécrophages", "Spectres": "contre les spectres", "Reliques": "contre les reliques",
+  "Maudits": "contre les maudits", "Vampires": "contre les vampires", "Draconides": "contre les draconides",
+  "Hybrides": "contre les hybrides", "Insectoïdes": "contre les insectoïdes", "Ogroïdes": "contre les ogroïdes",
+  "Élémentaires": "contre les élémentaires", "Bêtes": "contre les bêtes (acier ou argent)", "Humains": "venin du pendu (acier)"
+},
+
+bestiaire: [
+  { id: "m-noyeurs", nom: "Noyeurs", en: "Drowner", cl: "Nécrophages", signes: ["Igni"], bombes: ["Étoile dansante"], potions: ["Sang noir"],
+    conseil: "Ils attaquent en meute près de l'eau : un cône d'Igni en enflamme plusieurs à la fois.",
+    origine: "Les nécrophages, mangeurs de cadavres, comptent parmi les créatures arrivées avec la Conjonction des Sphères.", lien: "conjonction" },
+  { id: "m-goules", nom: "Goules et alghouls", en: "Ghoul, Alghoul", cl: "Nécrophages", signes: ["Axii"], potions: ["Sang noir"],
+    conseil: "L'alghoul peut être étourdi par Axii puis achevé. Contre les meutes, le Sang noir retourne une partie des dégâts aux assaillants.",
+    origine: "Les livres citent les goules et les graveirs parmi les reliques de la Conjonction.", lien: "conjonction" },
+  { id: "m-spectres", nom: "Spectres de midi et de minuit", en: "Noonwraith, Nightwraith, Wraith", cl: "Spectres", signes: ["Yrden"], bombes: ["Poussière de lune"],
+    conseil: "Hors d'un cercle d'Yrden, votre lame les traverse. Posez le piège, combattez à l'intérieur, et dissipez leurs copies à la Poussière de lune.",
+    origine: "Directement tirés du folklore slave, où l'esprit de midi hante les champs en plein soleil." },
+  { id: "m-hym", nom: "Hym", en: "Hym", cl: "Spectres", signes: ["Igni"], bombes: ["Poussière de lune"],
+    conseil: "L'exception parmi les spectres : c'est Igni, et non Yrden, qui le fait plier.",
+    origine: "Création du jeu, liée aux croyances de Skellige : un esprit qui se nourrit de la culpabilité." },
+  { id: "m-leshen", nom: "Leshen", en: "Leshen", cl: "Reliques", signes: ["Igni"], bombes: ["Dimeritium", "Poussière de lune"], immun: "Axii",
+    conseil: "Insensible à Axii. Le feu et le dimeritium le gênent, et la Poussière de lune l'empêche de se régénérer et de se dissoudre.",
+    origine: "L'esprit de la forêt du folklore slave, le leshy." },
+  { id: "m-fiend", nom: "Fiend", en: "Fiend, bies", cl: "Reliques", signes: ["Igni", "Yrden"], bombes: ["Samum", "Vesse-de-loup du diable"], immun: "Aard",
+    conseil: "Aard ne sert à rien. Une bombe Samum bien placée neutralise son troisième œil hypnotique.",
+    origine: "Le bies du folklore slave." },
+  { id: "m-chort", nom: "Chort", en: "Chort, Sylvan", cl: "Reliques", signes: ["Igni", "Yrden"], bombes: ["Vesse-de-loup du diable"],
+    conseil: "Gardez-le dans le nuage de la Vesse-de-loup et frappez dans son dos.",
+    livres: "Le facétieux Torque du « Bout du monde » est un sylvain, proche cousin des chorts.", lien: "dernier-voeu" },
+  { id: "m-doppler", nom: "Doppler", en: "Doppler", cl: "Reliques",
+    conseil: "Dans TW3, on les croise surtout au fil des quêtes plutôt qu'en combat.",
+    livres: "Dans « Le Feu éternel », Geralt découvre qu'un doppler n'est pas forcément un monstre, et épargne Dudu.", lien: "dudu" },
+  { id: "m-loup-garou", nom: "Loup-garou", en: "Werewolf", cl: "Maudits", signes: ["Igni"], bombes: ["Poussière de lune", "Vesse-de-loup du diable"],
+    conseil: "Il se régénère vite : la Poussière de lune bloque à la fois sa régénération et sa transformation.",
+    origine: "Dans l'univers du Sorceleur, la lycanthropie relève de la malédiction, non de la maladie." },
+  { id: "m-botchling", nom: "Botchling", en: "Botchling", cl: "Maudits", signes: ["Axii"], porte: { c: 2 },
+    conseil: "Axii l'étourdit net.",
+    origine: "Création du jeu : il naîtrait d'un nouveau-né mort sans nom ni sépulture." },
+  { id: "m-stryge", nom: "Stryge", en: "Striga", cl: "Maudits",
+    conseil: "Une maudite redoutable : esquivez ses charges et ripostez entre deux assauts.",
+    livres: "Dans « Le Sorceleur », la fille du roi Foltest, maudite dès sa naissance, est devenue une stryge. Geralt doit passer une nuit dans sa crypte pour lever le sort.", lien: "dernier-voeu" },
+  { id: "m-katakan", nom: "Katakan", en: "Katakan", cl: "Vampires", signes: ["Yrden", "Igni"], bombes: ["Poussière de lune", "Vesse-de-loup du diable"],
+    conseil: "Il devient invisible : Yrden et la Poussière de lune le forcent à reparaître. Sa régénération ralentit quand le soleil est au zénith, alors chassez-le à midi." },
+  { id: "m-ekimmara", nom: "Ekimmara", en: "Ekimmara", cl: "Vampires", signes: ["Igni"], bombes: ["Vesse-de-loup du diable"],
+    conseil: "Le feu et le poison de la Vesse-de-loup en viennent à bout." },
+  { id: "m-bruxa", nom: "Bruxa", en: "Bruxa, Alp", cl: "Vampires", signes: ["Yrden"], bombes: ["Poussière de lune"], potions: ["Sang noir"],
+    conseil: "Rapide et souvent invisible : Yrden la rend visible, et le Sang noir lui fait payer chaque morsure. L'alp se combat de la même façon.",
+    livres: "Dans « Un grain de vérité », une bruxa se cache sous les traits d'une jeune femme éprise de l'homme-bête Nivellen.", lien: "nivellen" },
+  { id: "m-vampire", nom: "Vampire supérieur", en: "Higher vampire", cl: "Vampires", signes: ["Igni"],
+    conseil: "Insensible à la lumière du jour, à l'eau bénite, aux symboles sacrés et à l'ail. On ne l'affronte que lors de combats scénarisés.",
+    livres: "Presque immortels, capables de se régénérer de presque tout, les vampires supérieurs n'ont pas besoin de sang pour vivre.", lien: "regis" },
+  { id: "m-vouivres", nom: "Vouivres", en: "Wyvern, Forktail, Royal wyvern", cl: "Draconides", signes: ["Aard"], bombes: ["Mitraille"], potions: ["Loriot doré"], autres: ["Arbalète"],
+    conseil: "Faites-la tomber du ciel à l'arbalète, à l'Aard ou à la Mitraille, puis frappez au sol. Le Loriot doré protège de son poison." },
+  { id: "m-basilics", nom: "Basilics et cocatrix", en: "Basilisk, Cockatrice", cl: "Draconides", signes: ["Aard"], bombes: ["Mitraille"], potions: ["Loriot doré"], autres: ["Arbalète"],
+    conseil: "Même méthode que pour la vouivre ; contre le basilic, buvez un Loriot doré avant l'assaut." },
+  { id: "m-dragon", nom: "Dragon", en: "Dragon", cl: "Draconides",
+    conseil: "Aucun véritable dragon à combattre dans TW3.",
+    livres: "Dans « Les Limites du possible », Geralt rappelle qu'il ne tue pas les dragons, et une chasse au dragon tourne à la farce sanglante.", lien: "borch" },
+  { id: "m-griffon", nom: "Griffon", en: "Griffin, Archgriffin", cl: "Hybrides", signes: ["Aard"], bombes: ["Mitraille"], autres: ["Arbalète"],
+    conseil: "Le grand monstre du prologue : abattez-le en vol à l'arbalète ou à l'Aard, puis enchaînez au sol." },
+  { id: "m-harpies", nom: "Harpies", en: "Harpy, Erynia", cl: "Hybrides", signes: ["Aard"], bombes: ["Mitraille"], autres: ["Arbalète"],
+    conseil: "Elles attaquent en vol et en groupe : Aard et arbalète les ramènent au sol." },
+  { id: "m-sirenes", nom: "Sirènes", en: "Siren", cl: "Hybrides", signes: ["Aard", "Igni"], bombes: ["Mitraille"], autres: ["Arbalète"],
+    conseil: "Nombreuses le long des côtes de Skellige : arbalète et Aard pour les faire chuter, Igni en prime.",
+    livres: "Bien différentes de celles du jeu, les sirènes des livres sont des êtres marins doués de raison : l'une d'elles est au cœur d'« Un petit sacrifice ».", lien: "essi" },
+  { id: "m-succube", nom: "Succube", en: "Succubus", cl: "Hybrides", signes: ["Quen"], bombes: ["Dimeritium"], immun: "Axii",
+    conseil: "Insensible à Axii : comptez sur Quen et les esquives." },
+  { id: "m-arachas", nom: "Arachas", en: "Arachas", cl: "Insectoïdes", signes: ["Igni"], potions: ["Loriot doré"],
+    conseil: "Son venin empoisonne : buvez un Loriot doré avant le combat, et brûlez les œufs alentour à l'Igni." },
+  { id: "m-endregas", nom: "Endregas", en: "Endrega", cl: "Insectoïdes", potions: ["Loriot doré"],
+    conseil: "Les guerrières empoisonnent au contact : le Loriot doré change tout." },
+  { id: "m-kikimores", nom: "Kikimores", en: "Kikimore", cl: "Insectoïdes",
+    conseil: "Elles vivent en nids : brûlez les œufs et affrontez-les un par un.",
+    livres: "C'est avec la carcasse d'une kikimore que Geralt arrive à Blaviken, au début du « Moindre Mal ».", lien: "blaviken" },
+  { id: "m-nekkers", nom: "Nekkers", en: "Nekker", cl: "Ogroïdes", bombes: ["Vent du nord"],
+    conseil: "Ils grouillent et creusent : une bombe Vent du nord gèle toute la meute." },
+  { id: "m-trolls", nom: "Trolls", en: "Rock troll, Ice troll", cl: "Ogroïdes", signes: ["Quen"],
+    conseil: "Des coups énormes mais lents : gardez Quen actif. Certains trolls sont pacifiques, et même bavards." },
+  { id: "m-cyclope", nom: "Cyclope", en: "Cyclops", cl: "Ogroïdes", signes: ["Quen", "Axii"], bombes: ["Vent du nord"], immun: "Aard",
+    conseil: "Aard est presque sans effet. Gelez-le au Vent du nord et frappez par-derrière." },
+  { id: "m-golems", nom: "Golems et élémentaires", en: "Golem, Elemental, Gargoyle", cl: "Élémentaires", bombes: ["Dimeritium"],
+    conseil: "Ce sont des constructions magiques : une bombe de dimeritium coupe la magie qui les anime.", lien: "dimeritium" },
+  { id: "m-djinn", nom: "Djinn", en: "Djinn", cl: "Élémentaires", bombes: ["Dimeritium"],
+    conseil: "Rangé parmi les élémentaires dans le bestiaire du jeu.",
+    livres: "Au cœur de la nouvelle « Le Dernier Vœu » : un djinn libéré d'une jarre, et le vœu qui lie Geralt à Yennefer.", lien: "dernier-voeu" },
+  { id: "m-chiens", nom: "Chiens de la Chasse sauvage", en: "Hound of the Wild Hunt", cl: "Élémentaires", signes: ["Igni", "Axii"], bombes: ["Dimeritium"],
+    conseil: "Créatures de glace : Igni les fait fondre.", lien: "chasse" },
+  { id: "m-betes", nom: "Loups, ours et autres bêtes", en: "Wolf, Bear, Warg", cl: "Bêtes", signes: ["Quen"],
+    conseil: "La seule huile qui fonctionne sur les deux épées. Gardez Quen actif face aux ours." },
+  { id: "m-humains", nom: "Humains et non-humains", en: "Bandits, soldiers", cl: "Humains",
+    conseil: "Bandits, soldats et mages se combattent à l'épée d'acier." }
+],
+
+lexique: [
+  { mot: "Gwynbleidd", sens: "Loup Blanc", note: "Le nom que les elfes et les dryades donnent à Geralt : gwyn, « blanc », et bleidd, « loup ».", lien: "geralt" },
+  { mot: "Zireael", sens: "Hirondelle", note: "Le nom elfe de Ciri.", lien: "ciri" },
+  { mot: "Tor Zireael", sens: "La Tour de l'Hirondelle", note: "La tour elfique qui donne son titre au quatrième tome de la saga.", lien: "tor-zireael" },
+  { mot: "Tor Lara", sens: "La Tour de la Mouette", note: "La tour de l'île de Thanedd dont le portail emporte Ciri.", lien: "thanedd" },
+  { mot: "Hen Ichaer", sens: "Le Sang Ancien", note: "Hen, « ancien », et ichaer, « sang ».", lien: "sang-ancien" },
+  { mot: "Hen Llinge", sens: "La Langue ancienne", note: "Le nom que les elfes donnent à leur propre langue.", lien: "langue-ancienne" },
+  { mot: "Aen Seidhe", sens: "Les elfes du monde de Geralt", note: "Les elfes qui vivaient sur le continent avant l'arrivée des humains.", lien: "non-humains" },
+  { mot: "Aen Elle", sens: "Le Peuple des Aulnes", note: "Les elfes d'un autre monde, ceux d'Auberon, d'Avallac'h et de la Chasse sauvage.", lien: "aen-elle" },
+  { mot: "Dh'oine", sens: "Les humains", note: "Rarement prononcé avec tendresse.", lien: "non-humains" },
+  { mot: "Bloede", sens: "Maudit, sale", note: "Un juron courant : « bloede Dh'oine », sales humains." },
+  { mot: "Vatt'ghern", sens: "Sorceleur", note: "Le mot elfe pour désigner les chasseurs de monstres.", lien: "sorceleurs" },
+  { mot: "Aen Saevherne", sens: "Les Sages", note: "Les érudits elfes, « ceux qui savent ». Avallac'h en fait partie.", lien: "avallach" },
+  { mot: "Dearg Ruadhri", sens: "Les Cavaliers rouges", note: "Le nom elfe de la Chasse sauvage.", lien: "chasse" },
+  { mot: "Tedd Deireadh", sens: "Le Temps de la fin", note: "L'époque annoncée par la prophétie d'Ithlinne.", lien: "ithlinne" },
+  { mot: "Caer a'Muirehen", sens: "La Forteresse de la mer ancienne", note: "L'origine elfe du nom de Kaer Morhen.", lien: "kaer-morhen" },
+  { mot: "Dol Blathanna", sens: "La Vallée des Fleurs", note: "Dol, « vallée », et blathanna, « fleurs ».", lien: "dol-blathanna" },
+  { mot: "Va fail", sens: "Adieu", note: "Une formule d'adieu que l'on croise souvent dans la saga." },
+  { mot: "Ceádmil", sens: "Salutations", note: "Une formule de bienvenue elfe." },
+  { mot: "Squaess'me", sens: "Pardon, excusez-moi", note: "Une formule de politesse elfe." },
+  { mot: "Deithwen Addan yn Carn aep Morvudd", sens: "La Flamme Blanche qui danse sur les tumulus de ses ennemis", note: "Le titre complet de l'empereur Emhyr var Emreis.", lien: "emhyr" }
+],
+
+chrono: [
+  { quand: "Il y a environ 1 500 ans", titre: "La Conjonction des Sphères", d: "Des mondes entrent en collision et laissent derrière eux des créatures venues d'ailleurs.", lien: "conjonction" },
+  { quand: "Bien avant la saga", titre: "L'arrivée des humains", d: "Les humains débarquent sur un continent peuplé d'elfes, de nains et de gnomes, qu'ils repoussent peu à peu.", lien: "non-humains" },
+  { quand: "Bien avant la saga", titre: "Lara Dorren et Cregennan", d: "L'histoire tragique d'une magicienne elfe et d'un mage humain transmet le Sang Ancien à une lignée humaine.", lien: "lara-dorren" },
+  { quand: "Bien avant la saga", titre: "L'assaut de Kaer Morhen", d: "La forteresse des sorceleurs est attaquée par des fanatiques ; la profession ne s'en remettra jamais.", lien: "kaer-morhen" },
+  { quand: "Les jeunes années", titre: "Les débuts de Geralt", d: "À dix-huit ans, Geralt quitte Kaer Morhen et découvre un monde hostile.", lien: "croisee" },
+  { quand: "Le temps des nouvelles", titre: "Geralt et Yennefer", d: "La stryge de Vizima, Blaviken, le djinn : Geralt rencontre Yennefer.", lien: "dernier-voeu" },
+  { quand: "Le temps des nouvelles", titre: "Le banquet de Cintra", d: "Geralt invoque la Loi de la Surprise : son paiement sera Ciri, qui naîtra quelques mois plus tard.", lien: "loi-surprise", rev: true },
+  { quand: "1263", titre: "La chute de Cintra", d: "Nilfgaard envahit Cintra et la reine Calanthe meurt. Les magiciens arrêtent l'invasion sur la colline de Sodden.", lien: "cintra" },
+  { quand: "Après la chute de Cintra", titre: "Ciri à Kaer Morhen", d: "Geralt cache Ciri chez les sorceleurs, puis la confie au temple de Melitele et à Yennefer.", lien: "sang-elfes" },
+  { quand: "1267", titre: "Le coup de Thanedd", d: "Le conclave des magiciens tourne au massacre ; la guerre reprend.", lien: "thanedd" },
+  { quand: "1267-1268", titre: "La traversée de la guerre", d: "Geralt et sa compagnie cherchent Ciri, qui vit de son côté sa propre odyssée.", lien: "bapteme-feu" },
+  { quand: "1268", titre: "Brenna, Stygga et Riv", d: "La bataille de Brenna met fin à la guerre ; l'assaut de Stygga et le drame de Riv concluent la saga.", lien: "dame-lac", rev: true },
+  { quand: "Entre livres et jeux", titre: "Un Geralt amnésique", d: "Le premier jeu retrouve Geralt sans souvenirs, à Kaer Morhen. Ce qui s'est passé depuis Riv se découvre peu à peu au fil des jeux.", jeu: true, c: 0 },
+  { quand: "1270", titre: "The Witcher", d: "Geralt, sans mémoire, est recueilli à Kaer Morhen et se retrouve mêlé aux intrigues de Vizima.", jeu: true, c: 0 },
+  { quand: "1271", titre: "The Witcher 2", d: "Le roi Foltest est assassiné, et Nilfgaard repart à la conquête du Nord.", jeu: true, c: 0 },
+  { quand: "1272", titre: "The Witcher 3: Wild Hunt", d: "La Temeria est occupée, la Redanie résiste ; Geralt cherche Yennefer, puis Ciri.", jeu: true, c: 0 },
+  { quand: "Les extensions", titre: "Hearts of Stone et Blood and Wine", d: "Un pacte aux conséquences terribles, puis un dernier grand contrat sous le soleil de Toussaint.", jeu: true, c: 0 },
+  { quand: "Décembre 2024", titre: "The Witcher IV annoncé", d: "CD Projekt Red annonce un quatrième jeu dont Ciri est l'héroïne.", jeu: true, c: 6 }
+],
+
+ecrans: [
+  { quand: "2001", titre: "Wiedźmin", d: "Un film polonais, prolongé par une série en 2002, avec Michał Żebrowski dans le rôle de Geralt : la toute première adaptation." },
+  { quand: "2007", titre: "The Witcher", d: "Le premier jeu de CD Projekt Red retrouve un Geralt amnésique, quelques années après la saga.", jeu: true },
+  { quand: "2011", titre: "The Witcher 2: Assassins of Kings", d: "Des régicides, Letho, Roche, et un Nord qui vacille.", jeu: true },
+  { quand: "2015", titre: "The Witcher 3: Wild Hunt", d: "La quête de Ciri, suivie des extensions Hearts of Stone (2015) et Blood and Wine (2016).", jeu: true },
+  { quand: "2018", titre: "Gwent et Thronebreaker", d: "Le gwynt devient un jeu à part entière, et Thronebreaker raconte la guerre de la reine Meve.", jeu: true },
+  { quand: "2019", titre: "The Witcher, la série Netflix", d: "Elle adapte les nouvelles puis la saga. Henry Cavill y incarne Geralt dans les trois premières saisons, Liam Hemsworth ensuite." },
+  { quand: "2021", titre: "Le Cauchemar du Loup", d: "Un film d'animation consacré à la jeunesse de Vesemir." },
+  { quand: "2022", titre: "Blood Origin", d: "Une mini-série préquelle, des siècles avant Geralt, au temps de la Conjonction des Sphères." },
+  { quand: "2025", titre: "Sirens of the Deep", d: "Un film d'animation librement adapté d'« Un petit sacrifice »." },
+  { quand: "À venir", titre: "The Witcher IV", d: "Le prochain jeu de CD Projekt Red, annoncé en décembre 2024, avec Ciri pour héroïne.", jeu: true }
+],
+
+anecdotes: [
+  { t: "Le nom elfique de Ciri, Zireael, signifie « hirondelle », comme la potion de soin des sorceleurs.", lien: "ciri" },
+  { t: "Geralt s'est choisi lui-même le nom « de Riv », pour inspirer confiance à ses clients.", lien: "geralt" },
+  { t: "Toutes les juments de Geralt s'appellent Ablette, de livre en livre.", lien: "ablette" },
+  { t: "Le druide Ermion de TW3 n'est autre que Mousesack, un familier de la cour de Cintra dans les livres.", lien: "ermion", c: 3 },
+  { t: "Triss est surnommée « la Quatorzième de la Colline » : on l'a crue morte à la bataille de Sodden.", lien: "triss" },
+  { t: "Dudu, le doppler de Novigrad, apparaît dès la nouvelle « Le Feu éternel ».", lien: "dudu", c: 2 },
+  { t: "Coën fait partie des sorceleurs qui ont entraîné Ciri à Kaer Morhen, mais on ne le croise pas dans TW3.", lien: "coen" },
+  { t: "Zoltan Chivay vient du « Baptême du feu » : dans TW3, il est l'un des alliés les plus fidèles de Geralt.", lien: "zoltan" },
+  { t: "Le journal de quêtes de TW3 est rédigé du point de vue de Jaskier.", lien: "jaskier" },
+  { t: "Le nom complet d'Emhyr signifie « la Flamme Blanche qui danse sur les tumulus de ses ennemis ».", lien: "emhyr" },
+  { t: "La toute première quête de TW3 porte le nom du parfum de Yennefer : lilas et groseilles.", lien: "yennefer" },
+  { t: "Sapkowski a publié la première nouvelle du Sorceleur en 1986, dans le magazine polonais Fantastyka.", lien: "dernier-voeu" },
+  { t: "Dans « Les Limites du possible », Geralt rappelle qu'il ne tue pas les dragons.", lien: "epee-providence" },
+  { t: "Dans les légendes du Nord, l'apparition de la Chasse sauvage annonce la guerre.", lien: "chasse" },
+  { t: "Le Hérisson d'Erlenwald, chevalier maudit du « Dernier Vœu », cache un secret que la saga ne dévoile qu'à la toute fin.", lien: "duny" },
+  { t: "Regis distille une eau-de-vie de mandragore dont ses compagnons de route se souviennent longtemps.", lien: "regis" },
+  { t: "« La Croisée des corbeaux » raconte les débuts de Geralt à dix-huit ans, au sortir de Kaer Morhen.", lien: "croisee" },
+  { t: "Les sorceleurs recrutaient parfois leurs apprentis grâce à la Loi de la Surprise.", lien: "loi-surprise" },
+  { t: "Le titre polonais, « Wiedźmin », est un mot forgé par Sapkowski à partir de « wiedźma », la sorcière.", lien: "sorceleurs" },
+  { t: "« Le Moindre Mal » détourne Blanche-Neige : Renfri, princesse chassée par sa belle-mère, a vécu un temps parmi sept gnomes.", lien: "renfri" },
+  { t: "« Un grain de vérité » revisite La Belle et la Bête, et « Un petit sacrifice » La Petite Sirène.", lien: "nivellen" },
+  { t: "Gwynbleidd, le nom elfe de Geralt, signifie « Loup Blanc ».", lien: "geralt" },
+  { t: "Le gwynt, mini-jeu de cartes de TW3, a eu droit à ses propres jeux : Gwent et Thronebreaker.", lien: "gwynt" }
+]
+};
+</script>
+<script>
+/* Compagnon du Sorceleur : logique de l'application.
+   Navigation par ancre (#ciri, #bestiaire, #defi-ab12…) pour que chaque page se partage par un simple lien. */
+const C=window.CODEX,E=C.entrees,M=C.bestiaire,ID={},MID={};
+E.forEach(e=>ID[e.id]=e);M.forEach(m=>MID[m.id]=m);
+const BOOKS=E.filter(e=>e.t==="livre").sort((a,b)=>a.ordre-b.ordre);
+const SIGNES=["Aard","Igni","Yrden","Quen","Axii"];
+/* Adresses publiques du compagnon, utilisées pour les liens de partage. */
+const LIEN={artifact:"https://claude.ai/artifact/XHmn6MRvrESmEH8ux3peXH",pages:"https://couefficguillaume-collab.github.io/Witcher-lore/"};
+const TYPES={perso:"Personnage",lieu:"Lieu",faction:"Peuple ou faction",concept:"Notion",livre:"Livre"};
+const SRC={L:"Livres",J:"Jeu",LJ:"Livres et jeu"};
+const svg=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const ICO={
+ partie:svg('<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'),
+ codex:svg('<path d="M3 5.5c3-1 6-1 9 1 3-2 6-2 9-1v13c-3-1-6-1-9 1-3-2-6-2-9-1z"/><path d="M12 6.5v13"/>'),
+ bestiaire:svg('<path d="M6 4c3 4 4 9 3 16"/><path d="M11 3c3 5 4 11 2 18"/><path d="M16 4c3 4 4 9 2 15"/>'),
+ livres:svg('<path d="M6 3h12v18l-6-4-6 4z"/>'),
+ quiz:svg('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7v.5"/><path d="M12 17h.01"/>'),
+ demander:svg('<path d="M4 5h16v11H9l-5 4z"/>'),
+ share:svg('<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/>')
+};
+const TABS=[["partie","Partie"],["codex","Codex"],["bestiaire","Bestiaire"],["livres","Livres"],["quiz","Quiz"],["demander","Demander"]];
+const TABK=TABS.map(t=>t[0]);
+const SEGS={frise:1,ecrans:1};
+
+let SM=null,ctl=null,qrLib=null,trail=[],sheetUrl="",sheetMsg="";
+const mem={};
+const S={ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,
+ tab:"partie",id:null,lv:"ordre",defi:null,q:"",ty:"all",cl:"all",bq:"",an:0,rv:{},force:{},quiz:null,eclair:null,
+ ask:{q:"",out:"",busy:false}};
+const KEEP=["ch","hos","bw","sp","lus","vu","record"];
+try{const o=JSON.parse(localStorage.getItem("cs")||"{}");KEEP.forEach(k=>{if(k in o)S[k]=o[k]})}catch(e){}
+S.ch=Math.min(Math.max(+S.ch||0,0),C.chapitres.length-1);
+if(!S.lus||typeof S.lus!=="object")S.lus={};
+const save=()=>{try{const o={};KEEP.forEach(k=>o[k]=S[k]);localStorage.setItem("cs",JSON.stringify(o))}catch(e){}};
+
+/* ---------- Outils ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const inFrame=(()=>{try{return window.top!==window.self}catch(e){return true}})();
+const now=()=>({ch:S.ch,hos:S.hos,bw:S.bw});
+const SAFE={ch:0,hos:false,bw:false};
+const visIn=(x,k)=>!x.porte||(x.porte.d?!!k[x.porte.d]:x.porte.c<=k.ch);
+const vis=x=>visIn(x,now());
+const jv=l=>l.d?S[l.d]:l.c<=S.ch;
+const any=id=>ID[id]||MID[id];
+const ents=ids=>ids.map(i=>ID[i]).filter(e=>e&&vis(e));
+const row=e=>`<button class="ro ${e.src}" data-o="${e.id}"><b>${esc(e.nom)}</b><small>${esc(e.role)}</small></button>`;
+const SG={Igni:"#d6532b",Aard:"#4d8fd1",Yrden:"#9a68d1",Quen:"#d9a62e",Axii:"#d1659f"};
+const sg=s=>`<span class="sg"><i style="background:${SG[s]||"var(--mu)"}"></i>${s}</span>`;
+const mrow=m=>`<button class="ro ${m.livres?"LJ":"J"}" data-o="${m.id}"><b>${esc(m.nom)}</b><small>${esc(m.cl)}${m.signes?" · "+m.signes.map(sg).join(""):""}</small></button>`;
+const chip=id=>{const x=any(id);return x&&vis(x)?`<button class="ch" data-o="${id}">${esc(x.nom)}</button>`:""};
+const chips=ids=>{const h=ids.map(chip).join("");return h?`<div class="chips">${h}</div>`:""};
+const oil=c=>c==="Humains"?"Venin du pendu (épée d'acier)":"Huile "+C.classes[c]+(c==="Bêtes"?"":" (épée d'argent)");
+const kv=(k,v)=>v?`<p class="kv"><b>${k}</b> ${v}</p>`:"";
+const bl=(t,x,j)=>`<div class="bl${j?" j":""}"><h3>${t}</h3><p>${esc(x)}</p></div>`;
+const pl=(n,s)=>n+" "+s+(n>1?"s":"");
+const dayKey=()=>new Date().toISOString().slice(0,10);
+let tt;
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},2800)}
+
+/* ---------- Quiz : questions tirées du codex, reproductibles à partir d'une graine ---------- */
+function rng(seed){let a=2166136261;for(const c of String(seed))a=Math.imul(a^c.charCodeAt(0),16777619);
+ return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const shuf=(a,r)=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const words=s=>norm(s).split(/[^a-z0-9]+/).filter(w=>w.length>3);
+const overlap=(a,b)=>{const A=words(a),B=words(b),na=norm(a),nb=norm(b);return A.some(w=>B.includes(w))||na.includes(nb)||nb.includes(na)};
+const LEX=C.lexique.filter(w=>w.mot.length<20);
+
+function questions(k,r){
+ const V=E.filter(e=>visIn(e,k)),out=[],pick=a=>a[Math.floor(r()*a.length)];
+ const mk=(type,subject,q,good,bad,why,lien)=>{bad=[...new Set(bad)].filter(b=>b!==good);if(bad.length<3)return;
+  const o=shuf([good,...shuf(bad,r).slice(0,3)],r);out.push({type,subject,q,opts:o,ok:o.indexOf(good),why,lien})};
+ const P=V.filter(e=>e.t==="perso"),L=V.filter(e=>e.t==="lieu");
+ for(const e of P){const al=(e.alias||[]).filter(a=>!overlap(a,e.nom));
+  if(al.length)mk("alias",e.id,`Qui se cache derrière le nom « ${pick(al)} » ?`,e.nom,P.filter(x=>x!==e).map(x=>x.nom),`${e.nom} : ${e.role}.`,e.id)}
+ for(const e of L)mk("lieu",e.id,`Quel lieu correspond à cette description : « ${e.role} » ?`,e.nom,L.filter(x=>x!==e).map(x=>x.nom),e.resume,e.id);
+ for(const e of V)if(e.t!=="livre"&&e.dans&&e.dans.length)
+  mk("dans",e.id,`Dans lequel de ces livres croise-t-on ${e.nom} ?`,ID[pick(e.dans)].nom,BOOKS.filter(b=>!e.dans.includes(b.id)).map(b=>b.nom),`${e.nom} apparaît dans : ${e.dans.map(i=>ID[i].nom).join(", ")}.`,e.id);
+ for(const b of BOOKS)mk("annee",b.id,`En quelle année « ${b.nom} » est-il paru en Pologne ?`,String(b.annee),BOOKS.map(x=>String(x.annee)),`« ${b.vo} », ${b.annee}. ${b.resume}`,b.id);
+ const MV=M.filter(m=>visIn(m,k));
+ for(const m of MV)if(m.signes&&m.signes.length<=2)
+  mk("signe",m.id,`Quel signe le bestiaire de TW3 conseille-t-il contre : ${m.nom} ?`,pick(m.signes),SIGNES.filter(s=>!m.signes.includes(s)),m.conseil,m.id);
+ const CL=Object.keys(C.classes).filter(c=>c!=="Humains"&&c!=="Bêtes");
+ for(const m of MV)if(CL.includes(m.cl))mk("classe",m.id,`À quelle famille du bestiaire appartient : ${m.nom} ?`,m.cl,CL,`${m.nom} : ${m.cl}. ${oil(m.cl)}.`,m.id);
+ for(const w of LEX)mk("mot",w.mot,`Que signifie « ${w.mot} » en langue ancienne ?`,w.sens,LEX.map(x=>x.sens),w.note,w.lien);
+ return out}
+
+function makeQuiz(seed,k,n){
+ const r=rng(seed),by={};
+ for(const q of questions(k,r))(by[q.type]=by[q.type]||[]).push(q);
+ const types=shuf(Object.keys(by),r);types.forEach(t=>by[t]=shuf(by[t],r));
+ const out=[],used=new Set();
+ for(let added=true;out.length<n&&added;){added=false;
+  for(const t of types){if(out.length>=n)break;const i=by[t].findIndex(q=>!used.has(q.subject));
+   if(i>=0){const q=by[t].splice(i,1)[0];used.add(q.subject);out.push(q);added=true}}}
+ return shuf(out,r)}
+
+const newSeed=()=>Math.random().toString(36).slice(2,7).replace(/[^a-z0-9]/g,"x").padEnd(5,"x");
+const score=z=>z.ans.filter((a,i)=>a===z.qs[i].ok).length;
+function rang(s,n){const p=s/n;
+ if(p===1)return{t:"Digne de Vesemir",d:"Un sans-faute. Même les vieux loups de Kaer Morhen sont impressionnés."};
+ if(p>=.8)return{t:"Maître sorceleur",d:"Vous connaissez le Continent comme votre poche."};
+ if(p>=.5)return{t:"Sorceleur sur la route",d:"De bonnes bases, et encore quelques contrats à honorer."};
+ if(p>=.2)return{t:"Apprenti de Kaer Morhen",d:"L'Épreuve des Herbes vous attend : quelques fiches du codex et ça ira mieux."};
+ return{t:"Barde égaré",d:"Même Jaskier aurait fait mieux, et il en aurait tiré une ballade."}}
+
+function opts(q,a,act){return `<div class="opts">`+q.opts.map((o,i)=>{let c="opt";if(a!=null){if(i===q.ok)c+=" good";else if(i===a)c+=" bad"}
+ return `<button class="${c}" data-${act}="${i}"${a!=null?" disabled":""}>${esc(o)}</button>`}).join("")+`</div>`}
+function feedback(q,a){const ok=a===q.ok;
+ return `<p class="fb ${ok?"ok":"ko"}">${ok?"Bonne réponse.":"Raté. La bonne réponse : "+esc(q.opts[q.ok])+"."}</p><p>${esc(q.why)}</p>${q.lien?chips([q.lien]):""}`}
+
+/* ---------- Vues ---------- */
+function partie(){
+ const c=C.chapitres[S.ch];let h="";
+ if(!S.vu)h+=`<div class="card hello"><p class="eb">Bienvenue</p><p>Touchez l'étape où vous en êtes dans la barre ci-dessus : le compagnon masquera tout ce qui vient après dans le jeu. Les rebondissements des livres restent cachés derrière un bouton.</p><button class="pr" data-act="vu">C'est noté</button></div>`;
+ h+=`<p class="eb">Étape ${S.ch+1} sur ${C.chapitres.length}</p><h2>${esc(c.nom)}</h2><p class="mu">${esc(c.lieux)}</p><p>${esc(c.intro)}</p>`;
+ h+=`<div class="bl"><h3>À lire dans les livres</h3><p>${esc(c.lire)}</p>${chips(c.lireIds)}</div>`;
+ const ls=ents(c.entrees);if(ls.length)h+=`<h3>Autour de vous</h3>`+ls.map(row).join("");
+ const ms=(c.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m));if(ms.length)h+=`<h3>Monstres du coin</h3>`+ms.map(mrow).join("");
+ for(const k of["hos","bw"])if(S[k]){const d=C.dlc[k];
+  h+=`<h3>${d.nom}</h3><p>${esc(d.intro)}</p><div class="bl"><p>${esc(d.lire)}</p></div>`+ents(d.entrees).map(row).join("")+(d.monstres||[]).map(i=>MID[i]).filter(Boolean).map(mrow).join("")}
+ const nx=BOOKS.find(b=>!S.lus[b.id]);
+ h+=nx?`<div class="card"><p class="eb">Votre prochaine lecture</p><h3 class="ct">${esc(nx.nom)}</h3><p class="mu sm">${esc(nx.role)}</p><p>${esc(nx.resume)}</p><div class="chips"><button class="ch" data-lu="${nx.id}">Je l'ai lu</button><button class="ch" data-o="${nx.id}">Voir la fiche</button><button class="ch" data-tab="livres">Ordre de lecture</button></div></div>`
+  :`<div class="card"><p class="eb">Bibliothèque</p><p>Vous avez lu toute la saga. Il ne reste plus qu'à la relire.</p></div>`;
+ h+=eclair();
+ const an=C.anecdotes.filter(a=>(!a.c||a.c<=S.ch)&&(!any(a.lien)||vis(any(a.lien))));
+ if(an.length){const a=an[S.an%an.length];h+=`<h3>Le saviez-vous</h3><p>${esc(a.t)}</p><div class="chips"><button class="ch" data-an>Une autre anecdote</button>${chip(a.lien)}</div>`}
+ return h}
+
+function eclair(){
+ const key=dayKey()+"-"+S.ch+(S.hos?"h":"")+(S.bw?"b":"");
+ if(!S.eclair||S.eclair.key!==key)S.eclair={key,q:makeQuiz("jour-"+key,now(),1)[0],a:null};
+ const{q,a}=S.eclair;if(!q)return"";
+ return `<div class="card"><p class="eb">Question du jour</p><p class="qq">${esc(q.q)}</p>${opts(q,a,"ej")}${a!=null?feedback(q,a)+`<p><button class="ch" data-tab="quiz">Faire le quiz complet</button></p>`:""}</div>`}
+
+function codex(){
+ const T=[["all","Tout"],["perso","Personnages"],["lieu","Lieux"],["faction","Peuples et factions"],["concept","Notions"],["livre","Livres"],["mot","Langue ancienne"]];
+ return `<h2>Codex</h2><input id="q" type="search" placeholder="Chercher un nom, un surnom, un lieu, un mot elfe" aria-label="Chercher dans le codex" value="${esc(S.q)}" autocomplete="off"><div class="fl">${T.map(([k,n])=>`<button class="ch${S.ty===k?" on":""}" data-t="${k}">${n}</button>`).join("")}</div><p class="mu sm">Trait bleu : issu des livres. Trait ambre : issu du jeu. Les deux : présent dans les deux.</p><div id="lst">${lst()}</div>`}
+
+function lst(){
+ const q=norm(S.q.trim());
+ if(S.ty==="mot")return lex(q)||`<p class="mu">Aucun mot ne correspond.</p>`;
+ const hit=x=>!q||norm([x.nom,...(x.alias||[]),x.role||"",x.resume||""].join(" ")).includes(q);
+ const l=E.filter(e=>vis(e)&&(S.ty==="all"||e.t===S.ty)&&hit(e));
+ l.sort((a,b)=>S.ty==="livre"?a.ordre-b.ordre:a.nom.localeCompare(b.nom,"fr"));
+ let h="";
+ if(S.ty==="all"&&!q){const G=[["perso","Personnages"],["lieu","Lieux"],["faction","Peuples et factions"],["concept","Notions"],["livre","Livres"]];
+  for(const[t,n]of G){const g=l.filter(e=>e.t===t);if(t==="livre")g.sort((a,b)=>a.ordre-b.ordre);if(g.length)h+=`<h3 class="gh">${n}<span>${g.length}</span></h3>`+g.map(row).join("")}}
+ else h=l.map(row).join("");
+ if(S.ty==="all"&&q){
+  const ms=M.filter(m=>vis(m)&&norm([m.nom,m.en||"",m.cl].join(" ")).includes(q));if(ms.length)h+=`<h3 class="gh">Bestiaire</h3>`+ms.map(mrow).join("");
+  const lx=lex(q);if(lx)h+=`<h3 class="gh">Langue ancienne</h3>`+lx}
+ return h||`<p class="mu">Aucune fiche ne correspond. Essayez un autre nom ou un surnom.</p>`}
+
+function lex(q){return C.lexique.filter(w=>!q||norm(w.mot+" "+w.sens+" "+w.note).includes(q)).map(w=>
+ `<div class="lx"><p><b>${esc(w.mot)}</b> ${esc(w.sens)}</p><p class="mu sm">${esc(w.note)}</p>${w.lien?chips([w.lien]):""}</div>`).join("")}
+
+function bestiaire(){
+ const f=[["all","Tous"],...Object.keys(C.classes).map(c=>[c,c])].map(([k,n])=>`<button class="ch${S.cl===k?" on":""}" data-c="${k}">${n}</button>`).join("");
+ return `<h2>Bestiaire</h2><p class="mu">Ce que le jeu recommande, et ce que les livres en disent. Touchez une créature pour voir sa fiche.</p><input id="bq" type="search" placeholder="Chercher une créature, en français ou en anglais" aria-label="Chercher une créature" value="${esc(S.bq)}" autocomplete="off"><div class="fl">${f}</div><div id="blst">${blst()}</div>`}
+function blst(){const q=norm(S.bq.trim());
+ const l=M.filter(m=>vis(m)&&(S.cl==="all"||m.cl===S.cl)&&(!q||norm([m.nom,m.en||"",m.cl].join(" ")).includes(q)));
+ return l.map(mrow).join("")||`<p class="mu">Aucune créature ne correspond.</p>`}
+
+const topbar=id=>`<div class="tb"><button class="ch" data-b>← Retour</button><button class="ch" data-share="${id}">${ICO.share}Partager</button></div>`;
+const askLink=n=>SM?`<p><button class="ch" data-askabout="${esc(n)}">${ICO.demander}Poser une question sur ${esc(n)}</button></p>`:"";
+
+function gate(x){const n=x.porte.d?C.dlc[x.porte.d].nom:C.chapitres[x.porte.c].nom;
+ return `<div class="tb"><button class="ch" data-b>← Retour</button></div><div class="gate"><p class="eb">Attention, spoiler</p><h2>Fiche verrouillée</h2><p>Cette fiche concerne ${x.porte.d?"l'extension "+esc(n):"un passage du jeu situé à l'étape « "+esc(n)+" »"}, plus loin que là où vous en êtes. Un ami vous l'a peut-être envoyée.</p><div class="row"><button class="pr" data-force="${x.id}">Afficher quand même</button><button class="ch" data-b>Non merci</button></div></div>`}
+
+function fiche(e){
+ if(!vis(e)&&!S.force[e.id])return gate(e);
+ const vj=(e.jeu||[]).filter(jv),sealed=(e.jeu||[]).length-vj.length;
+ let h=topbar(e.id)+`<p class="eb">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><h2>${esc(e.nom)}</h2>`;
+ if(e.alias&&e.alias.length)h+=`<p class="mu">Aussi appelé : ${esc(e.alias.join(", "))}</p>`;
+ h+=`<p class="mu">${esc(e.role)}</p><p>${esc(e.resume)}</p>`;
+ if(e.t==="livre")h+=kv("Titre original",esc(e.vo)+", "+e.annee)+kv("Genre",esc(e.genre))+`<p><button class="ch${S.lus[e.id]?" on":""}" data-lu="${e.id}" aria-pressed="${!!S.lus[e.id]}">${S.lus[e.id]?"Lu ✓":"Marquer comme lu"}</button></p>`;
+ if(e.nouvelles)h+=`<h3>Les nouvelles</h3>`+e.nouvelles.map(n=>`<p><b>${esc(n.t)}.</b> ${esc(n.d)}</p>`).join("");
+ if(e.livres)h+=bl("Dans les livres",e.livres);
+ if(e.rev)h+=(S.sp||S.rv[e.id])?bl("La suite dans les livres",e.rev):`<button class="sp" data-r="${e.id}">Révéler la suite dans les livres (spoilers)</button>`;
+ if(vj.length||sealed)h+=`<div class="bl j"><h3>Dans le jeu</h3>${vj.map(l=>`<p>${esc(l.t)}</p>`).join("")}${sealed?`<p class="mu">${pl(sealed,"note")} masquée${sealed>1?"s":""} pour ne pas vous dévoiler la suite du jeu.</p>`:""}</div>`;
+ const dn=chips(e.dans||[]),vo=chips(e.voir||[]);
+ if(dn)h+=`<h3>À lire pour le retrouver</h3>${dn}`;
+ if(vo)h+=`<h3>Voir aussi</h3>${vo}`;
+ return h+askLink(e.nom)}
+
+function monstre(m){
+ if(!vis(m)&&!S.force[m.id])return gate(m);
+ return topbar(m.id)+`<p class="eb">Bestiaire · ${esc(m.cl)}</p><h2>${esc(m.nom)}</h2>${m.en?`<p class="mu">En anglais : ${esc(m.en)}</p>`:""}`
+  +kv("Huile",oil(m.cl))+kv("Signes",m.signes&&m.signes.map(sg).join(""))+kv("Bombes",m.bombes&&esc(m.bombes.join(", ")))
+  +kv("Potions",m.potions&&esc(m.potions.join(", ")))+kv("Autres",m.autres&&esc(m.autres.join(", ")))+kv("Insensible à",m.immun&&sg(m.immun))
+  +`<p>${esc(m.conseil)}</p>`+(m.origine?bl("Origines",m.origine):"")+(m.livres?bl("Dans les livres",m.livres):"")
+  +(m.lien&&chip(m.lien)?`<h3>Voir aussi</h3>${chips([m.lien])}`:"")+askLink(m.nom)}
+
+function livres(){
+ const seg=[["ordre","Ordre de lecture"],["frise","Frise"],["ecrans","Jeux et écrans"]];
+ return `<h2>Livres</h2><div class="seg" role="tablist" aria-label="Rubriques">${seg.map(([k,n])=>`<button role="tab" aria-selected="${S.lv===k}" class="${S.lv===k?"on":""}" data-lv="${k}">${n}</button>`).join("")}</div>`
+  +({ordre,frise,ecrans}[S.lv]||ordre)()}
+
+function ordre(){
+ const nl=BOOKS.filter(b=>S.lus[b.id]).length;
+ const quand=id=>C.chapitres.filter(c=>c.lireIds.includes(id)).map(c=>c.court).concat(Object.values(C.dlc).filter(d=>d.lireIds.includes(id)).map(d=>d.nom));
+ return `<p>Commencez par les deux recueils de nouvelles, puis lisez les cinq romans de la saga dans l'ordre. « La Saison des orages » se glisse où vous voulez après les nouvelles, et « La Croisée des corbeaux », une préquelle, se lit à tout moment.</p>
+<div class="prog"><div class="bar"><i style="width:${Math.round(nl/BOOKS.length*100)}%"></i></div><span>${nl} sur ${BOOKS.length} lus</span></div><ol class="books">`
+ +BOOKS.map((b,i)=>{const q=quand(b.id),lu=!!S.lus[b.id];
+  return `<li class="${lu?"lu":""}"><span class="num">${i+1}</span><div class="bi"><h3 class="ct"><button class="lnk" data-o="${b.id}">${esc(b.nom)}</button></h3><p class="mu sm">${esc(b.genre)} · ${esc(b.vo)}, ${b.annee}</p><p>${esc(b.resume)}</p>${q.length?`<p class="sm"><b>Idéal pendant :</b> ${esc(q.join(", "))}</p>`:""}<button class="ch${lu?" on":""}" data-lu="${b.id}" aria-pressed="${lu}">${lu?"Lu ✓":"Marquer comme lu"}</button></div></li>`}).join("")
+ +`</ol><p class="mu sm">En français, la saga est publiée chez Bragelonne, et en poche chez Milady, dans la traduction de Laurence Dyèvre.</p>`}
+
+function frise(){
+ const l=C.chrono.map((x,i)=>({...x,k:"f"+i})).filter(x=>!x.c||x.c<=S.ch);
+ return `<p class="mu">Des origines du monde jusqu'aux jeux. Point bleu : les livres. Point ambre : les jeux.</p><div class="tl">`+l.map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}`
+  +(x.rev&&!S.sp&&!S.rv[x.k]?`<button class="sp" data-r="${x.k}">Révéler le détail (spoilers des livres)</button>`:`<p>${esc(x.d)}</p>`)
+  +(x.lien&&chip(x.lien)?`<button class="ch" data-o="${x.lien}">Voir la fiche</button>`:"")+`</div>`).join("")+`</div>`}
+
+function ecrans(){
+ return `<p class="mu">Les jeux et adaptations nés des livres de Sapkowski. Point bleu : films et séries. Point ambre : jeux.</p><div class="tl">`
+  +C.ecrans.map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}<p>${esc(x.d)}</p></div>`).join("")+`</div>`}
+
+function quiz(){
+ const z=S.quiz;
+ if(S.defi&&(!z||z.seed!==S.defi))return `<h2>Défi entre amis</h2><div class="card"><p class="eb">Défi n° ${esc(S.defi.toUpperCase())}</p><p>Un ami vous lance un défi : dix questions sur l'univers du Sorceleur, les mêmes pour tout le monde. Aucune ne dévoile la suite du jeu ni la fin des livres.</p><button class="pr" data-act="relever">Relever le défi</button></div><p><button class="ch" data-act="quit">Faire plutôt un quiz adapté à ma partie</button></p>`;
+ if(!z)return `<h2>Quiz</h2><p>Dix questions sur les livres, le bestiaire et la langue ancienne.</p><div class="cards"><div class="card"><h3 class="ct">Quiz de ma partie</h3><p>Les questions s'adaptent à votre avancée dans le jeu et aux extensions commencées.</p><button class="pr" data-act="solo">Commencer</button></div><div class="card"><h3 class="ct">Défi entre amis</h3><p>Lancez un défi puis envoyez le lien : vos amis répondent aux mêmes questions, sans aucun spoiler pour personne.</p><button class="pr" data-act="defi">Lancer un défi</button></div></div>${S.record?`<p class="mu">Votre record : ${S.record.s} sur ${S.record.n}.</p>`:""}`;
+ const n=z.qs.length,s=score(z);
+ if(z.i>=n){const r=rang(s,n);
+  return `<h2>${z.defi?"Défi n° "+esc(z.seed.toUpperCase()):"Résultat du quiz"}</h2><div class="card res"><p class="big">${s}<span> / ${n}</span></p><p class="eb">${r.t}</p><p>${r.d}</p></div><div class="row"><button class="pr" data-act="sharescore">${ICO.share} ${z.defi?"Envoyer le défi à mes amis":"Partager mon score"}</button><button class="ch" data-act="again">Rejouer</button></div>`
+   +`<h3>Récapitulatif</h3><ol class="recap">`+z.qs.map((q,i)=>`<li class="${z.ans[i]===q.ok?"ok":"ko"}">${esc(q.q)}<br><span class="mu">${esc(q.opts[q.ok])}</span></li>`).join("")+`</ol>`}
+ const q=z.qs[z.i],a=z.ans[z.i];
+ return `<h2>${z.defi?"Défi n° "+esc(z.seed.toUpperCase()):"Quiz"}</h2><div class="prog"><div class="bar"><i style="width:${Math.round((z.i+(a!=null?1:0))/n*100)}%"></i></div><span>Question ${z.i+1} sur ${n} · ${pl(s,"point")}</span></div><p class="qq">${esc(q.q)}</p>${opts(q,a,"qa")}`
+  +(a!=null?feedback(q,a)+`<p><button class="pr" data-act="next">${z.i+1<n?"Question suivante":"Voir mon score"}</button></p>`:"")
+  +`<p><button class="ch" data-act="quit">Abandonner</button></p>`}
+
+function demander(){
+ if(!SM)return `<h2>Demander</h2><p>Les questions à Claude ne sont possibles que dans la version du compagnon publiée sur Claude.</p>${LIEN.artifact?`<p><a href="${esc(LIEN.artifact)}" target="_blank" rel="noopener">Ouvrir cette version</a></p>`:""}`;
+ const ex=["Qu'est-ce que la Loi de la Surprise ?","Pourquoi Geralt a-t-il les cheveux blancs ?","Quelle différence entre les Aen Seidhe et les Aen Elle ?","Quel livre lire en ce moment ?"];
+ return `<h2>Demander</h2><p class="mu">Posez une question sur les livres ou le monde du Sorceleur. La réponse tient compte de votre avancée dans le jeu et des livres que vous avez lus.</p><div class="chips">${ex.map(x=>`<button class="ch" data-ex="${esc(x)}">${esc(x)}</button>`).join("")}</div><textarea id="qs" rows="3" placeholder="Par exemple : qui sont les Aen Elle ?" aria-label="Votre question">${esc(S.ask.q)}</textarea><p class="row"><button class="pr" id="go"${S.ask.busy?" disabled":""}>Poser la question</button><button class="ch" id="stop"${S.ask.busy?"":" hidden"}>Arrêter</button></p><div id="out" class="out" aria-live="polite">${esc(S.ask.out)}</div><p class="mu sm">Réponse générée par Claude à partir du codex et de ses propres connaissances : vérifiez les détails importants dans les livres.</p>`}
+
+const footer=()=>`<footer class="ft"><p>Guide non officiel, réalisé par des fans. La saga du Sorceleur est l'œuvre d'Andrzej Sapkowski ; The Witcher est une série de jeux de CD Projekt Red.</p><p><button class="lnk" data-share="">Envoyer le compagnon à un ami</button></p></footer>`;
+
+/* ---------- Rendu ---------- */
+function renderRoute(){
+ const r=$("#route");
+ r.innerHTML=C.chapitres.map((c,i)=>`<button class="st${i<S.ch?" done":""}${i===S.ch?" on":""}" data-i="${i}" aria-pressed="${i===S.ch}"><i></i>${esc(c.court)}</button>`).join("");
+ const b=$("#route .on");if(b)r.scrollLeft=b.offsetLeft-r.clientWidth/2+b.offsetWidth/2}
+function renderTabs(){
+ $("#tabs").innerHTML=TABS.filter(([k])=>k!=="demander"||SM).map(([k,n])=>`<button data-tab="${k}" class="${k===S.tab?"on":""}"${k===S.tab?' aria-current="page"':""}>${ICO[k]}<span>${n}</span></button>`).join("")}
+function render(){
+ renderRoute();renderTabs();
+ const v=S.id?(ID[S.id]?fiche(ID[S.id]):monstre(MID[S.id])):({partie,codex,bestiaire,livres,quiz,demander}[S.tab]||partie)();
+ $("#main").innerHTML=v+footer()}
+
+/* ---------- Navigation ---------- */
+const cur=()=>{try{return decodeURIComponent(location.hash.slice(1))}catch(e){return""}};
+const isRoot=t=>TABK.includes(t)||SEGS[t];
+function go(t){if(cur()===t){mem[t]=0;route()}else location.hash=t}
+function replaceHash(t){try{history.replaceState(null,"","#"+t)}catch(e){}trail[trail.length-1]=t}
+function back(){go(trail.length>1?trail[trail.length-2]:S.tab)}
+function route(){
+ const t=cur()||"partie";
+ const popped=trail.length>1&&trail[trail.length-2]===t;
+ if(isRoot(t))trail=[t];else if(popped)trail.pop();else if(trail[trail.length-1]!==t)trail.push(t);
+ S.id=null;S.defi=null;
+ if(SEGS[t]){S.tab="livres";S.lv=t}
+ else if(t==="livres"){S.tab="livres";S.lv="ordre"}
+ else if(TABK.includes(t))S.tab=t;
+ else if(/^defi-[a-z0-9]{3,12}$/.test(t)){S.tab="quiz";S.defi=t.slice(5)}
+ else if(ID[t]){S.id=t;S.tab=ID[t].t==="livre"?"livres":"codex"}
+ else if(MID[t]){S.id=t;S.tab="bestiaire"}
+ else S.tab="partie";
+ render();
+ scrollTo(0,popped||isRoot(t)?mem[t]||0:0)}
+addEventListener("hashchange",ev=>{try{mem[decodeURIComponent(new URL(ev.oldURL).hash.slice(1))||"partie"]=scrollY}catch(e){}route()});
+const shareToken=()=>S.id||(S.defi?"defi-"+S.defi:S.tab==="partie"?"":S.tab==="livres"&&S.lv!=="ordre"?S.lv:S.tab);
+
+/* ---------- Partage ---------- */
+function shareBase(){if(!inFrame&&/^https?:$/.test(location.protocol))return location.href.split("#")[0];return LIEN.artifact||LIEN.pages}
+const shareUrl=t=>shareBase()+(t?"#"+t:"");
+const titleOf=t=>any(t)?any(t).nom:t.startsWith("defi-")?"ce défi":({codex:"le codex",bestiaire:"le bestiaire",livres:"l'ordre de lecture",frise:"la frise",ecrans:"les jeux et écrans",quiz:"le quiz",demander:"Demander"})[t]||"cette page";
+function loadQR(){return qrLib||(qrLib=new Promise((ok,ko)=>{if(window.QRious)return ok(window.QRious);
+ const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js";s.onload=()=>window.QRious?ok(window.QRious):ko();s.onerror=()=>{qrLib=null;ko()};document.head.appendChild(s)}))}
+function openSheet(tok,msg){
+ const url=shareUrl(tok);sheetUrl=url;sheetMsg=msg||"";
+ let h=msg?`<p>Votre message est prêt : copiez-le, puis collez-le dans votre conversation.</p><textarea id="sh-m" rows="4" readonly>${esc(msg+"\n"+url)}</textarea><p><button class="pr" data-copy="sh-m">Copier le message</button></p>`
+  :`<p>Envoyez ce lien à vos amis. Chacun indique sa propre avancée dans le jeu, et le compagnon ne leur dévoile rien de ce qui vient après.</p><label class="mu sm" for="sh-l">${tok?"Lien vers "+esc(titleOf(tok)):"Lien vers le compagnon"}</label><div class="cp"><input id="sh-l" type="text" readonly value="${esc(url)}"><button class="pr" data-copy="sh-l">Copier</button></div>`;
+ if(!inFrame&&navigator.share)h+=`<p><button class="ch" id="sh-send">${ICO.share}Envoyer avec une application</button></p>`;
+ if(tok&&!msg)h+=`<p><button class="lnk" data-share="">Partager plutôt l'accueil du compagnon</button></p>`;
+ h+=`<div class="qrw" id="qrw" hidden><canvas id="qr" width="400" height="400" role="img" aria-label="QR code du lien"></canvas><p class="mu sm">À scanner avec l'appareil photo d'un téléphone.</p></div>`;
+ if(location.protocol==="file:")h+=`<p class="mu sm">Vous consultez une copie enregistrée sur cet appareil. Vous pouvez aussi envoyer le fichier lui-même : il s'ouvre dans n'importe quel navigateur, même hors ligne.</p>`;
+ $("#sh-body").innerHTML=h;$("#sheet").hidden=false;$("#sh-x").focus();
+ loadQR().then(Q=>{const c=$("#qr");if(!c||sheetUrl!==url)return;new Q({element:c,value:url,size:400,padding:28,background:"#ffffff",foreground:"#17262c",level:"M"});$("#qrw").hidden=false}).catch(()=>{})}
+const closeSheet=()=>{$("#sheet").hidden=true};
+function copy(id){const el=$("#"+id);if(!el)return;
+ const fail=()=>{el.focus();el.select();toast("Texte sélectionné : copiez-le avec un appui long ou Ctrl+C")};
+ try{navigator.clipboard.writeText(el.value).then(()=>toast(id==="sh-m"?"Message copié":"Lien copié"),fail)}catch(e){fail()}}
+function shareScore(){
+ const z=S.quiz,s=score(z),n=z.qs.length,tok=z.defi?"defi-"+z.seed:"quiz";
+ const msg=z.defi?`J'ai fait ${s}/${n} au défi n° ${z.seed.toUpperCase()} du Compagnon du Sorceleur. Mêmes questions pour toi, et aucun spoiler :`:`J'ai fait ${s}/${n} au quiz du Compagnon du Sorceleur. À ton tour :`;
+ const url=shareUrl(tok);
+ if(!inFrame&&navigator.share){navigator.share({title:"Compagnon du Sorceleur",text:msg,url}).catch(e=>{if(e&&e.name!=="AbortError")openSheet(tok,msg)});return}
+ try{navigator.clipboard.writeText(msg+"\n"+url).then(()=>toast("Message copié : collez-le dans votre conversation"),()=>openSheet(tok,msg))}catch(e){openSheet(tok,msg)}}
+
+/* ---------- Demander à Claude ---------- */
+async function ask(){
+ const el=$("#qs"),q=(el?el.value:S.ask.q).trim();if(!q||!SM||S.ask.busy)return;
+ S.ask.q=q;S.ask.busy=true;S.ask.out="Réflexion en cours…";ctl=new AbortController();
+ const set=()=>{const o=$("#out"),g=$("#go"),s=$("#stop");if(o)o.textContent=S.ask.out;if(g)g.disabled=S.ask.busy;if(s)s.hidden=!S.ask.busy};set();
+ const c=C.chapitres[S.ch],w=norm(q).split(/[^a-z0-9]+/).filter(x=>x.length>2);
+ const sc=(txt,name)=>{const h=norm(txt),n=norm(name);return w.reduce((a,x)=>a+(h.includes(x)?1:0)+(n.includes(x)?2:0),0)};
+ const top=(l,f,k)=>l.map(x=>[f(x),x]).filter(x=>x[0]>0).sort((a,b)=>b[0]-a[0]).slice(0,k).map(x=>x[1]);
+ const ce=top(E.filter(vis),e=>sc([e.nom,...(e.alias||[]),e.role,e.resume].join(" "),e.nom),8).map(e=>[`## ${e.nom} (${e.role})`,e.resume,e.livres||"",S.sp&&e.rev?e.rev:"",(e.jeu||[]).filter(jv).map(l=>l.t).join(" ")].filter(Boolean).join("\n"));
+ const cm=top(M.filter(vis),m=>sc([m.nom,m.en||"",m.cl].join(" "),m.nom),3).map(m=>[`## ${m.nom} (bestiaire, ${m.cl})`,"Conseil du jeu : "+m.conseil,m.livres||"",m.origine||""].filter(Boolean).join("\n"));
+ const cw=top(C.lexique,x=>sc(x.mot+" "+x.sens,x.mot),4).map(x=>`- ${x.mot} : ${x.sens}. ${x.note}`);
+ const ctx=[...ce,...cm,...(cw.length?["## Langue ancienne\n"+cw.join("\n")]:[])].join("\n\n");
+ const ext=[S.hos&&"Hearts of Stone",S.bw&&"Blood and Wine"].filter(Boolean).join(" et ")||"aucune";
+ const lus=BOOKS.filter(b=>S.lus[b.id]).map(b=>"« "+b.nom+" »").join(", ")||"aucun";
+ const prompt=`Tu es le compagnon d'un joueur de The Witcher 3: Wild Hunt et un expert des livres d'Andrzej Sapkowski (saga du Sorceleur). Réponds en français, en 8 phrases au plus, sans titres ni listes à puces, en distinguant ce qui vient des livres de ce qui vient des jeux. Si tu n'es pas sûr d'un détail, dis-le au lieu d'inventer.
+Avancée du joueur : chapitre « ${c.nom} » (${c.lieux}) ; extensions commencées : ${ext}.
+Livres déjà lus : ${lus}. Ordre de lecture conseillé : ${BOOKS.map(b=>b.nom).join(", ")}. Si on te demande quoi lire, tiens-en compte.
+Spoilers : ne révèle rien du jeu qui dépasse ce chapitre. ${S.sp?"Le joueur accepte les spoilers sur la fin des livres.":"Ne révèle pas les rebondissements de la fin des livres : si la question l'exige, préviens d'abord et reste allusif."}
+
+Notes du codex :
+${ctx||"(aucune fiche pertinente)"}
+
+Question : ${q}`;
+ try{
+  const r=await SM(prompt,{signal:ctl.signal,onText:({text})=>{S.ask.out=text;const o=$("#out");if(o)o.textContent=text}});
+  S.ask.out=r.text+(r.truncated?"\n\n(Réponse tronquée : posez une question plus ciblée.)":"");
+ }catch(e){
+  const m={not_granted:"Autorisation refusée : la question ne peut pas être posée ici.",sampling_disabled:"Cette fonction n'est pas disponible pour votre compte.",rate_limited:"Trop de questions d'affilée, ou limite d'usage atteinte. Réessayez un peu plus tard.",session_expired:"Votre session a expiré : reconnectez-vous à Claude, puis réessayez.",refused:"Claude n'a pas voulu répondre à cette question. Essayez de la formuler autrement."};
+  S.ask.out=e&&e.code==="refused"?m.refused:((e&&e.text)||"")+(e&&e.code==="cancelled"?"":((e&&e.text)?"\n\n":"")+(m[e&&e.code]||"La réponse n'a pas abouti. Vous pouvez réessayer."));
+ }finally{S.ask.busy=false;set()}}
+
+/* ---------- Actions ---------- */
+function startQuiz(defi,seed){S.quiz={seed,defi,qs:makeQuiz((defi?"defi-":"solo-")+seed,defi?SAFE:now(),10),i:0,ans:[]}}
+function act(a){
+ const z=S.quiz;
+ if(a==="vu"){S.vu=true;save();render()}
+ else if(a==="solo"){startQuiz(false,newSeed());if(S.defi){S.defi=null;replaceHash("quiz")}render();scrollTo(0,0)}
+ else if(a==="defi"){const s=newSeed();startQuiz(true,s);S.defi=s;replaceHash("defi-"+s);render();scrollTo(0,0)}
+ else if(a==="relever"){startQuiz(true,S.defi);render();scrollTo(0,0)}
+ else if(a==="next"&&z){z.i++;if(z.i>=z.qs.length){const s=score(z);if(!S.record||s/z.qs.length>S.record.s/S.record.n){S.record={s,n:z.qs.length};save()}}render();scrollTo(0,0)}
+ else if(a==="quit"||a==="again"){S.quiz=null;if(S.defi){S.defi=null;replaceHash("quiz")}render();scrollTo(0,0)}
+ else if(a==="sharescore"&&z)shareScore()}
+
+document.addEventListener("click",ev=>{
+ const t=ev.target.closest("button");
+ if(!t){if(ev.target.id==="sheet")closeSheet();return}
+ const d=t.dataset;
+ if(d.i!==undefined){S.ch=+d.i;S.vu=true;save();render()}
+ else if(d.o)go(d.o);
+ else if(d.b!==undefined)back();
+ else if(d.tab)go(d.tab);
+ else if(d.t){S.ty=d.t;render()}
+ else if(d.c){S.cl=d.c;render()}
+ else if(d.lv)go(d.lv==="ordre"?"livres":d.lv);
+ else if(d.r){S.rv[d.r]=1;render()}
+ else if(d.force){S.force[d.force]=1;render()}
+ else if(d.lu){const k=d.lu;if(S.lus[k])delete S.lus[k];else S.lus[k]=1;save();render();toast(S.lus[k]?"« "+ID[k].nom+" » marqué comme lu":"« "+ID[k].nom+" » retiré de vos lectures")}
+ else if(d.an!==undefined){S.an++;render()}
+ else if(d.ej!==undefined&&S.eclair){S.eclair.a=+d.ej;render()}
+ else if(d.qa!==undefined&&S.quiz&&S.quiz.ans[S.quiz.i]==null){S.quiz.ans[S.quiz.i]=+d.qa;render()}
+ else if(d.act)act(d.act);
+ else if(d.share!==undefined)openSheet(d.share);
+ else if(d.copy)copy(d.copy);
+ else if(d.ex){S.ask.q=d.ex;const x=$("#qs");if(x){x.value=d.ex;x.focus()}}
+ else if(d.askabout){S.ask.q=`Que racontent les livres et le jeu sur ${d.askabout} ?`;go("demander")}
+ else if(t.id==="go")ask();
+ else if(t.id==="stop"&&ctl)ctl.abort();
+ else if(t.id==="share-open")openSheet(shareToken());
+ else if(t.id==="sh-x")closeSheet();
+ else if(t.id==="sh-send")navigator.share({title:"Compagnon du Sorceleur",text:sheetMsg||"Le lore des livres du Sorceleur, au rythme de ta partie de The Witcher 3.",url:sheetUrl}).catch(()=>{});
+});
+document.addEventListener("input",ev=>{const t=ev.target;
+ if(t.id==="q"){S.q=t.value;$("#lst").innerHTML=lst()}
+ else if(t.id==="bq"){S.bq=t.value;$("#blst").innerHTML=blst()}
+ else if(t.id==="qs")S.ask.q=t.value});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&!$("#sheet").hidden)closeSheet();
+ if(ev.key==="Enter"&&(ev.ctrlKey||ev.metaKey)&&ev.target.id==="qs")ask()});
+for(const k of["hos","bw","sp"]){const el=$("#o-"+k);el.checked=!!S[k];el.onchange=()=>{S[k]=el.checked;save();render()}}
+
+route();
+(async()=>{try{if(!window.claude||!window.claude.use)return;const s=await window.claude.use("sample");
+ if(s){SM=s;const f=document.activeElement;if(f&&/^(INPUT|TEXTAREA)$/.test(f.tagName))renderTabs();else render()}}catch(e){}})();
+</script>
+<script>
+if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
