@@ -1,11 +1,13 @@
 // Assemble le compagnon à partir de src/ et vérifie les données.
 //   node scripts/build.mjs
 // Produit :
-//   index.html               page autonome (GitHub Pages, envoi du fichier, hors ligne)
+//   index.html               l'application (GitHub Pages, installable sur téléphone)
+//   sw.js                    le service worker qui la garde disponible hors ligne
 //   artifact/compagnon.html  même page, sans squelette HTML, pour la publier sur Claude
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -56,6 +58,8 @@ for (const e of C.entrees) {
   (e.voir || []).forEach((id) => ref(e.id, id));
   (e.dans || []).forEach((id) => book(e.id, id));
   porte(e.id, e.porte);
+  if (e.rev && !e.rl) errors.push(`${e.id} : « rev » sans « rl » (livre qui dévoile le rebondissement)`);
+  if (e.rl) book(e.id, e.rl);
   for (const j of e.jeu || []) {
     if (j.d && !C.dlc[j.d]) errors.push(`${e.id} : extension inconnue « ${j.d} »`);
     if (!(j.c >= 0 && j.c < nch)) errors.push(`${e.id} : note de jeu au chapitre invalide ${j.c}`);
@@ -64,6 +68,15 @@ for (const e of C.entrees) {
 for (const m of C.bestiaire) { if (m.lien) ref(m.id, m.lien); porte(m.id, m.porte); }
 for (const [n, l] of [["chrono", C.chrono], ["anecdotes", C.anecdotes], ["lexique", C.lexique]])
   for (const x of l) if (x.lien) ref(n, x.lien);
+for (const x of C.chrono) if (x.rev && !x.rl) errors.push(`chrono « ${x.titre} » : « rev » sans « rl »`);
+const images = [];
+for (const s of C.sources) {
+  s.liens.forEach((id) => ref(s.id, id));
+  if (!fs.existsSync(path.join(root, s.img))) errors.push(`${s.id} : image introuvable ${s.img}`);
+  else images.push(s.img);
+}
+for (const id of Object.keys(C.carte.lieux)) ref("carte", id);
+for (const id of C.carte.horsCarte) ref("carte hors carte", id);
 for (const s of [codexSrc, appSrc]) if (/<\/script/i.test(s)) errors.push("« </script » interdit dans les scripts");
 if (errors.length) {
   console.error("Données invalides :\n- " + errors.join("\n- "));
@@ -72,11 +85,11 @@ if (errors.length) {
 
 // ---------- Assemblage ----------
 const title = "Compagnon du Sorceleur";
-const description = "Le lore des livres de Sapkowski au rythme de votre partie de The Witcher 3 : codex sans spoilers, bestiaire, ordre de lecture et quiz à partager entre amis.";
+const description = "Le lore des livres de Sapkowski au rythme de votre partie de The Witcher 3 : codex sans spoilers, carte, bestiaire, lignée de Ciri et défis entre amis.";
 const pagesUrl = "https://couefficguillaume-collab.github.io/Witcher-lore/";
 const fonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">`;
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">`;
 const scripts = `<script>\n${codexSrc.trim()}\n</script>\n<script>\n${appSrc.trim()}\n</script>`;
 
 const fragment = `<title>${title}</title>
@@ -95,7 +108,13 @@ const index = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${title}</title>
 <meta name="description" content="${description}">
-<meta name="theme-color" content="#17262c">
+<meta name="theme-color" content="#e8ecea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141b1f" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sorceleur">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:title" content="${title}">
@@ -125,8 +144,67 @@ if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))addEventLis
 </html>
 `;
 
+// ---------- Service worker ----------
+// La version change avec le contenu : les téléphones récupèrent la nouvelle version et nettoient l'ancienne.
+const version = crypto.createHash("sha256").update(index).update(images.join()).digest("hex").slice(0, 10);
+const assets = ["./", "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", ...images];
+const sw = `// Généré par scripts/build.mjs : ne pas modifier à la main.
+// Le compagnon s'ouvre instantanément depuis le cache, même hors ligne, puis se met à jour en arrière-plan.
+const VERSION = "compagnon-${version}";
+const ASSETS = ${JSON.stringify(assets)};
+const EXTERNES = ["fonts.googleapis.com", "fonts.gstatic.com", "cdnjs.cloudflare.com"];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
+
+const prevenir = () => self.clients.matchAll({ type: "window" }).then((cs) => cs.forEach((c) => c.postMessage("maj")));
+
+self.addEventListener("fetch", (e) => {
+  const req = e.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  if (url.origin === location.origin) {
+    const page = req.mode === "navigate";
+    const cle = page ? new Request(self.registration.scope) : req;
+    e.respondWith(caches.open(VERSION).then(async (cache) => {
+      const enCache = await cache.match(cle, { ignoreSearch: true });
+      const reseau = fetch(req).then(async (res) => {
+        if (res.ok) {
+          if (page && enCache) {
+            const [avant, apres] = await Promise.all([enCache.clone().text(), res.clone().text()]);
+            if (avant !== apres) prevenir();
+          }
+          await cache.put(cle, res.clone());
+        }
+        return res;
+      }).catch(() => null);
+      if (enCache) { e.waitUntil(reseau); return enCache; }
+      return (await reseau) || (page ? cache.match(self.registration.scope) : undefined) || Response.error();
+    }));
+  } else if (EXTERNES.includes(url.host)) {
+    e.respondWith(caches.open(VERSION).then(async (cache) => {
+      const enCache = await cache.match(req);
+      if (enCache) return enCache;
+      const res = await fetch(req);
+      if (res.ok || res.type === "opaque") cache.put(req, res.clone());
+      return res;
+    }));
+  }
+});
+`;
+
 fs.mkdirSync(path.join(root, "artifact"), { recursive: true });
 fs.writeFileSync(path.join(root, "artifact/compagnon.html"), fragment);
 fs.writeFileSync(path.join(root, "index.html"), index);
-console.log(`OK : ${C.entrees.length} fiches, ${C.bestiaire.length} créatures, ${C.lexique.length} mots, ${C.anecdotes.length} anecdotes.`);
-console.log(`index.html ${(index.length / 1024).toFixed(0)} Ko, artifact/compagnon.html ${(fragment.length / 1024).toFixed(0)} Ko`);
+fs.writeFileSync(path.join(root, "sw.js"), sw);
+console.log(`OK : ${C.entrees.length} fiches, ${C.bestiaire.length} créatures, ${C.lexique.length} mots, ${C.sources.length} illustrations, ${Object.keys(C.carte.lieux).length} lieux sur la carte.`);
+console.log(`index.html ${(index.length / 1024).toFixed(0)} Ko, artifact/compagnon.html ${(fragment.length / 1024).toFixed(0)} Ko, version ${version}`);

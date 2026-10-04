@@ -1,21 +1,17 @@
-<header class="w hd">
-<div class="hr">
-<svg class="em" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="var(--ac)" stroke-width="2"/><circle cx="24" cy="24" r="18.5" fill="none" stroke="var(--ln)" stroke-width="1"/><g fill="none" stroke-linecap="round" stroke-width="2.2"><path d="M16.5 31.2L33 13M31.5 31.2L15 13" stroke="currentColor"/><path d="M13.5 28.5l6 5.4M34.5 28.5l-6 5.4M16.5 31.2l-3.3 3.6M31.5 31.2l3.3 3.6" stroke="var(--ac)"/></g></svg>
-<h1>Compagnon du Sorceleur</h1>
-<button class="ib" id="share-open" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg>Partager</button>
+<div class="app" id="app">
+<header class="bar" id="bar"></header>
+<main id="main"></main>
 </div>
-<p class="mu tag">Le lore des livres de Sapkowski, au rythme de votre partie de The Witcher 3.</p>
-<details class="pf"><summary>Réglages de la partie</summary>
-<label><input type="checkbox" id="o-hos"> J'ai commencé Hearts of Stone</label>
-<label><input type="checkbox" id="o-bw"> J'ai commencé Blood and Wine</label>
-<label><input type="checkbox" id="o-sp"> Afficher les spoilers de la fin des livres</label>
-</details>
-</header>
-<div class="rt"><div class="w"><nav id="route" aria-label="Où en êtes-vous dans le jeu ?"></nav></div></div>
-<main class="w" id="main"></main>
-<nav class="bn" aria-label="Sections"><div class="w" id="tabs"></div></nav>
+<nav class="tabs" id="tabs" aria-label="Sections"></nav>
+<aside class="desk" aria-label="Ouvrir sur téléphone">
+<h2>Compagnon du Sorceleur</h2>
+<p class="mu">Une application pensée pour le téléphone, à garder près de la manette. Scannez ce code pour l'ouvrir, puis ajoutez-la à votre écran d'accueil.</p>
+<canvas id="desk-qr" width="360" height="360" role="img" aria-label="QR code pour ouvrir le compagnon sur téléphone" hidden></canvas>
+</aside>
 <div class="ov" id="sheet" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t">
 <div class="shh"><h2 id="sh-t">Partager</h2><button class="ch" id="sh-x">Fermer</button></div>
 <div id="sh-body"></div>
 </div></div>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Illustration" hidden></div>
+<div class="onb" id="onb" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>

@@ -1,85 +1,133 @@
-// Test de fumée : ouvre index.html dans Chromium, parcourt chaque vue et joue un quiz complet.
-//   node scripts/smoke.mjs [dossier-captures]
+// Test de fumée : ouvre index.html dans Chromium au format téléphone, parcourt chaque écran et joue un quiz.
+//   node scripts/smoke.mjs [dossier-captures] [--captures]
+//   --captures régénère aussi les captures d'écran du manifeste (captures/*.png).
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { launch } from "./pw.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const shots = process.argv[2];
+const args = process.argv.slice(2);
+const captures = args.includes("--captures");
+const shots = args.find((a) => !a.startsWith("--"));
 const url = pathToFileURL(path.join(root, "index.html")).href;
 const browser = await launch();
 const errors = [];
-const fail = (m) => { errors.push(m); };
+const fail = (m) => errors.push(m);
+const pause = (p, ms = 160) => p.waitForTimeout(ms);
 
-async function run(ctxOpts, label) {
+async function run(ctxOpts, label, capture) {
   const ctx = await browser.newContext(ctxOpts);
   const page = await ctx.newPage();
   page.on("pageerror", (e) => fail(`${label} pageerror: ${e.message}`));
-  page.on("console", (m) => { if (m.type() === "error" && !/fonts|ERR_|net::/.test(m.text())) fail(`${label} console: ${m.text()}`); });
-  const go = async (h) => { await page.evaluate((x) => { location.hash = x; }, h); await page.waitForTimeout(60); };
+  page.on("console", (m) => { if (m.type() === "error" && !/fonts|ERR_|net::|Failed to load resource/.test(m.text())) fail(`${label} console: ${m.text()}`); });
+  const go = async (h) => { await page.evaluate((x) => { location.hash = x; }, h); await pause(page); };
   const text = () => page.locator("#main").textContent();
   const expect = async (h, needle) => { await go(h); const t = await text(); if (!t.includes(needle)) fail(`${label} #${h}: « ${needle} » introuvable`); };
+  const snap = async (name) => { await pause(page, 450); await page.evaluate(() => { const t = document.querySelector("#toast"); if (t) t.hidden = true; }); if (shots) await page.screenshot({ path: `${shots}/${label}-${name}.png` }); if (capture && ["partie", "carte", "fiche"].includes(name)) await page.screenshot({ path: path.join(root, "captures", `${name}.png`) }); };
 
   await page.goto(url);
-  await page.waitForSelector("#main h2");
-  if (!(await text()).includes("Bienvenue")) fail(`${label}: carte de bienvenue absente`);
-  if (shots) await page.screenshot({ path: `${shots}/${label}-partie.png`, fullPage: false });
-  await page.click('[data-act="vu"]');
-  await expect("codex", "Personnages");
-  await page.fill("#q", "zireael");
-  if (!(await page.locator("#lst").innerText()).includes("Ciri")) fail(`${label}: recherche « zireael » sans Ciri`);
-  await expect("ciri", "Princesse de Cintra");
-  if (shots) await page.screenshot({ path: `${shots}/${label}-fiche.png` });
-  await page.click('button[data-o="geralt"]'); await page.waitForTimeout(60);
-  if (!(await text()).includes("Geralt de Riv")) fail(`${label}: lien Voir aussi vers Geralt cassé`);
-  await page.click("[data-b]"); await page.waitForTimeout(60);
+  await page.waitForSelector("#onb:not([hidden])");
+  if (shots) await page.screenshot({ path: `${shots}/${label}-accueil.png` });
+  await page.click('[data-onb="next"]'); await pause(page, 60);
+  await page.click('[data-onbch="1"]'); await pause(page, 60);
+  await page.click('[data-onb="next"]'); await pause(page, 60);
+  await page.check("#onb-lu-dernier-voeu");
+  await page.locator('#onb [data-onb="next"], #onb [data-onb="done"]').last().click(); await pause(page, 60);
+  if (await page.locator('#onb [data-onb="done"]').count()) await page.click('#onb [data-onb="done"]');
+  await pause(page);
+  if (!(await page.locator("#onb").isHidden())) fail(`${label}: l'accueil guidé ne se ferme pas`);
+  if (!(await text()).includes("Velen")) fail(`${label}: l'étape choisie à l'accueil n'est pas appliquée`);
+  await page.evaluate(() => scrollTo(0, 0));
+  await snap("partie");
+
+  // Recherche et navigation dans les fiches
+  await page.click('[data-tab="codex"]'); await pause(page);
+  if (!(await text()).includes("Lignée de Ciri")) fail(`${label}: codex incomplet`);
+  await page.click('.bar [data-act="search"]'); await pause(page, 60);
+  await page.keyboard.type("zireael");
+  if (!(await page.locator("#lst").textContent()).includes("Ciri")) fail(`${label}: recherche « zireael » sans Ciri`);
+  await page.locator('#lst [data-o="ciri"]').first().click(); await pause(page);
+  if (!(await text()).includes("Princesse de Cintra")) fail(`${label}: fiche Ciri non ouverte`);
+  await snap("fiche");
+  await page.locator('#main [data-o="geralt"]').first().click(); await pause(page);
+  if (!(await text()).includes("Geralt de Riv")) fail(`${label}: lien vers Geralt cassé`);
+  await page.click(".bar [data-b]"); await pause(page);
   if (!(await text()).includes("Princesse de Cintra")) fail(`${label}: Retour ne revient pas à Ciri`);
-  await page.click("[data-b]"); await page.waitForTimeout(60);
-  if (!(await text()).includes("Codex")) fail(`${label}: Retour ne revient pas au codex`);
-  await expect("uma", "Fiche verrouillée");
-  await page.click("[data-force]");
-  if (!(await text()).includes("Créature maudite")) fail(`${label}: « Afficher quand même » sans effet`);
-  await expect("bestiaire", "Bestiaire");
-  await expect("m-griffon", "Huile contre les hybrides");
-  await expect("livres", "sur 9 lus");
-  await page.click('[data-lu="dernier-voeu"]');
-  if (!(await text()).includes("1 sur 9 lus")) fail(`${label}: marquer comme lu sans effet`);
-  await expect("frise", "La Conjonction des Sphères");
-  await expect("ecrans", "Wiedźmin");
+  await page.click(".bar [data-b]"); await pause(page);
+  if (!(await page.locator("#q").count())) fail(`${label}: Retour ne revient pas à la recherche`);
+
+  // Spoilers : fiche verrouillée, puis révélation par livre lu
+  await expect("generaux", "Fiche verrouillée");
+  await page.click("[data-force]"); await pause(page);
+  if (!(await text()).includes("Lieutenants d'Eredin")) fail(`${label}: « Afficher quand même » sans effet`);
+  await expect("renfri", "Affiché car vous avez lu");
+  await expect("duny", "Révéler la suite");
+  await go("livres"); await page.click('[data-lu="dame-lac"]'); await pause(page);
+  await expect("duny", "Emhyr var Emreis");
+
+  // Carte
+  await go("carte");
+  await page.waitForSelector("#map");
+  await page.locator('#map [data-pin="novigrad"] .dot').click(); await pause(page);
+  if (!(await page.locator("#mapcard").count())) fail(`${label}: la carte ne réagit pas au toucher`);
+  await page.click('[data-zoom="reset"]');
+  await page.click('[data-act="mapclose"]'); await pause(page, 60);
+  await snap("carte");
+  await page.locator('#map [data-pin="kaer-morhen"] .dot').click(); await pause(page);
+  await page.click('#mapcard [data-o="kaer-morhen"]'); await pause(page);
+  if (!(await text()).includes("Forteresse des sorceleurs")) fail(`${label}: fiche ouverte depuis la carte introuvable`);
+
+  // Lignée, contes, bestiaire
+  await expect("lignee", "Lara Dorren");
+  await expect("contes", "Hans mon hérisson");
+  const img = await page.evaluate(async () => { const i = document.querySelector("#main .fig img"); i.loading = "eager"; await i.decode().catch(() => {}); return i.naturalWidth; });
+  if (!img) fail(`${label}: illustration non chargée`);
+  await expect("m-sirenes", "Sirine et Alkonost");
+  await expect("bestiaire", "Noyeurs");
+
+  // Quiz complet
   await expect("quiz", "Défi entre amis");
-  await page.click('[data-act="solo"]');
+  await page.click('[data-act="solo"]'); await pause(page, 60);
   for (let i = 0; i < 10; i++) {
-    const q = await page.locator(".qq").innerText();
-    if (!q) fail(`${label}: question ${i + 1} vide`);
-    await page.locator("[data-qa]").first().click();
-    await page.click('[data-act="next"]');
+    if (!(await page.locator(".qq").textContent())) fail(`${label}: question ${i + 1} vide`);
+    await page.locator("[data-qa]").first().click(); await pause(page, 40);
+    await page.click('[data-act="next"]'); await pause(page, 40);
   }
   if (!(await text()).includes("Récapitulatif")) fail(`${label}: écran de résultat absent`);
   if (shots) await page.screenshot({ path: `${shots}/${label}-quiz.png` });
-  // Un défi doit produire les mêmes questions quelle que soit l'avancée.
-  await go("defi-abc12"); await page.click('[data-act="relever"]');
-  const q1 = await page.locator(".qq").innerText();
-  await page.click('[data-i="5"]');
-  await go("partie"); await go("defi-abc12");
-  await page.evaluate(() => { S.quiz = null; }).catch(() => {});
+
+  // Un défi donne les mêmes questions quelle que soit l'avancée
+  await go("defi-abc12"); await page.click('[data-act="relever"]'); await pause(page, 60);
+  const q1 = await page.locator(".qq").textContent();
+  await go("partie"); await page.click('[data-i="5"]'); await pause(page, 60);
+  if (!(await text()).includes("Oui, j'y suis")) fail(`${label}: pas de confirmation avant d'avancer`);
+  await page.click('[data-act="pend-ok"]'); await pause(page, 60);
   await page.reload(); await page.waitForSelector("#main h2");
-  await page.click('[data-act="relever"]');
-  const q2 = await page.locator(".qq").innerText();
-  if (q1 !== q2) fail(`${label}: le défi ne donne pas les mêmes questions (« ${q1} » / « ${q2} »)`);
-  await page.click("#share-open");
-  if (await page.locator("#sheet").isHidden()) fail(`${label}: panneau de partage fermé`);
-  const link = await page.inputValue("#sh-l");
-  if (!link.endsWith("#defi-abc12")) fail(`${label}: lien de partage inattendu ${link}`);
-  await page.waitForTimeout(1500);
+  await go("defi-abc12"); await page.click('[data-act="relever"]'); await pause(page, 60);
+  if (q1 !== (await page.locator(".qq").textContent())) fail(`${label}: le défi ne redonne pas les mêmes questions`);
+
+  // Partage et réglages
+  await page.click('.bar [data-share]'); await pause(page, 60);
+  if (!(await page.inputValue("#sh-l")).endsWith("#defi-abc12")) fail(`${label}: lien de partage inattendu`);
+  await page.waitForTimeout(800);
   if (shots) await page.screenshot({ path: `${shots}/${label}-partage.png` });
   await page.keyboard.press("Escape");
+  await go("reglages");
+  await page.click('[data-theme="dark"]'); await pause(page, 60);
+  if ((await page.evaluate(() => document.documentElement.dataset.theme)) !== "dark") fail(`${label}: le thème sombre ne s'applique pas`);
+  if (shots) await page.screenshot({ path: `${shots}/${label}-reglages.png` });
+  await page.click('[data-theme="auto"]'); await pause(page, 60);
   const sw = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   if (sw > 0) fail(`${label}: défilement horizontal de ${sw}px`);
   await ctx.close();
 }
 
-await run({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, colorScheme: "light" }, "tel-clair");
-await run({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, colorScheme: "dark" }, "tel-sombre");
+if (captures) fs.mkdirSync(path.join(root, "captures"), { recursive: true });
+const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true };
+await run({ ...phone, colorScheme: "light" }, "tel-clair", captures);
+await run({ ...phone, colorScheme: "dark" }, "tel-sombre");
+await run({ viewport: { width: 360, height: 740 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, colorScheme: "light" }, "petit");
 await run({ viewport: { width: 1280, height: 860 }, colorScheme: "light" }, "bureau");
 await browser.close();
 if (errors.length) { console.error("Échecs :\n- " + errors.join("\n- ")); process.exit(1); }

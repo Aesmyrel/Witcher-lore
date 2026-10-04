@@ -1,51 +1,64 @@
 <title>Compagnon du Sorceleur</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
-/* Mise en page : une colonne de lecture de 720 px, la progression dans le jeu collée en haut,
-   une barre d'onglets à icônes fixée en bas, pensée d'abord pour le téléphone posé à côté de la manette.
+/* Mise en page : une application de téléphone, colonne de 440 px au plus.
+   Barre d'app collée en haut, onglets à icônes en bas sous le pouce, vues poussées qui glissent de droite.
+   Sur grand écran, la colonne reste à taille de téléphone et un panneau invite à scanner le QR code.
    Bleu : ce qui vient des livres. Ambre : ce qui vient du jeu. */
 :root{
   --bg:#e8ecea;--sf:#f6f8f7;--ink:#17262c;--mu:#52666a;--ln:#c3cecb;
   --ac:#8a5a0b;--bk:#2f6482;--ok:#2d6a46;--ko:#a3392b;
+  --land:#dfe5df;--sea:#c7d4d8;--coast:#97aaab;--forest:#b4c6b0;--desk:#d5dcd9;
   --serif:"IM Fell English",Georgia,"Times New Roman",serif;
   --sans:"Alegreya Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --col:440px;--barh:52px;--tabh:60px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141b1f;--sf:#1c262b;--ink:#e4e9e7;--mu:#8fa1a2;--ln:#2b3a40;--ac:#e2b04a;--bk:#8fb8d1;--ok:#7cc79a;--ko:#ec8a7a;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#141b1f;--sf:#1c262b;--ink:#e4e9e7;--mu:#8fa1a2;--ln:#2b3a40;--ac:#e2b04a;--bk:#8fb8d1;--ok:#7cc79a;--ko:#ec8a7a;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141b1f;--sf:#1c262b;--ink:#e4e9e7;--mu:#8fa1a2;--ln:#2b3a40;--ac:#e2b04a;--bk:#8fb8d1;--ok:#7cc79a;--ko:#ec8a7a;--land:#1e292e;--sea:#10171a;--coast:#3b4d54;--forest:#253730;--desk:#0d1215;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141b1f;--sf:#1c262b;--ink:#e4e9e7;--mu:#8fa1a2;--ln:#2b3a40;--ac:#e2b04a;--bk:#8fb8d1;--ok:#7cc79a;--ko:#ec8a7a;--land:#1e292e;--sea:#10171a;--coast:#3b4d54;--forest:#253730;--desk:#0d1215;color-scheme:dark}
+:root[data-taille="grand"]{font-size:112.5%}
+:root[data-taille="tres-grand"]{font-size:125%}
 
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.55 var(--sans);-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 [hidden]{display:none!important}
 button,input,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
+button{cursor:pointer;touch-action:manipulation}
+a{color:var(--bk)}
 :focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-.w{max-width:720px;margin:0 auto;padding-left:16px;padding-right:16px}
-h1{font:400 clamp(28px,7.4vw,38px)/1.08 var(--serif);margin:0;text-wrap:balance}
-h2{font:400 30px/1.15 var(--serif);margin:.3em 0;text-wrap:balance}
-h3{font:700 16px/1.3 var(--sans);margin:1.7em 0 .5em;text-wrap:balance}
+h2{font:400 1.875rem/1.15 var(--serif);margin:.3em 0;text-wrap:balance}
+h3{font:700 1rem/1.3 var(--sans);margin:1.7em 0 .5em;text-wrap:balance}
 p{margin:.5em 0}
 .mu{color:var(--mu)}
-.sm{font-size:15px}
-.eb{font-variant-numeric:lining-nums;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin:1.2em 0 0}
-.ct{font:400 23px/1.2 var(--serif);margin:.2em 0}
+.sm{font-size:.9rem}
+.eb{font-variant-numeric:lining-nums;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin:1.2em 0 0}
+.ct{font:400 1.45rem/1.2 var(--serif);margin:.2em 0}
 
-/* En-tête */
-.hd{padding-block:20px 4px}
-.hr{display:flex;align-items:center;gap:12px}
-.em{flex:0 0 auto;width:44px;height:44px;color:var(--ink)}
-.hr h1{flex:1;min-width:0}
-.tag{margin:8px 0 2px;text-wrap:pretty}
-.ib{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;border:1px solid var(--ln);background:var(--sf);border-radius:99px;padding:6px 13px;font-size:15px;font-weight:700}
-.ib svg,.ch svg,.pr svg{width:16px;height:16px;flex:0 0 auto}
-.pf{margin:8px 0 2px}.pf summary{cursor:pointer;color:var(--mu)}.pf label{display:flex;gap:8px;align-items:baseline;padding:6px 0}
+/* Colonne de l'application */
+.app{max-width:var(--col);margin:0 auto;min-height:100vh;background:var(--bg)}
+main{padding:2px 16px calc(var(--tabh) + 40px + env(safe-area-inset-bottom,0px))}
 
-/* Progression dans le jeu */
-.rt{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:var(--bg);border-bottom:1px solid var(--ln);margin-top:8px}
-#route{position:relative;display:flex;overflow-x:auto;scrollbar-width:none}
-#route::-webkit-scrollbar{display:none}
-.st{position:relative;flex:1 0 auto;min-width:76px;background:none;border:0;padding:10px 8px;color:var(--mu);font-size:14px;white-space:nowrap}
+/* Barre d'app */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;display:flex;align-items:center;gap:2px;height:var(--barh);padding:0 6px;background:var(--bg);border-bottom:1px solid var(--ln);user-select:none;-webkit-user-select:none}
+.bar h1{flex:1;min-width:0;margin:0 4px;font:400 1.3rem/1 var(--serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ic{display:inline-grid;place-items:center;width:44px;height:44px;flex:0 0 auto;border:0;background:none;border-radius:50%;color:var(--ink)}
+.ic svg{width:24px;height:24px}
+.ic:active{background:var(--ln)}
+.em{width:36px;height:36px}
+
+/* Onglets */
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:9;width:min(100%,var(--col));display:flex;background:var(--sf);border-top:1px solid var(--ln);padding:0 4px env(safe-area-inset-bottom,0px);user-select:none;-webkit-user-select:none}
+.tabs button{flex:1;min-width:0;height:var(--tabh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:0;border-top:3px solid transparent;margin-top:-1px;font-size:.72rem;color:var(--mu)}
+.tabs button svg{width:24px;height:24px}
+.tabs button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs button.on{color:var(--ink);font-weight:700;border-top-color:var(--ac)}
+
+/* Progression */
+.stepper{display:flex;overflow-x:auto;scrollbar-width:none;margin:6px -16px 0;padding:0 8px;border-bottom:1px solid var(--ln)}
+.stepper::-webkit-scrollbar{display:none}
+.st{position:relative;flex:1 0 auto;min-width:72px;background:none;border:0;padding:10px 8px;color:var(--mu);font-size:.85rem;white-space:nowrap}
 .st::before{content:"";position:absolute;top:18px;left:0;right:0;height:2px;background:var(--ln)}
 .st:first-child::before{left:50%}.st:last-child::before{right:50%}
 .st.done::before{background:var(--ac)}
@@ -56,127 +69,240 @@ p{margin:.5em 0}
 .st.on{color:var(--ink);font-weight:700}
 .st.on i{border-color:var(--ac);background:var(--ac)}
 .st.on i::after{content:"";position:absolute;left:50%;top:50%;width:4px;height:12px;margin:-6px 0 0 -2px;border-radius:50%;background:var(--bg)}
-
-main{padding-block:6px 120px}
-
-/* Barre d'onglets */
-.bn{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--sf);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px)}
-.bn .w{display:flex;padding-left:4px;padding-right:4px}
-.bn button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;border-top:3px solid transparent;margin-top:-1px;padding:8px 0 9px;font-size:12.5px;color:var(--mu)}
-.bn button svg{width:22px;height:22px}
-.bn button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bn button.on{color:var(--ink);font-weight:700;border-top-color:var(--ac)}
+.pend{border:1px solid var(--ac);border-radius:8px;padding:6px 14px 12px;margin:12px 0;background:var(--sf)}
 
 /* Listes */
-.ro{position:relative;display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--ln);padding:11px 0 11px 16px}
-.ro::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:5px;border-radius:3px;background:var(--bk)}
+.ro{position:relative;display:block;width:100%;min-height:52px;text-align:left;background:none;border:0;border-bottom:1px solid var(--ln);padding:11px 4px 11px 16px}
+.ro::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:5px;border-radius:3px;background:var(--bk)}
 .ro.J::before{background:var(--ac)}.ro.LJ::before{background:linear-gradient(var(--bk) 50%,var(--ac) 50%)}
-.ro b{display:block}.ro small{display:block;color:var(--mu);font-size:15px}
-.gh{display:flex;align-items:baseline;gap:8px;font:400 22px/1.2 var(--serif);margin:1.4em 0 .2em}
-.gh span{font:700 13px var(--sans);color:var(--mu)}
+.ro:active{background:var(--sf)}
+.ro b{display:block}.ro small{display:block;color:var(--mu);font-size:.9rem}
+.gh{display:flex;align-items:baseline;gap:8px;font:400 1.35rem/1.2 var(--serif);margin:1.4em 0 .2em}
+.gh span{font:700 .8rem var(--sans);color:var(--mu)}
 
 /* Pastilles et boutons */
-.ch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ln);background:none;font-size:15px;padding:4px 12px;border-radius:99px;text-align:left}
+.ch{display:inline-flex;align-items:center;gap:6px;min-height:36px;border:1px solid var(--ln);background:none;font-size:.92rem;padding:4px 13px;border-radius:99px;text-align:left}
+.ch:active{background:var(--sf)}
 .ch.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ch svg,.pr svg{width:17px;height:17px;flex:0 0 auto}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.fl{display:flex;gap:6px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}.fl .ch{flex:0 0 auto}
+.fl{display:flex;gap:6px;overflow-x:auto;padding:10px 16px 4px;margin:0 -16px;scrollbar-width:none}.fl .ch{flex:0 0 auto}
 .fl::-webkit-scrollbar{display:none}
-.pr{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);border:0;border-radius:6px;padding:10px 18px;font-weight:700}.pr:disabled{opacity:.5;cursor:default}
+.pr{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:10px 18px;font-weight:700}
+.pr:disabled{opacity:.5;cursor:default}
+.pr.wide{width:100%}
 .lnk{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline;text-decoration-color:var(--ln);text-underline-offset:3px;text-align:left}
-.lnk:hover{text-decoration-color:currentColor}
-.tb{display:flex;justify-content:space-between;gap:8px;margin:10px 0 2px}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.acts{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px -16px;padding:0 16px}
+.acts .ch{flex:0 0 auto}
+.acts::-webkit-scrollbar{display:none}
+.fake{display:flex;align-items:center;gap:10px;width:100%;min-height:46px;margin-top:10px;padding:0 14px;border:1px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--mu);text-align:left}
+.fake svg{width:20px;height:20px}
 
 /* Blocs de contenu */
 .bl{border-left:3px solid var(--bk);padding:1px 0 1px 13px;margin:12px 0}.bl.j{border-color:var(--ac)}.bl h3{margin:.4em 0 .3em}
-.sp{display:block;width:100%;text-align:left;border:1px dashed var(--mu);background:none;border-radius:6px;padding:10px 12px;margin:12px 0}
-.card{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:4px 16px 14px;margin:18px 0}
+.sp{display:block;width:100%;min-height:48px;text-align:left;border:1px dashed var(--mu);background:none;border-radius:8px;padding:10px 12px;margin:12px 0}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:4px 16px 14px;margin:18px 0}
 .card .eb{margin-top:12px}
-.hello{border-color:var(--ac)}
-.gate{border:1px dashed var(--ac);border-radius:8px;padding:4px 16px 16px;margin:18px 0}
+.card.hi{border-color:var(--ac)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:84px;text-align:left;border:1px solid var(--ln);background:var(--sf);border-radius:12px;padding:12px}
+.tile svg{width:22px;height:22px;color:var(--ac)}
+.tile b{font:400 1.12rem/1.15 var(--serif)}
+.tile small{color:var(--mu);font-size:.82rem;line-height:1.3}
+.gate{border:1px dashed var(--ac);border-radius:12px;padding:4px 16px 16px;margin:18px 0}
 .src.L{color:var(--bk)}.src.J{color:var(--ac)}.src.LJ{color:var(--ink)}
-.kv{margin:.35em 0}.kv b{display:inline-block;min-width:104px;color:var(--mu);font-weight:500}
+.lead::first-letter{float:left;font:400 3.1em/.82 var(--serif);margin:.06em .1em 0 0;color:var(--ac)}
+.kv{margin:.35em 0}.kv b{display:inline-block;min-width:6.5rem;color:var(--mu);font-weight:500}
 .sg{display:inline-flex;align-items:center;gap:5px;margin-right:12px;white-space:nowrap}.sg i{width:9px;height:9px;border-radius:50%}
-input[type=search],input[type=text],textarea{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--ln);border-radius:6px;background:var(--sf);color:var(--ink);margin-top:8px}
+input[type=search],input[type=text],textarea{width:100%;font:inherit;font-size:max(16px,1rem);padding:11px 13px;border:1px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--ink);margin-top:10px}
 textarea{resize:vertical}
 .out{white-space:pre-wrap;margin:14px 0;min-height:1.5em}
 .lx{border-bottom:1px solid var(--ln);padding:10px 0}
-.lx p{margin:.15em 0}.lx b{font:400 21px var(--serif);margin-right:6px}
+.lx p{margin:.15em 0}.lx b{font:400 1.3rem var(--serif);margin-right:6px}
+.note{font-size:.82rem;color:var(--mu);margin-top:-.2em}
+
+/* Illustrations */
+.fig{margin:16px 0}
+.fig button{display:block;width:100%;padding:0;border:0;background:none}
+.fig img{display:block;width:100%;height:auto;max-height:420px;object-fit:cover;border-radius:10px;border:1px solid var(--ln);background:var(--sf)}
+.fig figcaption{font-size:.8rem;color:var(--mu);margin-top:6px}
+.srcard{border-bottom:1px solid var(--ln);padding:6px 0 16px}
+.srcard .ct{margin-top:.4em}
+.lb{position:fixed;inset:0;z-index:50;background:rgb(6 10 12 / .92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));color:#e4e9e7}
+.lb img{max-width:100%;max-height:78vh;object-fit:contain;border-radius:6px}
+.lb p{font-size:.9rem;text-align:center;max-width:var(--col)}
+.lb .ch{color:#e4e9e7;border-color:#52666a;margin-top:6px}
 
 /* Frises */
 .tl{border-left:2px solid var(--ln);margin:14px 0 0 6px}
 .ti{position:relative;padding:0 0 20px 18px}
 .ti::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--bk)}
 .ti.J::before{background:var(--ac)}
-.ti b{font:400 19px var(--serif)}
+.ti b{font:400 1.18rem var(--serif)}
 
 /* Livres */
-.seg{display:flex;gap:4px;border:1px solid var(--ln);border-radius:99px;padding:3px;margin:12px 0 6px;overflow-x:auto;scrollbar-width:none}
-.seg button{flex:1 0 auto;background:none;border:0;border-radius:99px;padding:6px 12px;font-size:15px;color:var(--mu)}
+.seg{display:flex;gap:4px;border:1px solid var(--ln);border-radius:99px;padding:3px;margin:12px 0 6px}
+.seg button{flex:1;min-width:0;min-height:38px;background:none;border:0;border-radius:99px;padding:6px 4px;font-size:.88rem;color:var(--mu)}
 .seg button.on{background:var(--ink);color:var(--bg);font-weight:700}
-.prog{display:flex;align-items:center;gap:12px;margin:14px 0;font-size:15px;color:var(--mu);font-variant-numeric:lining-nums tabular-nums}
-.bar{flex:1;height:6px;border-radius:3px;background:var(--ln);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--ac)}
+.prog{display:flex;align-items:center;gap:12px;margin:14px 0;font-size:.9rem;color:var(--mu);font-variant-numeric:lining-nums tabular-nums}
+.bar-p{flex:1;height:6px;border-radius:3px;background:var(--ln);overflow:hidden}
+.bar-p i{display:block;height:100%;background:var(--ac)}
 .books{list-style:none;margin:0;padding:0}
-.books li{display:grid;grid-template-columns:44px 1fr;gap:4px 10px;border-bottom:1px solid var(--ln);padding:14px 0}
-.books .num{font:400 34px/1 var(--serif);color:var(--bk);font-variant-numeric:lining-nums tabular-nums;padding-top:4px}
+.books li{display:grid;grid-template-columns:40px 1fr;gap:4px 10px;border-bottom:1px solid var(--ln);padding:14px 0}
+.books .num{font:400 2rem/1 var(--serif);color:var(--bk);font-variant-numeric:lining-nums tabular-nums;padding-top:4px}
 .books li.lu .num{color:var(--ac)}
 .books .bi{min-width:0}
-.books .ct{font-size:22px}
+.books .ct{font-size:1.35rem}
+
+/* Lignée */
+.tree{display:flex;flex-direction:column;align-items:center;margin:18px 0 8px;text-align:center}
+.gen{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.node{min-width:118px;max-width:46%;border:1px solid var(--ln);background:var(--sf);border-radius:10px;padding:8px 10px;font:inherit;text-align:center}
+.node b{display:block;font:400 1.1rem/1.15 var(--serif)}
+.node small{display:block;color:var(--mu);font-size:.78rem;line-height:1.3;margin-top:2px}
+.node.k{border-color:var(--bk)}
+.node.me{border:2px solid var(--ac)}
+.node.plain{background:none;border-style:dashed}
+.amp{color:var(--mu);font:italic 400 1rem var(--serif)}
+.ln{width:2px;height:22px;background:var(--ln)}
+.ln.dash{background:none;border-left:2px dashed var(--ln)}
+.gap{font-size:.82rem;color:var(--mu);max-width:280px;margin:4px 0}
+
+/* Carte */
+.mapw{position:relative;margin:10px -16px 0;background:var(--sea);border-block:1px solid var(--ln);overflow:hidden}
+#map{display:block;width:100%;height:auto;aspect-ratio:400/560;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+#map .land{fill:var(--land);stroke:var(--coast);stroke-width:1.2}
+#map .riv{fill:none;stroke:var(--bk);stroke-width:1.6;stroke-linecap:round;opacity:.75}
+#map .mt{fill:none;stroke:var(--mu);stroke-width:1.1;stroke-linejoin:round;opacity:.65}
+#map .fo{fill:var(--forest)}
+#map .rg{font-family:var(--serif);font-style:italic;fill:var(--mu);letter-spacing:.08em;text-transform:uppercase;text-anchor:middle;pointer-events:none}
+#map .rg.mer{letter-spacing:.2em}
+#map .rl{font-family:var(--serif);font-style:italic;fill:var(--bk);pointer-events:none}
+#map .pin{cursor:pointer}
+#map .pin .dot{fill:var(--bk);stroke:var(--land);stroke-width:2}
+#map .pin.J .dot{fill:var(--ac)}
+#map .pin.LJ .dot{fill:var(--ink)}
+#map .pin text{font:600 11px var(--sans);fill:var(--ink);paint-order:stroke;stroke:var(--land);stroke-width:3px;stroke-linejoin:round}
+#map .pin .hit{fill:transparent}
+#map .pin.sel .dot{stroke:var(--ac);stroke-width:3}
+#map .ring{fill:none;stroke:var(--ac);stroke-width:2;transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion:no-preference){#map .ring{animation:ring 2s ease-out infinite}}
+@keyframes ring{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.5);opacity:0}}
+.mapctl{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:6px}
+.mapctl .ic{background:var(--sf);border:1px solid var(--ln)}
+.mapcard{position:absolute;left:10px;right:10px;bottom:10px;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:8px 14px 12px;box-shadow:0 6px 24px rgb(0 0 0 / .18)}
+.mapcard .ct{margin:.2em 0 0}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85rem;color:var(--mu);margin:10px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:baseline}
 
 /* Quiz */
-.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:14px 0}
-.cards .card{margin:0}
-.qq{font:400 23px/1.3 var(--serif);margin:14px 0 10px;text-wrap:balance}
+.qq{font:400 1.45rem/1.3 var(--serif);margin:14px 0 10px;text-wrap:balance}
 .opts{display:grid;gap:8px;margin:10px 0}
-.opt{text-align:left;border:1px solid var(--ln);background:var(--sf);border-radius:8px;padding:11px 14px}
-.opt:disabled{cursor:default}
+.opt{min-height:50px;text-align:left;border:1px solid var(--ln);background:var(--sf);border-radius:10px;padding:11px 14px}
+.opt:disabled{cursor:default;color:inherit}
 .opt.good{border-color:var(--ok);box-shadow:inset 4px 0 0 var(--ok)}
 .opt.bad{border-color:var(--ko);box-shadow:inset 4px 0 0 var(--ko)}
 .fb{font-weight:700}.fb.ok{color:var(--ok)}.fb.ko{color:var(--ko)}
 .res{text-align:center;padding-block:10px 18px}
-.big{font:400 72px/1 var(--serif);margin:14px 0 0;font-variant-numeric:lining-nums tabular-nums}.big span{font-size:32px;color:var(--mu)}
+.big{font:400 4.5rem/1 var(--serif);margin:14px 0 0;font-variant-numeric:lining-nums tabular-nums}.big span{font-size:2rem;color:var(--mu)}
 .recap{list-style:none;padding:0;margin:8px 0}
-.recap li{border-bottom:1px solid var(--ln);padding:8px 0 8px 26px;position:relative;font-size:15px}
+.recap li{border-bottom:1px solid var(--ln);padding:8px 0 8px 26px;position:relative;font-size:.92rem}
 .recap li::before{position:absolute;left:0;top:8px;font-weight:700}
 .recap li.ok::before{content:"✓";color:var(--ok)}.recap li.ko::before{content:"✗";color:var(--ko)}
 
-/* Partage */
-.ov{position:fixed;inset:0;z-index:20;background:rgb(10 16 19 / .5);display:flex;align-items:flex-end;justify-content:center}
-.sheet{width:100%;max-width:520px;max-height:90vh;overflow:auto;background:var(--sf);color:var(--ink);border-radius:14px 14px 0 0;padding:6px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgb(0 0 0 / .25)}
-@media (min-width:700px){.ov{align-items:center}.sheet{border-radius:14px;padding-bottom:18px}}
+/* Réglages */
+.set{margin:4px 0 22px}
+.set h3{margin:1.4em 0 .4em}
+.line{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;border-bottom:1px solid var(--ln);padding:6px 0}
+.line>span{min-width:0}
+.line small{display:block;color:var(--mu);font-size:.85rem}
+.sw{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:48px;height:28px;border-radius:99px;background:var(--ln);position:relative;margin:0;cursor:pointer;transition:background-color .15s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--bg);transition:transform .15s}
+.sw:checked{background:var(--ac)}
+.sw:checked::after{transform:translateX(20px)}
+.pick{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;text-align:left;border:0;border-bottom:1px solid var(--ln);background:none;padding:8px 2px}
+.pick i{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--ln)}
+.pick[aria-pressed="true"] i{border:7px solid var(--ac)}
+.pick span{min-width:0}
+.pick small{display:block;color:var(--mu);font-size:.85rem}
+.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
+.steps li{counter-increment:s;position:relative;padding:4px 0 8px 34px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:3px;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:.8rem;font-weight:700;display:grid;place-items:center}
+
+/* Accueil guidé */
+.onb{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;justify-content:center;overflow:auto}
+.onbc{width:100%;max-width:var(--col);min-height:100%;display:flex;flex-direction:column;padding:calc(24px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px))}
+.onbc .grow{flex:1}
+.onbc h2{font-size:2.1rem}
+.dots{display:flex;gap:6px;justify-content:center;margin:12px 0}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--ln)}
+.dots i.on{background:var(--ac);width:22px;border-radius:4px}
+.onbb{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:10px}
+.hero{display:flex;justify-content:center;margin:12px 0 6px}
+.hero svg{width:112px;height:112px;color:var(--ink)}
+.feat{list-style:none;padding:0;margin:14px 0}
+.feat li{display:flex;gap:12px;align-items:flex-start;padding:8px 0}
+.feat svg{flex:0 0 auto;width:24px;height:24px;color:var(--ac);margin-top:2px}
+
+/* Partage, messages */
+.ov{position:fixed;inset:0;z-index:30;background:rgb(10 16 19 / .5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:var(--col);max-height:90vh;overflow:auto;background:var(--sf);color:var(--ink);border-radius:16px 16px 0 0;padding:6px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgb(0 0 0 / .25)}
 .shh{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .cp{display:flex;gap:8px;align-items:stretch}
 .cp input{margin:0;min-width:0;flex:1}
 .qrw{display:flex;flex-direction:column;align-items:center;margin:12px 0 4px}
 .qrw canvas{width:200px;height:200px;border-radius:8px;border:1px solid var(--ln)}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;max-width:calc(100% - 32px);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:15px;font-weight:700;text-align:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 16px + env(safe-area-inset-bottom,0px));z-index:35;width:max-content;max-width:min(calc(100% - 32px),400px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:.92rem;font-weight:700;text-align:center;display:flex;align-items:center;gap:10px}
+.toast button{background:none;border:1px solid var(--bg);color:var(--bg);border-radius:99px;padding:2px 10px;font-weight:700}
+.ft{border-top:1px solid var(--ln);margin-top:40px;padding-top:10px;font-size:.85rem;color:var(--mu)}
 
-.ft{border-top:1px solid var(--ln);margin-top:40px;padding-top:10px;font-size:14px;color:var(--mu)}
+/* Grand écran : la colonne garde sa taille de téléphone */
+.desk{display:none}
+@media (min-width:900px){
+  body{background:var(--desk)}
+  .app{box-shadow:0 0 0 1px var(--ln),0 20px 60px rgb(0 0 0 / .18)}
+  .desk{display:flex;flex-direction:column;gap:10px;position:fixed;top:50%;transform:translateY(-50%);right:calc(50% + var(--col) / 2 + 48px);width:300px;color:var(--ink)}
+  .desk h2{font-size:2.2rem}
+  .desk canvas{width:180px;height:180px;border-radius:10px;border:1px solid var(--ln);background:#fff}
+}
 
-@media (min-width:760px){body{font-size:18px}}
-@media (prefers-reduced-motion:no-preference){.opt,.ch,.seg button{transition:background-color .15s,border-color .15s}}
+/* Transitions entre les vues */
+@media (prefers-reduced-motion:no-preference){
+  .bar{view-transition-name:bar}
+  .tabs{view-transition-name:tabs}
+  ::view-transition-old(bar),::view-transition-new(bar),::view-transition-old(tabs),::view-transition-new(tabs){animation:none}
+  html[data-nav="push"]::view-transition-old(root){animation:.2s ease both vt-out-l}
+  html[data-nav="push"]::view-transition-new(root){animation:.24s ease both vt-in-r}
+  html[data-nav="pop"]::view-transition-old(root){animation:.2s ease both vt-out-r}
+  html[data-nav="pop"]::view-transition-new(root){animation:.24s ease both vt-in-l}
+  html[data-nav="tab"]::view-transition-old(root){animation:.12s ease both vt-fade-out}
+  html[data-nav="tab"]::view-transition-new(root){animation:.16s ease both vt-fade-in}
+  .opt,.ch,.seg button{transition:background-color .15s,border-color .15s}
+}
+@keyframes vt-in-r{from{transform:translateX(28%);opacity:0}}
+@keyframes vt-out-l{to{transform:translateX(-10%);opacity:0}}
+@keyframes vt-in-l{from{transform:translateX(-10%);opacity:0}}
+@keyframes vt-out-r{to{transform:translateX(28%);opacity:0}}
+@keyframes vt-fade-in{from{opacity:0}}
+@keyframes vt-fade-out{to{opacity:0}}
 </style>
-<header class="w hd">
-<div class="hr">
-<svg class="em" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="var(--ac)" stroke-width="2"/><circle cx="24" cy="24" r="18.5" fill="none" stroke="var(--ln)" stroke-width="1"/><g fill="none" stroke-linecap="round" stroke-width="2.2"><path d="M16.5 31.2L33 13M31.5 31.2L15 13" stroke="currentColor"/><path d="M13.5 28.5l6 5.4M34.5 28.5l-6 5.4M16.5 31.2l-3.3 3.6M31.5 31.2l3.3 3.6" stroke="var(--ac)"/></g></svg>
-<h1>Compagnon du Sorceleur</h1>
-<button class="ib" id="share-open" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg>Partager</button>
+<div class="app" id="app">
+<header class="bar" id="bar"></header>
+<main id="main"></main>
 </div>
-<p class="mu tag">Le lore des livres de Sapkowski, au rythme de votre partie de The Witcher 3.</p>
-<details class="pf"><summary>Réglages de la partie</summary>
-<label><input type="checkbox" id="o-hos"> J'ai commencé Hearts of Stone</label>
-<label><input type="checkbox" id="o-bw"> J'ai commencé Blood and Wine</label>
-<label><input type="checkbox" id="o-sp"> Afficher les spoilers de la fin des livres</label>
-</details>
-</header>
-<div class="rt"><div class="w"><nav id="route" aria-label="Où en êtes-vous dans le jeu ?"></nav></div></div>
-<main class="w" id="main"></main>
-<nav class="bn" aria-label="Sections"><div class="w" id="tabs"></div></nav>
+<nav class="tabs" id="tabs" aria-label="Sections"></nav>
+<aside class="desk" aria-label="Ouvrir sur téléphone">
+<h2>Compagnon du Sorceleur</h2>
+<p class="mu">Une application pensée pour le téléphone, à garder près de la manette. Scannez ce code pour l'ouvrir, puis ajoutez-la à votre écran d'accueil.</p>
+<canvas id="desk-qr" width="360" height="360" role="img" aria-label="QR code pour ouvrir le compagnon sur téléphone" hidden></canvas>
+</aside>
 <div class="ov" id="sheet" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t">
 <div class="shh"><h2 id="sh-t">Partager</h2><button class="ch" id="sh-x">Fermer</button></div>
 <div id="sh-body"></div>
 </div></div>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Illustration" hidden></div>
+<div class="onb" id="onb" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script>
 /* Données du Compagnon du Sorceleur.
@@ -253,6 +379,7 @@ entrees: [
   role: "Sorceleur formé à Kaer Morhen",
   resume: "Chasseur de monstres aux cheveux blancs et aux yeux de chat, héros de toute la saga. Il se veut neutre et professionnel, mais sa conscience le pousse sans cesse à prendre parti.",
   livres: "Enfant, il est confié aux sorceleurs de Kaer Morhen ; les livres laissent entendre que sa mère est Visenna, une guérisseuse-magicienne. Il supporte si bien l'Épreuve des Herbes qu'on lui fait subir des mutations supplémentaires, qui blanchissent ses cheveux. Il s'est choisi lui-même le nom « de Riv » pour inspirer confiance. Le drame de Blaviken lui vaut une sinistre réputation, le djinn du « Dernier Vœu » lie son destin à celui de Yennefer, et la Loi de la Surprise à celui de Ciri. Toutes ses juments s'appellent Ablette.",
+  rl: "dame-lac",
   rev: "Pendant la guerre, il défend la reine Meve lors de la bataille du pont sur la Yaruga ; elle l'adoube, et « Geralt de Riv » devient un vrai titre. À la fin de « La Dame du Lac », il est grièvement blessé lors d'un pogrom à Riv ; Ciri l'emporte avec Yennefer vers une île noyée de brume, dans une fin volontairement ambiguë que les jeux ont prolongée.",
   jeu: [{ c: 0, t: "Amnésique dans le premier jeu, il a retrouvé la mémoire dans le deuxième. Dans TW3, il suit d'abord la piste de Yennefer, puis celle de Ciri." }],
   dans: ["dernier-voeu", "epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac", "saison-orages", "croisee"],
@@ -262,6 +389,7 @@ entrees: [
   role: "Princesse de Cintra, porteuse du Sang Ancien",
   resume: "Petite-fille de la reine Calanthe et « enfant surprise » de Geralt. Élevée par des sorceleurs, formée à la magie par des magiciennes, elle porte un pouvoir que convoitent les rois, les mages… et un autre monde.",
   livres: "Rescapée de la chute de Cintra, elle retrouve Geralt, qui l'emmène à Kaer Morhen : les sorceleurs l'entraînent à l'épée, Triss puis Yennefer lui enseignent la magie. Ciri est une Source : le Sang Ancien hérité de l'elfe Lara Dorren lui donne sur l'espace et le temps un pouvoir qu'elle ne contrôle pas encore, et ses transes prennent parfois la forme de prophéties. Les elfes l'appellent Zireael, « hirondelle ».",
+  rl: "dame-lac",
   rev: "Lors du chaos de Thanedd, un portail instable la jette dans le désert de Korath. Elle se fond ensuite parmi les Rats, une bande de jeunes hors-la-loi, sous le nom de Falka, avant d'être capturée par le chasseur de primes Leo Bonhart. Elle lui échappe par la Tour de l'Hirondelle, qui la conduit dans le monde des Aen Elle ; elle y apprend à voyager entre les mondes et les époques, puis revient à temps pour l'assaut de Stygga, où elle tue Bonhart et découvre qui est son père. La saga se referme sur une Ciri voyageuse, de passage dans un monde de chevaliers.",
   jeu: [
     { c: 0, t: "Adulte et traquée par la Chasse sauvage, elle est le fil rouge de TW3 : la retrouver occupe tout le jeu, et plusieurs séquences se jouent avec elle." },
@@ -274,6 +402,7 @@ entrees: [
   role: "Magicienne, grand amour de Geralt",
   resume: "Magicienne puissante, fière et tranchante, aux yeux violets et vêtue de noir et de blanc. Son lien avec Geralt est le cœur battant de la saga, et elle devient une mère pour Ciri.",
   livres: "Née bossue, avec du sang elfe, elle est cédée enfant à l'école d'Aretuza, où Tissaia de Vries la forme ; la magie corrige son apparence. Comme beaucoup de magiciennes, elle ne peut pas avoir d'enfant et cherche obstinément un remède, jusqu'à se joindre à une chasse au dragon dans « Les Limites du possible ». Dans « Le Dernier Vœu », elle tente de s'emparer du pouvoir d'un djinn, et le dernier vœu de Geralt les lie. Dans « Le Sang des elfes », elle devient la mentore de Ciri. Son parfum : lilas et groseilles.",
+  rl: "dame-lac",
   rev: "Après Thanedd, soupçonnée de trahison, elle part seule sur la piste de Ciri et tombe aux mains de Vilgefortz, qui la retient prisonnière. Libérée lors de l'assaut de Stygga, elle reste aux côtés de Geralt jusqu'au drame de Riv.",
   jeu: [{ c: 0, t: "Dans TW3, elle collabore avec l'empereur Emhyr pour retrouver Ciri : c'est sa piste que Geralt suit au Verger Blanc. Romance possible." }],
   dans: ["dernier-voeu", "epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
@@ -283,6 +412,7 @@ entrees: [
   role: "Magicienne de Temeria",
   resume: "Magicienne chaleureuse à la chevelure châtain-roux, amie fidèle de Geralt et de Yennefer, et parfois rivale de celle-ci. Elle a joué un rôle clé dans l'éducation de Ciri.",
   livres: "On la surnomme « la Quatorzième de la Colline » : grièvement blessée à la bataille de Sodden, elle a été crue morte, et son nom figure par erreur sur le monument aux magiciens tombés. Dans « Le Sang des elfes », elle rejoint Kaer Morhen, comprend que Ciri est une Source et commence à la former, avant de prendre la route avec elle et Geralt.",
+  rl: "bapteme-feu",
   rev: "Après Thanedd, c'est elle qui téléporte Geralt, grièvement blessé, jusqu'à Brokilon. Elle entre ensuite dans la Loge des Magiciennes, tiraillée entre ses amis et les ambitions de la Loge.",
   jeu: [{ c: 2, t: "Dans TW3, elle se cache à Novigrad, où les chasseurs de sorcières traquent les mages. Romance possible." }],
   dans: ["sang-elfes", "temps-mepris", "bapteme-feu", "dame-lac"],
@@ -292,6 +422,7 @@ entrees: [
   role: "Barde, meilleur ami de Geralt",
   resume: "Poète, séducteur incorrigible et témoin bavard des aventures du sorceleur. Ses ballades façonnent la légende de Geralt.",
   livres: "De son vrai nom Julian Alfred Pankratz, vicomte de Lettenhove, il a étudié à l'académie d'Oxenfurt. Il accompagne Geralt dans de nombreuses nouvelles (« Le Bout du monde », « Le Dernier Vœu », « Le Feu éternel »…), et ses mémoires, « Un demi-siècle de poésie », servent souvent de source dans la saga.",
+  rl: "dame-lac",
   rev: "Il traverse la guerre aux côtés de Geralt, avec Milva, Regis et Cahir, et survit à la saga. Pendant l'hiver en Toussaint, il devient l'amant de la duchesse Anna Henrietta.",
   jeu: [
     { c: 0, t: "Le journal de quêtes de TW3 est rédigé de sa plume." },
@@ -329,6 +460,7 @@ entrees: [
   role: "Sorceleur invité à Kaer Morhen",
   resume: "Sorceleur invité à passer l'hiver à Kaer Morhen, avec Vesemir, Eskel et Lambert.",
   livres: "Il aide à former Ciri dans « Le Sang des elfes ».",
+  rl: "dame-lac",
   rev: "Il meurt à la bataille de Brenna, dans « La Dame du Lac ».",
   jeu: [{ c: 0, t: "Absent de TW3." }],
   dans: ["sang-elfes", "dame-lac"],
@@ -338,6 +470,7 @@ entrees: [
   role: "Reine de Cintra, grand-mère de Ciri",
   resume: "Souveraine redoutable et fière, surnommée la Lionne de Cintra.",
   livres: "Dans « Une question de prix », elle préside le banquet où sa fille Pavetta doit choisir un prétendant, jusqu'à l'irruption de Duny. Remariée à Eist Tuirseach de Skellige, elle se méfie longtemps de Geralt et de la Loi de la Surprise qui le lie à sa petite-fille.",
+  rl: "epee-providence",
   rev: "Lors de l'invasion nilfgaardienne, son armée est battue à Marnadal ; elle meurt pendant la prise de Cintra, en refusant d'être capturée.",
   dans: ["dernier-voeu", "epee-providence"],
   voir: ["ciri", "pavetta", "eist", "cintra"] },
@@ -346,6 +479,7 @@ entrees: [
   role: "Princesse de Cintra, mère de Ciri",
   resume: "Fille unique de Calanthe, discrète et rêveuse, mais dotée d'un don redoutable.",
   livres: "Elle est promise à Duny, le chevalier maudit, en vertu d'une Loi de la Surprise invoquée des années plus tôt. Lors du banquet de Cintra, ses pouvoirs de Source se déchaînent : c'est d'elle que Ciri tient son don.",
+  rl: "dame-lac",
   rev: "Pavetta et Duny disparaissent dans un naufrage, dans le gouffre de Sedna, alors que Ciri est encore enfant. La vérité sur ce naufrage n'apparaît qu'à la fin de la saga.",
   dans: ["dernier-voeu"],
   voir: ["calanthe", "duny", "ciri", "sang-ancien", "sources"] },
@@ -354,6 +488,7 @@ entrees: [
   role: "Chevalier maudit, époux de Pavetta",
   resume: "Un chevalier masqué à tête de hérisson qui surgit au banquet de Cintra pour réclamer son dû.",
   livres: "Victime d'un sort, il a l'apparence d'un hérisson le jour. Au banquet de Cintra, il réclame la main de Pavetta en vertu de la Loi de la Surprise ; Geralt l'aide à faire valoir son droit, et la malédiction est levée. En remerciement, Geralt réclame à son tour ce que Duny possède sans le savoir.",
+  rl: "dame-lac",
   rev: "Duny n'est autre qu'Emhyr var Emreis, héritier déchu de Nilfgaard et futur empereur : le père de Ciri. La saga ne le révèle pleinement qu'à son dénouement.",
   dans: ["dernier-voeu", "dame-lac"],
   voir: ["pavetta", "emhyr", "loi-surprise", "calanthe"] },
@@ -362,6 +497,7 @@ entrees: [
   role: "Empereur de Nilfgaard",
   resume: "Souverain froid et calculateur de l'empire du Sud, dont les armées envahissent le Nord. Son nom complet signifie « la Flamme Blanche qui danse sur les tumulus de ses ennemis ».",
   livres: "Il veut à tout prix mettre la main sur Ciri : ses agents la traquent pendant toute la saga, et Nilfgaard va jusqu'à présenter une fausse Cirilla à la cour.",
+  rl: "dame-lac",
   rev: "Emhyr est Duny, le père de Ciri. Il voulait Ciri pour réaliser la prophétie liée au Sang Ancien ; à Stygga, face à elle, il renonce et la laisse partir, puis épouse la fausse Cirilla pour raisons d'État.",
   jeu: [
     { c: 0, t: "Dans le prologue, il reçoit Geralt à Vizima et l'engage pour retrouver Ciri." },
@@ -373,6 +509,7 @@ entrees: [
   role: "Jarl de Skellige, époux de Calanthe",
   resume: "Jarl des îles Skellige, devenu roi consort de Cintra.",
   livres: "Présent au banquet d'« Une question de prix », il épouse ensuite Calanthe, scellant l'alliance de Cintra et de Skellige.",
+  rl: "sang-elfes",
   rev: "Il tombe à la bataille de Marnadal, face à Nilfgaard.",
   dans: ["dernier-voeu", "epee-providence"],
   voir: ["calanthe", "skellige"] },
@@ -404,6 +541,7 @@ entrees: [
   role: "Barbier-chirurgien très singulier",
   resume: "Érudit, courtois et pince-sans-rire, il se présente comme barbier-chirurgien et soigne les blessés de la compagnie.",
   livres: "Il rejoint Geralt dans « Le Baptême du feu ». Il distille une eau-de-vie de mandragore mémorable et nourrit la route de conversations philosophiques.",
+  rl: "dame-lac",
   rev: "C'est un vampire supérieur, qui a renoncé au sang. Il est détruit par Vilgefortz lors de l'assaut de Stygga.",
   jeu: [{ d: "bw", c: 1, t: "Dans Blood and Wine, Regis est de retour : un autre vampire supérieur l'a patiemment ramené à la vie." }],
   dans: ["bapteme-feu", "tour-hirondelle", "dame-lac"],
@@ -413,6 +551,7 @@ entrees: [
   role: "Archère, amie des dryades",
   resume: "Archère hors pair, farouche et généreuse, qui sert de guide aux dryades de Brokilon.",
   livres: "De son vrai nom Maria Barring, elle conduit les Scoia'tael blessés jusqu'à Brokilon pour qu'ils y soient soignés. Elle rejoint Geralt dans « Le Baptême du feu ».",
+  rl: "dame-lac",
   rev: "Elle meurt lors de l'assaut de Stygga.",
   jeu: [{ c: 0, t: "Absente de TW3." }],
   dans: ["bapteme-feu", "tour-hirondelle", "dame-lac"],
@@ -422,6 +561,7 @@ entrees: [
   role: "Chevalier nilfgaardien",
   resume: "Le chevalier au heaume ailé qui hante les cauchemars de Ciri : c'est lui qui l'a emportée hors de Cintra en flammes.",
   livres: "Chargé de capturer Ciri, il échoue à Cintra puis à Thanedd, où elle le blesse. Tombé en disgrâce, il finit par rejoindre la compagnie de Geralt, qui l'accepte de mauvaise grâce.",
+  rl: "dame-lac",
   rev: "Il meurt à Stygga, tué par Leo Bonhart.",
   dans: ["temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
   voir: ["ciri", "cintra", "nilfgaard", "bonhart"] },
@@ -429,6 +569,7 @@ entrees: [
 { id: "angouleme", t: "perso", src: "L", nom: "Angoulême", alias: [],
   role: "Jeune hors-la-loi",
   resume: "Gouailleuse et intrépide, elle rejoint la compagnie de Geralt dans la dernière partie de la saga.",
+  rl: "dame-lac",
   rev: "Elle meurt lors de l'assaut de Stygga.",
   dans: ["tour-hirondelle", "dame-lac"],
   voir: ["geralt", "milva"] },
@@ -437,6 +578,7 @@ entrees: [
   role: "Chasseur de primes",
   resume: "Bretteur redoutable et cruel, peut-être le plus dangereux adversaire de la saga.",
   livres: "Redoutable bretteur, il traque Ciri à travers un pays en guerre et finit par la capturer.",
+  rl: "dame-lac",
   rev: "Ciri le tue lors de l'affrontement final à Stygga.",
   dans: ["tour-hirondelle", "dame-lac"],
   voir: ["ciri", "medaillon", "vilgefortz"] },
@@ -445,6 +587,7 @@ entrees: [
   role: "Magicien du Chapitre",
   resume: "Brillant, séduisant et respecté, l'un des magiciens les plus puissants du Nord.",
   livres: "Membre éminent du Chapitre, il passe pour un modèle de sagesse auprès de ses pairs.",
+  rl: "dame-lac",
   rev: "Il orchestre le coup de Thanedd en allié secret de Nilfgaard et écrase Geralt en duel. Son agent Rience traque Ciri depuis « Le Sang des elfes » : il veut s'approprier le pouvoir de son Sang Ancien. Geralt le tue dans son repaire de Stygga.",
   dans: ["temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
   voir: ["thanedd", "rience", "conseil", "stygga"] },
@@ -453,6 +596,7 @@ entrees: [
   role: "Espion et mage",
   resume: "Un mystérieux agent qui recherche Ciri et ne recule devant rien pour obtenir des informations.",
   livres: "Dans « Le Sang des elfes », il traque ceux qui pourraient savoir où se cache Ciri, à commencer par Jaskier.",
+  rl: "temps-mepris",
   rev: "Il travaille pour Vilgefortz.",
   dans: ["sang-elfes", "temps-mepris"],
   voir: ["vilgefortz", "jaskier"] },
@@ -461,6 +605,7 @@ entrees: [
   role: "Magicienne de Redanie",
   resume: "Conseillère du roi de Redanie, ambitieuse et manipulatrice, capable de prendre la forme d'une chouette.",
   livres: "À Thanedd, elle mène la contre-offensive contre les magiciens traîtres, de concert avec l'espion Dijkstra.",
+  rl: "bapteme-feu",
   rev: "Elle fonde la Loge des Magiciennes, un cercle secret qui entend tirer les ficelles de la politique du Nord et voit en Ciri un atout.",
   jeu: [{ c: 5, t: "Dans TW3, Radovid l'a fait aveugler ; elle conspire contre lui." }],
   dans: ["sang-elfes", "temps-mepris", "bapteme-feu", "dame-lac"],
@@ -493,6 +638,7 @@ entrees: [
   role: "Sage des Aen Elle",
   resume: "Elfe savant et insaisissable, qui semble toujours en savoir plus qu'il ne le dit.",
   livres: "Savant et conseiller du roi Auberon, il connaît l'histoire de Lara Dorren et du Sang Ancien mieux que personne. Dans « La Dame du Lac », il accueille Ciri dans le monde des Aen Elle.",
+  rl: "dame-lac",
   rev: "Il joue un double jeu : il veut que Ciri serve à rendre le Sang Ancien à son peuple. Elle finit par lui échapper.",
   jeu: [{ c: 5, t: "Dans TW3, il protège Ciri pour ses propres desseins ; c'est lui qui se cachait sous les traits d'Uma." }],
   dans: ["dame-lac"],
@@ -502,6 +648,7 @@ entrees: [
   role: "Chef de la Chasse sauvage",
   resume: "Commandant des cavaliers rouges des Aen Elle, ceux que les humains appellent la Chasse sauvage.",
   livres: "Il apparaît dans « La Dame du Lac », ambitieux et méprisant envers les humains.",
+  rl: "dame-lac",
   rev: "À la mort du vieux roi Auberon, Eredin s'impose à la tête des siens ; les jeux affirment qu'il l'a empoisonné.",
   jeu: [{ c: 0, t: "Principal antagoniste de TW3." }],
   dans: ["dame-lac"],
@@ -510,6 +657,7 @@ entrees: [
 { id: "auberon", t: "perso", src: "L", nom: "Auberon Muircetach", alias: ["le Roi des Aulnes"],
   role: "Roi des Aen Elle",
   resume: "Souverain âgé et mélancolique des Aen Elle.",
+  rl: "dame-lac",
   rev: "Il est au cœur des projets d'Avallac'h pour récupérer le Sang Ancien ; sa mort bouleverse la cour de Tir ná Lia.",
   dans: ["dame-lac"],
   voir: ["aen-elle", "eredin", "avallach"] },
@@ -540,6 +688,7 @@ entrees: [
 { id: "tissaia", t: "perso", src: "L", nom: "Tissaia de Vries", alias: [],
   role: "Rectrice d'Aretuza",
   resume: "Magicienne d'une rigueur légendaire, à la tête de l'école d'Aretuza et mentore de Yennefer.",
+  rl: "temps-mepris",
   rev: "Bouleversée par le coup de Thanedd, elle n'y survit pas.",
   dans: ["temps-mepris"],
   voir: ["yennefer", "thanedd", "conseil"] },
@@ -547,6 +696,7 @@ entrees: [
 { id: "francesca", t: "perso", src: "L", nom: "Francesca Findabair", alias: ["Enid an Gleanna", "la Pâquerette des Vallées"],
   role: "Magicienne elfe",
   resume: "Réputée la plus belle femme du monde, magicienne et défenseure de la cause elfe.",
+  rl: "bapteme-feu",
   rev: "Pour prix de son ralliement à Nilfgaard, Emhyr lui offre un royaume elfe à Dol Blathanna. Elle rejoint la Loge.",
   dans: ["temps-mepris", "bapteme-feu", "dame-lac"],
   voir: ["dol-blathanna", "loge", "scoiatael"] },
@@ -570,6 +720,7 @@ entrees: [
   role: "Duchesse de Toussaint",
   resume: "Souveraine de Toussaint, fantasque et passionnée.",
   livres: "Dans « La Dame du Lac », elle accueille la compagnie de Geralt pendant l'hiver.",
+  rl: "dame-lac",
   rev: "Jaskier devient son amant.",
   jeu: [{ d: "bw", c: 1, t: "Dans Blood and Wine, elle fait appel à Geralt pour mettre fin à une série de meurtres dans son duché." }],
   dans: ["dame-lac"],
@@ -714,6 +865,7 @@ entrees: [
   role: "Île des magiciens",
   resume: "Île proche de la ville de Gors Velen, qui abrite l'école de magie d'Aretuza et le palais de Garstang.",
   livres: "Théâtre du conclave des magiciens dans « Le Temps du mépris ».",
+  rl: "temps-mepris",
   rev: "Le conclave tourne au coup d'État : Vilgefortz et des mages ralliés à Nilfgaard affrontent leurs confrères. Ciri s'enfuit par le portail de la tour de Tor Lara, qui la jette loin de là.",
   dans: ["temps-mepris"],
   voir: ["vilgefortz", "tissaia", "conseil", "temps-mepris", "korath"] },
@@ -727,6 +879,7 @@ entrees: [
 { id: "riv", t: "lieu", src: "L", nom: "Riv", alias: ["Rivia"],
   role: "Ville du royaume de Lyria et Rivia",
   resume: "Petite ville du royaume de Lyria et Rivia, dont Geralt a fait son « nom de famille ».",
+  rl: "dame-lac",
   rev: "C'est à Riv que s'achève la saga, lors d'un pogrom contre les non-humains.",
   dans: ["dame-lac"],
   voir: ["geralt", "dame-lac"] },
@@ -741,6 +894,7 @@ entrees: [
   role: "La Vallée des Fleurs",
   resume: "Vallée autrefois elfe, symbole de tout ce que les elfes ont perdu face aux humains.",
   livres: "Cadre du « Bout du monde », où Geralt et Jaskier croisent des elfes réduits à la survie.",
+  rl: "temps-mepris",
   rev: "Emhyr y offre à Francesca Findabair un royaume elfe, prix de son ralliement.",
   dans: ["dernier-voeu"],
   voir: ["francesca", "scoiatael"] },
@@ -748,6 +902,7 @@ entrees: [
 { id: "tir-na-lia", t: "lieu", src: "LJ", nom: "Tir ná Lia", alias: [],
   role: "Cité des Aen Elle",
   resume: "Capitale des elfes Aen Elle, dans un autre monde que celui de Geralt.",
+  rl: "dame-lac",
   rev: "Ciri y est retenue dans « La Dame du Lac », au cœur des intrigues d'Avallac'h et d'Eredin.",
   dans: ["dame-lac"],
   voir: ["aen-elle", "avallach", "eredin"] },
@@ -755,6 +910,7 @@ entrees: [
 { id: "stygga", t: "lieu", src: "L", nom: "Le château de Stygga", alias: ["Stygga"],
   role: "Forteresse isolée",
   resume: "Château perdu où se joue le dénouement de la saga.",
+  rl: "dame-lac",
   rev: "C'est le repaire de Vilgefortz : la compagnie de Geralt y donne l'assaut, et peu en reviennent.",
   dans: ["dame-lac"],
   voir: ["vilgefortz", "dame-lac"] },
@@ -769,6 +925,7 @@ entrees: [
 { id: "tor-zireael", t: "lieu", src: "L", nom: "Tor Zireael", alias: ["la Tour de l'Hirondelle"],
   role: "Tour elfique",
   resume: "Tour elfique légendaire, que l'on dit capable d'ouvrir des passages vers d'autres mondes.",
+  rl: "tour-hirondelle",
   rev: "Ciri y trouve refuge dans « La Tour de l'Hirondelle » : la tour l'emporte jusque dans le monde des Aen Elle.",
   dans: ["tour-hirondelle", "dame-lac"],
   voir: ["ciri", "tour-hirondelle", "aen-elle"] },
@@ -820,6 +977,7 @@ entrees: [
   role: "Instances des magiciens",
   resume: "Les deux assemblées qui encadrent la pratique de la magie dans le Nord.",
   livres: "Leurs membres conseillent les rois, et leurs rivalités pèsent sur la politique du continent. Le conclave de Thanedd les réunit dans « Le Temps du mépris ».",
+  rl: "temps-mepris",
   rev: "Le coup de Thanedd les détruit : la Loge des Magiciennes prend leur place, en coulisses.",
   dans: ["temps-mepris"],
   voir: ["thanedd", "loge", "vilgefortz", "tissaia"] },
@@ -827,6 +985,7 @@ entrees: [
 { id: "loge", t: "faction", src: "LJ", nom: "La Loge des Magiciennes", alias: ["la Loge"],
   role: "Cercle secret de magiciennes",
   resume: "Un cercle secret de magiciennes décidées à tirer les ficelles de la politique.",
+  rl: "bapteme-feu",
   rev: "Fondée par Philippa Eilhart dans « Le Baptême du feu », elle réunit des magiciennes du Nord, de Nilfgaard et des elfes. Elle entend décider seule du sort du continent, et voit en Ciri une pièce maîtresse.",
   jeu: [{ c: 5, t: "Dans TW3, la Loge cherche à se relever et peut devenir une alliée, intéressée, contre la Chasse." }],
   dans: ["bapteme-feu", "tour-hirondelle", "dame-lac"],
@@ -843,6 +1002,7 @@ entrees: [
   role: "Elfes d'un autre monde",
   resume: "Le « Peuple des Aulnes », cousins des elfes du monde de Geralt, qui vivent dans un autre univers.",
   livres: "Ciri les découvre dans « La Dame du Lac ». Ils se croient supérieurs et, dans leur monde, ont réduit les humains à la servitude.",
+  rl: "dame-lac",
   rev: "Ils veulent récupérer le gène de Lara Dorren, perdu dans une lignée humaine : c'est tout l'enjeu de Ciri à leurs yeux.",
   jeu: [{ c: 5, t: "Dans TW3, leur monde est menacé par le Gel Blanc : c'est ce qui pousse la Chasse à traquer Ciri." }],
   dans: ["dame-lac"],
@@ -852,6 +1012,7 @@ entrees: [
   role: "Cavaliers de légende",
   resume: "Dans les légendes du Nord, une horde fantôme qui traverse le ciel et enlève les vivants. Sa venue passe pour un présage de guerre.",
   livres: "Ciri l'aperçoit dans ses cauchemars, comme une menace qui la poursuit.",
+  rl: "dame-lac",
   rev: "Dans « La Dame du Lac », on découvre que ce sont des elfes Aen Elle en armure, menés par Eredin.",
   jeu: [{ c: 0, t: "Principal ennemi de TW3 : la Chasse traque Ciri." }],
   dans: ["sang-elfes", "dame-lac"],
@@ -884,6 +1045,7 @@ entrees: [
   role: "Héritage elfe",
   resume: "Un gène elfe très rare, hérité de Lara Dorren, qui donne à son porteur un pouvoir sur l'espace et le temps.",
   livres: "Il se transmet dans la lignée de Cintra : Pavetta en manifeste des éclats, Ciri le porte pleinement. C'est ce qui fait d'elle une pièce maîtresse pour tous ceux qui convoitent son destin.",
+  rl: "dame-lac",
   rev: "Ciri finit par apprendre à maîtriser ce pouvoir et à voyager entre les mondes et les époques.",
   dans: ["sang-elfes", "dame-lac"],
   voir: ["lara-dorren", "ciri", "pavetta", "ithlinne", "aen-elle"] },
@@ -892,6 +1054,7 @@ entrees: [
   role: "Coutume ancienne",
   resume: "En échange d'un service, on peut réclamer une chose que l'autre possède sans le savoir encore, souvent un enfant à naître. Le destin, dit-on, lie ensuite les deux parties.",
   livres: "Duny obtient ainsi la main de Pavetta, et Geralt réclame à son tour son paiement à Cintra. Les sorceleurs recrutaient parfois leurs apprentis de cette façon.",
+  rl: "epee-providence",
   rev: "L'« enfant surprise » de Geralt, c'est Ciri.",
   dans: ["dernier-voeu", "epee-providence"],
   voir: ["duny", "pavetta", "ciri", "dernier-voeu"] },
@@ -963,6 +1126,7 @@ entrees: [
     { t: "Le Bout du monde", d: "Avec Jaskier, Geralt croise un sylvain farceur et des elfes acculés à la survie." },
     { t: "Le Dernier Vœu", d: "Un djinn, une magicienne nommée Yennefer, et un vœu qui change tout." },
     { t: "La Voix de la raison", d: "Le récit-cadre, au temple de Melitele, qui relie les nouvelles entre elles." }],
+  rl: "dernier-voeu",
   rev: "Le « paiement » que Geralt réclame à Cintra n'est autre que Ciri, encore à naître. Et son dernier vœu lie à jamais son destin à celui de Yennefer.",
   jeu: [
     { c: 0, t: "Foltest et la Temeria, la cour de Cintra, la naissance du destin de Ciri : bien des fils de TW3 partent de ce recueil." },
@@ -979,6 +1143,7 @@ entrees: [
     { t: "Un petit sacrifice", d: "Une sirène, un duc amoureux et la barde Essi Daven." },
     { t: "L'Épée de la providence", d: "Dans la forêt des dryades, Geralt rencontre une petite fille têtue : Ciri." },
     { t: "Quelque chose de plus", d: "Blessé et fiévreux, Geralt affronte ses souvenirs pendant que Cintra tombe." }],
+  rl: "epee-providence",
   rev: "« Quelque chose de plus » se clôt sur les retrouvailles de Geralt et de Ciri après la chute de Cintra : le destin a fini par les réunir.",
   jeu: [{ c: 2, t: "« Le Feu éternel » présente le doppler Dudu, que l'on retrouve à Novigrad." }],
   voir: ["ciri", "yennefer", "dudu", "brokilon", "borch", "istredd", "essi", "eithne"] },
@@ -986,6 +1151,7 @@ entrees: [
 { id: "sang-elfes", t: "livre", src: "L", nom: "Le Sang des elfes", alias: ["Krew elfów", "Blood of Elves"], ordre: 3,
   genre: "Roman, saga tome 1", vo: "Krew elfów", annee: 1994, role: "Roman, 1994, premier tome de la saga",
   resume: "La guerre gronde entre le Nord et Nilfgaard. Geralt cache Ciri à Kaer Morhen, où les sorceleurs l'entraînent, avant de la confier aux magiciennes. Des agents mystérieux la traquent, et les rois complotent.",
+  rl: "sang-elfes",
   rev: "On découvre que Ciri est une Source au potentiel immense. Yennefer devient sa mentore, Triss sa grande sœur, et l'espion Rience laisse entrevoir une conspiration bien plus vaste.",
   jeu: [{ c: 0, t: "L'hiver de Ciri à Kaer Morhen résonne avec le rêve qui ouvre TW3." }],
   voir: ["ciri", "kaer-morhen", "triss", "yennefer", "rience"] },
@@ -993,6 +1159,7 @@ entrees: [
 { id: "temps-mepris", t: "livre", src: "L", nom: "Le Temps du mépris", alias: ["Czas pogardy", "Time of Contempt"], ordre: 4,
   genre: "Roman, saga tome 2", vo: "Czas pogardy", annee: 1995, role: "Roman, 1995, deuxième tome de la saga",
   resume: "Les magiciens se réunissent sur l'île de Thanedd, tandis que Nilfgaard prépare une nouvelle offensive. Ciri, sous l'aile de Yennefer, doit entrer à l'école d'Aretuza.",
+  rl: "temps-mepris",
   rev: "Le conclave tourne au coup d'État : Vilgefortz trahit, Geralt est grièvement blessé et Ciri, à travers un portail instable, est projetée dans un désert. La guerre reprend, et la Ciri qui en ressort n'est plus une enfant protégée.",
   jeu: [{ c: 0, t: "Le coup de Thanedd ouvre une longue crise de confiance entre rois et magiciens, dont TW3 montre les conséquences." }],
   voir: ["thanedd", "vilgefortz", "ciri", "conseil"] },
@@ -1000,6 +1167,7 @@ entrees: [
 { id: "bapteme-feu", t: "livre", src: "L", nom: "Le Baptême du feu", alias: ["Chrzest ognia", "Baptism of Fire"], ordre: 5,
   genre: "Roman, saga tome 3", vo: "Chrzest ognia", annee: 1996, role: "Roman, 1996, troisième tome de la saga",
   resume: "Convalescent à Brokilon, Geralt part chercher Ciri à travers un pays en guerre, entouré d'une improbable compagnie : Jaskier, l'archère Milva, une troupe de nains, un barbier très singulier et un chevalier nilfgaardien.",
+  rl: "bapteme-feu",
   rev: "Les magiciennes fondent la Loge, Geralt gagne au combat son titre « de Riv », et la compagnie découvre que Regis est un vampire supérieur.",
   jeu: [
     { c: 2, t: "Zoltan y fait ses débuts ; on le retrouve à Novigrad." },
@@ -1009,6 +1177,7 @@ entrees: [
 { id: "tour-hirondelle", t: "livre", src: "L", nom: "La Tour de l'Hirondelle", alias: ["Wieża Jaskółki", "The Tower of the Swallow"], ordre: 6,
   genre: "Roman, saga tome 4", vo: "Wieża Jaskółki", annee: 1997, role: "Roman, 1997, quatrième tome de la saga",
   resume: "Blessée, Ciri est recueillie par un vieil ermite à qui elle raconte ce qu'elle a vécu depuis Thanedd. Pendant ce temps, Geralt et sa compagnie poursuivent leur route, et des chasseurs de primes resserrent l'étau.",
+  rl: "tour-hirondelle",
   rev: "Ciri survit au massacre des Rats et à Bonhart, puis gagne la tour elfique de Tor Zireael, qui l'emporte hors de son monde. Yennefer, elle, tombe dans le piège de Vilgefortz.",
   jeu: [{ c: 0, t: "Le parcours de Ciri, seule face au monde, éclaire la jeune femme endurcie que l'on rencontre dans TW3." }],
   voir: ["ciri", "bonhart", "tor-zireael", "angouleme", "vysogota", "rats"] },
@@ -1016,6 +1185,7 @@ entrees: [
 { id: "dame-lac", t: "livre", src: "L", nom: "La Dame du Lac", alias: ["Pani Jeziora", "The Lady of the Lake"], ordre: 7,
   genre: "Roman, saga tome 5", vo: "Pani Jeziora", annee: 1999, role: "Roman, 1999, dernier tome de la saga",
   resume: "Ciri découvre le monde des Aen Elle, la compagnie passe l'hiver en Toussaint, la guerre s'achève à Brenna, et toutes les routes convergent vers le repaire de Vilgefortz.",
+  rl: "dame-lac",
   rev: "À Stygga, une grande partie de la compagnie tombe ; Geralt tue Vilgefortz, Ciri tue Bonhart, et Emhyr se révèle être le père de Ciri. La paix de Cintra est signée. À Riv, Geralt est mortellement blessé lors d'un pogrom, et Ciri l'emmène avec Yennefer vers une île brumeuse.",
   jeu: [
     { c: 0, t: "Essentiel pour TW3 : Avallac'h, Eredin, les Aen Elle et la Chasse sauvage y prennent toute leur dimension." },
@@ -1047,6 +1217,7 @@ entrees: [
   role: "Princesse déchue, cheffe de bande",
   resume: "Princesse chassée par sa belle-mère et traquée par un mage qui la croit maudite, devenue une redoutable cheffe de bande.",
   livres: "Dans « Le Moindre Mal », elle arrive à Blaviken pour se venger du mage Stregobor, qui voit en elle une enfant née sous l'éclipse, donc un danger pour le monde. Pris entre les deux, Geralt refuse de choisir le moindre mal.",
+  rl: "dernier-voeu",
   rev: "Geralt finit par tuer Renfri et ses hommes sur la place du marché. La foule horrifiée le surnomme le Boucher de Blaviken, une réputation qui le suivra toute sa vie.",
   dans: ["dernier-voeu"],
   voir: ["blaviken", "geralt"] },
@@ -1062,6 +1233,7 @@ entrees: [
   role: "Chevalier énigmatique",
   resume: "Un noble affable et généreux, escorté de deux guerrières zerrikaniennes, qui se joint à la chasse au dragon des « Limites du possible ».",
   livres: "Il prend Geralt pour compagnon de route et observe avec un intérêt troublant la course au dragon où se pressent chevaliers, nains, mercenaires et magiciens, Yennefer comprise.",
+  rl: "epee-providence",
   rev: "Borch est Villentretenmerth, un dragon d'or capable de prendre forme humaine, la plus rare des créatures. Il est venu défendre la dragonne traquée et son petit.",
   dans: ["epee-providence"],
   voir: ["m-dragon", "yennefer", "geralt"] },
@@ -1070,6 +1242,7 @@ entrees: [
   role: "Barde, amie de Jaskier",
   resume: "Jeune poétesse au talent éclatant, qui accompagne Jaskier et Geralt dans « Un petit sacrifice ».",
   livres: "Une nouvelle douce-amère, où se répondent l'amour impossible d'un duc pour une sirène et celui d'Essi pour Geralt, qui reste attaché à Yennefer.",
+  rl: "epee-providence",
   rev: "La nouvelle se clôt sur une note grave : Essi mourra jeune, quelques années plus tard, emportée par une épidémie.",
   dans: ["epee-providence"],
   voir: ["jaskier", "geralt", "m-sirenes"] },
@@ -1078,6 +1251,7 @@ entrees: [
   role: "Homme maudit à tête de bête",
   resume: "Un ancien chef de bande changé en bête par la malédiction d'une prêtresse, qui vit reclus dans son manoir.",
   livres: "Dans « Un grain de vérité », Geralt découvre un hôte affable sous une apparence monstrueuse. Des marchands lui ont confié leurs filles en échange de sa fortune ; la dernière venue, Vereena, semble l'aimer sincèrement.",
+  rl: "dernier-voeu",
   rev: "Vereena est une bruxa, responsable des meurtres qui ensanglantent la région. Geralt la tue ; parce qu'elle l'aimait vraiment, Nivellen retrouve aussitôt forme humaine.",
   dans: ["dernier-voeu"],
   voir: ["m-bruxa", "geralt"] },
@@ -1100,6 +1274,7 @@ entrees: [
   role: "Reine de Lyria et de Rivia",
   resume: "Souveraine d'un petit royaume du Nord, pragmatique et intrépide, qui prend elle-même la tête de ses troupes face à Nilfgaard.",
   livres: "Son royaume envahi, elle mène une guerre de partisans contre l'Empire dans « Le Baptême du feu ».",
+  rl: "bapteme-feu",
   rev: "Au pont sur la Yaruga, Geralt défend sa position ; elle l'adoube sur-le-champ, et « Geralt de Riv » devient enfin un vrai titre.",
   jeu: [{ c: 0, t: "Héroïne de Thronebreaker (2018), un jeu de rôle et de cartes tiré du gwynt, qui raconte sa guerre contre Nilfgaard." }],
   dans: ["bapteme-feu"],
@@ -1108,6 +1283,7 @@ entrees: [
 { id: "ihuarraquax", t: "perso", src: "L", nom: "Ihuarraquax", alias: [],
   role: "Licorne",
   resume: "Une jeune licorne blessée, que Ciri soigne alors qu'elle-même est perdue.",
+  rl: "dame-lac",
   rev: "Dans le désert de Korath, Ciri et la licorne se sauvent mutuellement la vie. Dans « La Dame du Lac », Ihuarraquax et les siens l'aident à échapper aux Aen Elle.",
   dans: ["temps-mepris", "dame-lac"],
   voir: ["ciri", "korath", "aen-elle"] },
@@ -1135,6 +1311,7 @@ entrees: [
   role: "Bourgade côtière",
   resume: "Petite ville du bord de mer, où Geralt arrive un jour avec la carcasse d'une kikimore à vendre.",
   livres: "Cadre du « Moindre Mal » : le sorceleur y croise le mage Stregobor et la princesse déchue Renfri.",
+  rl: "dernier-voeu",
   rev: "Le drame qui s'y joue vaut à Geralt le surnom de Boucher de Blaviken.",
   dans: ["dernier-voeu"],
   voir: ["renfri", "geralt", "m-kikimores"] },
@@ -1157,6 +1334,7 @@ entrees: [
   role: "Champ de la dernière grande bataille",
   resume: "Une petite localité qui donne son nom à la plus grande bataille de la guerre contre Nilfgaard.",
   livres: "« La Dame du Lac » la raconte sous plusieurs angles, notamment depuis un hôpital de campagne où travaille Shani.",
+  rl: "dame-lac",
   rev: "Les armées du Nord y écrasent celles de l'Empire, et la paix de Cintra suit peu après. Le sorceleur Coën compte parmi les morts.",
   dans: ["dame-lac"],
   voir: ["shani", "coen", "nilfgaard", "dame-lac"] },
@@ -1164,6 +1342,7 @@ entrees: [
 { id: "korath", t: "lieu", src: "L", nom: "Le désert de Korath", alias: ["Korath"],
   role: "Désert brûlant",
   resume: "Une étendue aride et brûlante, réputée infranchissable.",
+  rl: "temps-mepris",
   rev: "Projetée là par le portail de Tor Lara, dans « Le Temps du mépris », Ciri manque d'y mourir de soif, jusqu'à sa rencontre avec une licorne.",
   dans: ["temps-mepris"],
   voir: ["ihuarraquax", "thanedd", "ciri"] },
@@ -1172,6 +1351,7 @@ entrees: [
   role: "Grand fleuve du Sud",
   resume: "Le grand fleuve qui se jette dans la mer près de Cintra et marque, pour beaucoup, la frontière entre le Nord et l'Empire.",
   livres: "La guerre se joue souvent sur ses rives, et ses ponts deviennent des enjeux stratégiques.",
+  rl: "bapteme-feu",
   rev: "Geralt y gagne son titre de chevalier en défendant un pont aux côtés de la reine Meve.",
   jeu: [{ c: 0, t: "Dans TW3, la guerre a depuis longtemps franchi le fleuve : Nilfgaard occupe la Temeria." }],
   dans: ["bapteme-feu"],
@@ -1187,6 +1367,7 @@ entrees: [
 { id: "rats", t: "faction", src: "L", nom: "Les Rats", alias: [],
   role: "Bande de jeunes hors-la-loi",
   resume: "Six jeunes brigands de la province de Geso, insolents, cruels et inséparables.",
+  rl: "tour-hirondelle",
   rev: "Ciri les rejoint sous le nom de Falka et partage un temps leur vie de pillages. Leo Bonhart finit par les massacrer et capture Ciri.",
   dans: ["temps-mepris", "tour-hirondelle"],
   voir: ["ciri", "bonhart"] },
@@ -1337,12 +1518,12 @@ chrono: [
   { quand: "Bien avant la saga", titre: "L'assaut de Kaer Morhen", d: "La forteresse des sorceleurs est attaquée par des fanatiques ; la profession ne s'en remettra jamais.", lien: "kaer-morhen" },
   { quand: "Les jeunes années", titre: "Les débuts de Geralt", d: "À dix-huit ans, Geralt quitte Kaer Morhen et découvre un monde hostile.", lien: "croisee" },
   { quand: "Le temps des nouvelles", titre: "Geralt et Yennefer", d: "La stryge de Vizima, Blaviken, le djinn : Geralt rencontre Yennefer.", lien: "dernier-voeu" },
-  { quand: "Le temps des nouvelles", titre: "Le banquet de Cintra", d: "Geralt invoque la Loi de la Surprise : son paiement sera Ciri, qui naîtra quelques mois plus tard.", lien: "loi-surprise", rev: true },
+  { quand: "Le temps des nouvelles", titre: "Le banquet de Cintra", d: "Geralt invoque la Loi de la Surprise : son paiement sera Ciri, qui naîtra quelques mois plus tard.", lien: "loi-surprise", rev: true, rl: "epee-providence" },
   { quand: "1263", titre: "La chute de Cintra", d: "Nilfgaard envahit Cintra et la reine Calanthe meurt. Les magiciens arrêtent l'invasion sur la colline de Sodden.", lien: "cintra" },
   { quand: "Après la chute de Cintra", titre: "Ciri à Kaer Morhen", d: "Geralt cache Ciri chez les sorceleurs, puis la confie au temple de Melitele et à Yennefer.", lien: "sang-elfes" },
   { quand: "1267", titre: "Le coup de Thanedd", d: "Le conclave des magiciens tourne au massacre ; la guerre reprend.", lien: "thanedd" },
   { quand: "1267-1268", titre: "La traversée de la guerre", d: "Geralt et sa compagnie cherchent Ciri, qui vit de son côté sa propre odyssée.", lien: "bapteme-feu" },
-  { quand: "1268", titre: "Brenna, Stygga et Riv", d: "La bataille de Brenna met fin à la guerre ; l'assaut de Stygga et le drame de Riv concluent la saga.", lien: "dame-lac", rev: true },
+  { quand: "1268", titre: "Brenna, Stygga et Riv", d: "La bataille de Brenna met fin à la guerre ; l'assaut de Stygga et le drame de Riv concluent la saga.", lien: "dame-lac", rev: true, rl: "dame-lac" },
   { quand: "Entre livres et jeux", titre: "Un Geralt amnésique", d: "Le premier jeu retrouve Geralt sans souvenirs, à Kaer Morhen. Ce qui s'est passé depuis Riv se découvre peu à peu au fil des jeux.", jeu: true, c: 0 },
   { quand: "1270", titre: "The Witcher", d: "Geralt, sans mémoire, est recueilli à Kaer Morhen et se retrouve mêlé aux intrigues de Vizima.", jeu: true, c: 0 },
   { quand: "1271", titre: "The Witcher 2", d: "Le roi Foltest est assassiné, et Nilfgaard repart à la conquête du Nord.", jeu: true, c: 0 },
@@ -1389,42 +1570,128 @@ anecdotes: [
   { t: "Gwynbleidd, le nom elfe de Geralt, signifie « Loup Blanc ».", lien: "geralt" },
   { t: "Le gwynt, mini-jeu de cartes de TW3, a eu droit à ses propres jeux : Gwent et Thronebreaker.", lien: "gwynt" }
 ]
+,
+
+/* Aux sources : contes et folklore dont s'inspirent les livres et le jeu.
+   Illustrations du domaine public, via Wikimedia Commons. */
+sources: [
+  { id: "src-blanche-neige", groupe: "contes", img: "img/blanche-neige.webp", conte: "Blanche-Neige", origine: "Conte des frères Grimm",
+    oeuvre: "Le Moindre Mal", artiste: "Arthur Rackham", annee: 1909, page: "https://commons.wikimedia.org/wiki/File:Arthur_Rackham_Snow_White.jpg",
+    texte: "Renfri est une Blanche-Neige retournée : une princesse chassée par sa belle-mère, qui a vécu un temps parmi sept gnomes et n'attend plus aucun prince. Sapkowski garde le décor du conte et en fait une tragédie sur le choix du moindre mal.",
+    liens: ["renfri", "blaviken", "dernier-voeu"] },
+  { id: "src-belle-bete", groupe: "contes", img: "img/belle-bete.webp", conte: "La Belle et la Bête", origine: "Conte de Mme Leprince de Beaumont",
+    oeuvre: "Un grain de vérité", artiste: "Walter Crane", annee: 1875, page: "https://commons.wikimedia.org/wiki/File:Walter_Crane,_illustration_from_Beauty_and_the_Beast,_1875.jpg",
+    texte: "Un homme changé en bête, un manoir isolé, une jeune femme qui finit par l'aimer : tout y est. Mais Sapkowski cherche le grain de vérité caché derrière le conte, et ce qu'il trouve n'a rien de rassurant.",
+    liens: ["nivellen", "dernier-voeu"] },
+  { id: "src-herisson", groupe: "contes", img: "img/herisson.webp", conte: "Hans mon hérisson", origine: "Conte des frères Grimm",
+    oeuvre: "Une question de prix", artiste: "Otto Ubbelohde", annee: 1909, page: "https://commons.wikimedia.org/wiki/File:Otto_Ubbelohde_-_Hans_mein_Igel_2.jpg",
+    texte: "Chez Grimm, un garçon né mi-homme mi-hérisson remet sur le bon chemin un roi égaré, qui lui promet en échange la première chose qui l'accueillera chez lui : sa propre fille. Duny, le chevalier à tête de hérisson, et la Loi de la Surprise viennent de là.",
+    liens: ["duny", "loi-surprise", "pavetta", "dernier-voeu"] },
+  { id: "src-sirene", groupe: "contes", img: "img/sirene.webp", conte: "La Petite Sirène", origine: "Conte de Hans Christian Andersen",
+    oeuvre: "Un petit sacrifice", artiste: "Edmund Dulac", annee: 1911, page: "https://commons.wikimedia.org/wiki/File:Edmund_Dulac_-_The_Mermaid_-_in_the_sea.jpg",
+    texte: "Un prince, une sirène et un amour qui exige de renoncer à soi. Sapkowski en tire une histoire d'incompréhension : le duc voudrait que la sirène prenne des jambes, elle voudrait qu'il la rejoigne sous la mer, et aucun des deux ne veut changer.",
+    liens: ["essi", "epee-providence", "m-sirenes"] },
+  { id: "src-reine-neiges", groupe: "contes", img: "img/reine-neiges.webp", conte: "La Reine des neiges", origine: "Conte de Hans Christian Andersen",
+    oeuvre: "Un éclat de glace", artiste: "Edmund Dulac", annee: 1911, page: "https://commons.wikimedia.org/wiki/File:Edmund_Dulac_-_The_Snow_Queen.jpg",
+    texte: "Chez Andersen, un éclat de miroir maléfique glace le cœur du petit Kay. Sapkowski reprend l'image pour Geralt et Yennefer, et laisse planer la question : lequel des deux a le cœur gelé ?",
+    liens: ["yennefer", "istredd", "epee-providence"] },
+  { id: "src-djinn", groupe: "contes", img: "img/djinn.webp", conte: "Le Pêcheur et le Génie", origine: "Les Mille et Une Nuits",
+    oeuvre: "Le Dernier Vœu", artiste: "René Bull", annee: 1898, page: "https://commons.wikimedia.org/wiki/File:Fisherman_2.jpg",
+    texte: "Un pêcheur remonte dans ses filets une jarre scellée d'où s'échappe un génie. C'est exactement ce qui arrive à Geralt et Jaskier au début du « Dernier Vœu », avec des conséquences bien moins plaisantes pour le barde.",
+    liens: ["m-djinn", "jaskier", "dernier-voeu"] },
+  { id: "src-baba-yaga", groupe: "folklore", img: "img/baba-yaga.webp", conte: "Baba Yaga", origine: "Folklore slave",
+    oeuvre: "Les Dames du Bois", artiste: "Ivan Bilibine", annee: 1900, page: "https://commons.wikimedia.org/wiki/File:Bilibin._Baba_Yaga.jpg",
+    texte: "La vieille sorcière des forêts russes, qu'on redoute autant qu'on vient la consulter. Les Dames du Bois de Velen appartiennent à cette famille de vieilles femmes sauvages des contes slaves.",
+    liens: ["dames-bois", "velen"] },
+  { id: "src-leshy", groupe: "folklore", img: "img/leshy.webp", conte: "Le léchi", origine: "Folklore slave",
+    oeuvre: "Le leshen", artiste: "Viktor Vasnetsov", annee: 1885, page: "https://commons.wikimedia.org/wiki/File:Leshiy_by_Vasnetsov.jpg",
+    texte: "L'esprit de la forêt des campagnes slaves, maître des bêtes et des voyageurs égarés. Le leshen du jeu en est la version la plus inquiétante, entouré de corbeaux et de loups.",
+    liens: ["m-leshen"] },
+  { id: "src-kikimora", groupe: "folklore", img: "img/kikimora.webp", conte: "La kikimora", origine: "Folklore slave",
+    oeuvre: "Les kikimores", artiste: "Ivan Bilibine", annee: 1934, page: "https://commons.wikimedia.org/wiki/File:Kikimora.jpg",
+    texte: "Dans les contes russes, la kikimora est un petit esprit malveillant qui hante les maisons et les marais. Sapkowski, puis le jeu, ont gardé le nom pour en faire une créature tout autre, proche de l'insecte géant.",
+    liens: ["m-kikimores", "blaviken"] },
+  { id: "src-sirin", groupe: "folklore", img: "img/sirin.webp", conte: "Sirine et Alkonost", origine: "Folklore russe",
+    oeuvre: "Les sirènes du jeu", artiste: "Viktor Vasnetsov", annee: 1896, page: "https://commons.wikimedia.org/wiki/File:Vasnetsov_Sirin_Alkonost.jpg",
+    texte: "Les sirènes ailées de Skellige ressemblent bien plus à ces oiseaux à visage de femme des légendes russes qu'à la sirène à queue de poisson d'Andersen.",
+    liens: ["m-sirenes", "skellige"] }
+],
+
+/* Carte schématique du Continent : positions dans un cadre de 400 × 560, sans échelle. */
+carte: {
+  lieux: {
+    "novigrad": [136, 140], "oxenfurt": [172, 148], "velen": [160, 180], "vizima": [206, 226], "verger-blanc": [184, 246],
+    "kaer-morhen": [326, 96], "thanedd": [100, 210], "kerack": [110, 262], "cintra": [108, 332], "brokilon": [168, 274],
+    "sodden": [206, 300], "melitele": [236, 256], "mahakam": [268, 244], "vengerberg": [302, 214], "dol-blathanna": [350, 194],
+    "riv": [318, 296], "skellige": [46, 314], "kaer-trolde": [62, 294], "yaruga": [262, 322], "toussaint": [300, 424],
+    "nilfgaard": [222, 508]
+  },
+  regions: [
+    { t: "Kovir", x: 250, y: 36 }, { t: "Rédanie", x: 230, y: 108 }, { t: "Kaedwen", x: 300, y: 62 },
+    { t: "Temeria", x: 236, y: 196 }, { t: "Aedirn", x: 334, y: 174 }, { t: "Lyria et Rivia", x: 330, y: 284 },
+    { t: "Empire de Nilfgaard", x: 232, y: 456 }, { t: "Grande Mer", x: 56, y: 236, mer: true }
+  ],
+  horsCarte: ["blaviken", "brenna", "korath", "stygga", "tor-zireael", "tir-na-lia", "ile-brumes"]
+}
 };
 </script>
 <script>
-/* Compagnon du Sorceleur : logique de l'application.
-   Navigation par ancre (#ciri, #bestiaire, #defi-ab12…) pour que chaque page se partage par un simple lien. */
-const C=window.CODEX,E=C.entrees,M=C.bestiaire,ID={},MID={};
+/* Compagnon du Sorceleur : application pour téléphone.
+   Navigation par ancre (#ciri, #carte, #defi-ab12…) pour que chaque écran se partage par un simple lien,
+   et que le bouton retour du téléphone fonctionne comme dans une application. */
+const C=window.CODEX,E=C.entrees,M=C.bestiaire,SRCS=C.sources,ID={},MID={};
 E.forEach(e=>ID[e.id]=e);M.forEach(m=>MID[m.id]=m);
 const BOOKS=E.filter(e=>e.t==="livre").sort((a,b)=>a.ordre-b.ordre);
 const SIGNES=["Aard","Igni","Yrden","Quen","Axii"];
 /* Adresses publiques du compagnon, utilisées pour les liens de partage. */
 const LIEN={artifact:"https://claude.ai/artifact/XHmn6MRvrESmEH8ux3peXH",pages:"https://couefficguillaume-collab.github.io/Witcher-lore/"};
+const VERSION="3.0";
 const TYPES={perso:"Personnage",lieu:"Lieu",faction:"Peuple ou faction",concept:"Notion",livre:"Livre"};
 const SRC={L:"Livres",J:"Jeu",LJ:"Livres et jeu"};
-const svg=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const LIGNEE=["lara-dorren","calanthe","pavetta","duny","ciri","geralt","yennefer","sang-ancien","emhyr"];
+const svg=(p,f)=>`<svg viewBox="0 0 24 24" fill="${f||"none"}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const STAR='<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>';
 const ICO={
  partie:svg('<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'),
  codex:svg('<path d="M3 5.5c3-1 6-1 9 1 3-2 6-2 9-1v13c-3-1-6-1-9 1-3-2-6-2-9-1z"/><path d="M12 6.5v13"/>'),
+ carte:svg('<path d="M3 6.5l6-2 6 2 6-2v13l-6 2-6-2-6 2z"/><path d="M9 4.5v13M15 6.5v13"/>'),
  bestiaire:svg('<path d="M6 4c3 4 4 9 3 16"/><path d="M11 3c3 5 4 11 2 18"/><path d="M16 4c3 4 4 9 2 15"/>'),
  livres:svg('<path d="M6 3h12v18l-6-4-6 4z"/>'),
  quiz:svg('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7v.5"/><path d="M12 17h.01"/>'),
  demander:svg('<path d="M4 5h16v11H9l-5 4z"/>'),
- share:svg('<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/>')
+ share:svg('<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/>'),
+ search:svg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>'),
+ reglages:svg('<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>'),
+ back:svg('<path d="M15 5l-7 7 7 7"/>'),
+ star:svg(STAR),starOn:svg(STAR,"currentColor"),
+ pin:svg('<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>'),
+ tree:svg('<circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="M12 7.2V12M6 16.8V14h12v2.8"/>'),
+ plus:svg('<path d="M12 5v14M5 12h14"/>'),minus:svg('<path d="M5 12h14"/>'),
+ target:svg('<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>'),
+ close:svg('<path d="M6 6l12 12M18 6L6 18"/>'),
+ install:svg('<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M12 8v6M9.5 11.5L12 14l2.5-2.5"/>'),
+ lang:svg('<path d="M4 6h10M9 4v2M6 6c0 4 3 7 7 8M12 6c0 4-3 7-7 8"/><path d="M13 20l4-9 4 9M14.5 17h5"/>'),
+ invite:svg('<circle cx="9" cy="8" r="3"/><path d="M3 19c0-3.3 2.7-5 6-5s6 1.7 6 5"/><path d="M18 8v6M15 11h6"/>'),
+ conte:svg('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>')
 };
-const TABS=[["partie","Partie"],["codex","Codex"],["bestiaire","Bestiaire"],["livres","Livres"],["quiz","Quiz"],["demander","Demander"]];
+const EMBLEME='<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="var(--ac)" stroke-width="2"/><circle cx="24" cy="24" r="18.5" fill="none" stroke="var(--ln)" stroke-width="1"/><g fill="none" stroke-linecap="round" stroke-width="2.2"><path d="M16.5 31.2L33 13M31.5 31.2L15 13" stroke="currentColor"/><path d="M13.5 28.5l6 5.4M34.5 28.5l-6 5.4M16.5 31.2l-3.3 3.6M31.5 31.2l3.3 3.6" stroke="var(--ac)"/></g></svg>';
+const TABS=[["partie","Partie"],["codex","Codex"],["carte","Carte"],["bestiaire","Bestiaire"],["livres","Livres"]];
 const TABK=TABS.map(t=>t[0]);
-const SEGS={frise:1,ecrans:1};
+const TITRES={partie:"Ma partie",codex:"Codex",carte:"Carte du Continent",bestiaire:"Bestiaire",livres:"Livres",quiz:"Quiz",demander:"Demander",reglages:"Réglages",recherche:"Recherche",lignee:"Lignée de Ciri"};
+const PAGES={quiz:"partie",demander:"partie",reglages:null,recherche:null,lignee:"codex"};
+const SEGS={contes:1,frise:1,ecrans:1};
 
-let SM=null,ctl=null,qrLib=null,trail=[],sheetUrl="",sheetMsg="";
+let SM=null,ctl=null,qrLib=null,trail=[],sheetUrl="",sheetMsg="",installEvt=null,wake=null,first=true;
 const mem={};
-const S={ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,
- tab:"partie",id:null,lv:"ordre",defi:null,q:"",ty:"all",cl:"all",bq:"",an:0,rv:{},force:{},quiz:null,eclair:null,
- ask:{q:"",out:"",busy:false}};
-const KEEP=["ch","hos","bw","sp","lus","vu","record"];
+const S={ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,
+ tab:"partie",page:null,id:null,lv:"lecture",defi:null,q:"",ty:"all",cl:"all",bq:"",an:0,rv:{},force:{},quiz:null,eclair:null,
+ ask:{q:"",out:"",busy:false},pend:null,sel:null,onb:0,reset:false};
+const KEEP=["ch","hos","bw","sp","lus","vu","record","fav","hist","serie","theme","taille","eveil"];
 try{const o=JSON.parse(localStorage.getItem("cs")||"{}");KEEP.forEach(k=>{if(k in o)S[k]=o[k]})}catch(e){}
 S.ch=Math.min(Math.max(+S.ch||0,0),C.chapitres.length-1);
-if(!S.lus||typeof S.lus!=="object")S.lus={};
+for(const k of["lus","fav"])if(!S[k]||typeof S[k]!=="object")S[k]={};
+if(!Array.isArray(S.hist))S.hist=[];
+S.hist=S.hist.filter(i=>ID[i]||MID[i]);
 const save=()=>{try{const o={};KEEP.forEach(k=>o[k]=S[k]);localStorage.setItem("cs",JSON.stringify(o))}catch(e){}};
 
 /* ---------- Outils ---------- */
@@ -1432,26 +1699,34 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const inFrame=(()=>{try{return window.top!==window.self}catch(e){return true}})();
+const standalone=()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}};
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const calme=()=>{try{return matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return true}};
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
 const now=()=>({ch:S.ch,hos:S.hos,bw:S.bw});
 const SAFE={ch:0,hos:false,bw:false};
 const visIn=(x,k)=>!x.porte||(x.porte.d?!!k[x.porte.d]:x.porte.c<=k.ch);
 const vis=x=>visIn(x,now());
 const jv=l=>l.d?S[l.d]:l.c<=S.ch;
 const any=id=>ID[id]||MID[id];
+const revOK=(x,k)=>S.sp||S.rv[k||x.id]||(x.rl&&S.lus[x.rl]);
 const ents=ids=>ids.map(i=>ID[i]).filter(e=>e&&vis(e));
 const row=e=>`<button class="ro ${e.src}" data-o="${e.id}"><b>${esc(e.nom)}</b><small>${esc(e.role)}</small></button>`;
 const SG={Igni:"#d6532b",Aard:"#4d8fd1",Yrden:"#9a68d1",Quen:"#d9a62e",Axii:"#d1659f"};
 const sg=s=>`<span class="sg"><i style="background:${SG[s]||"var(--mu)"}"></i>${s}</span>`;
 const mrow=m=>`<button class="ro ${m.livres?"LJ":"J"}" data-o="${m.id}"><b>${esc(m.nom)}</b><small>${esc(m.cl)}${m.signes?" · "+m.signes.map(sg).join(""):""}</small></button>`;
+const anyRow=x=>MID[x.id]?mrow(x):row(x);
 const chip=id=>{const x=any(id);return x&&vis(x)?`<button class="ch" data-o="${id}">${esc(x.nom)}</button>`:""};
 const chips=ids=>{const h=ids.map(chip).join("");return h?`<div class="chips">${h}</div>`:""};
 const oil=c=>c==="Humains"?"Venin du pendu (épée d'acier)":"Huile "+C.classes[c]+(c==="Bêtes"?"":" (épée d'argent)");
 const kv=(k,v)=>v?`<p class="kv"><b>${k}</b> ${v}</p>`:"";
-const bl=(t,x,j)=>`<div class="bl${j?" j":""}"><h3>${t}</h3><p>${esc(x)}</p></div>`;
+const bl=(t,x,j,n)=>`<div class="bl${j?" j":""}"><h3>${t}</h3><p>${esc(x)}</p>${n?`<p class="note">${n}</p>`:""}</div>`;
 const pl=(n,s)=>n+" "+s+(n>1?"s":"");
-const dayKey=()=>new Date().toISOString().slice(0,10);
+const dayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const livre=id=>"« "+ID[id].nom+" »";
+const revBtn=(x,k)=>`<button class="sp" data-r="${k}">Révéler la suite${x.rl?" (spoilers jusqu'à "+esc(livre(x.rl))+")":" (spoilers des livres)"}</button>`;
 let tt;
-function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},2800)}
+function toast(m,act,label){const t=$("#toast");t.innerHTML=esc(m)+(act?`<button data-act="${act}">${label}</button>`:"");t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},act?9000:2800)}
 
 /* ---------- Quiz : questions tirées du codex, reproductibles à partir d'une graine ---------- */
 function rng(seed){let a=2166136261;for(const c of String(seed))a=Math.imul(a^c.charCodeAt(0),16777619);
@@ -1478,6 +1753,7 @@ function questions(k,r){
  const CL=Object.keys(C.classes).filter(c=>c!=="Humains"&&c!=="Bêtes");
  for(const m of MV)if(CL.includes(m.cl))mk("classe",m.id,`À quelle famille du bestiaire appartient : ${m.nom} ?`,m.cl,CL,`${m.nom} : ${m.cl}. ${oil(m.cl)}.`,m.id);
  for(const w of LEX)mk("mot",w.mot,`Que signifie « ${w.mot} » en langue ancienne ?`,w.sens,LEX.map(x=>x.sens),w.note,w.lien);
+ for(const s of SRCS.filter(s=>s.groupe==="contes"))mk("conte",s.id,`Quel conte Sapkowski détourne-t-il dans « ${s.oeuvre} » ?`,s.conte,SRCS.filter(x=>x.groupe==="contes").map(x=>x.conte),s.texte,s.liens[0]);
  return out}
 
 function makeQuiz(seed,k,n){
@@ -1502,196 +1778,373 @@ function rang(s,n){const p=s/n;
 function opts(q,a,act){return `<div class="opts">`+q.opts.map((o,i)=>{let c="opt";if(a!=null){if(i===q.ok)c+=" good";else if(i===a)c+=" bad"}
  return `<button class="${c}" data-${act}="${i}"${a!=null?" disabled":""}>${esc(o)}</button>`}).join("")+`</div>`}
 function feedback(q,a){const ok=a===q.ok;
- return `<p class="fb ${ok?"ok":"ko"}">${ok?"Bonne réponse.":"Raté. La bonne réponse : "+esc(q.opts[q.ok])+"."}</p><p>${esc(q.why)}</p>${q.lien?chips([q.lien]):""}`}
+ return `<p class="fb ${ok?"ok":"ko"}" role="status">${ok?"Bonne réponse.":"Raté. La bonne réponse : "+esc(q.opts[q.ok])+"."}</p><p>${esc(q.why)}</p>${q.lien?chips([q.lien]):""}`}
 
-/* ---------- Vues ---------- */
+/* ---------- Illustrations ---------- */
+const credit=s=>`${s.artiste}, « ${s.conte} », ${s.annee}`;
+const fig=s=>`<figure class="fig"><button data-lb="${s.id}" aria-label="Agrandir l'illustration : ${esc(credit(s))}"><img src="${s.img}" alt="${esc(s.conte)}, illustration de ${esc(s.artiste)}" loading="lazy" decoding="async"></button><figcaption>${esc(credit(s))}. Domaine public.</figcaption></figure>`;
+const srcVis=s=>{const x=any(s.liens[0]);return !x||vis(x)};
+const srcsFor=id=>SRCS.filter(s=>s.liens.includes(id)&&srcVis(s));
+function srcBlock(id){const l=srcsFor(id);if(!l.length)return"";
+ return `<h3>Aux sources</h3>`+l.map(s=>`${fig(s)}<p><b>${esc(s.conte)}</b>. ${esc(s.texte)}</p>`).join("")}
+
+/* ---------- Vues principales ---------- */
+function stepper(){
+ let h=`<div class="stepper" id="route" role="group" aria-label="Où en êtes-vous dans le jeu ?">`+C.chapitres.map((c,i)=>`<button class="st${i<S.ch?" done":""}${i===S.ch?" on":""}" data-i="${i}" aria-pressed="${i===S.ch}"><i></i>${esc(c.court)}</button>`).join("")+`</div>`;
+ if(S.pend!=null)h+=`<div class="pend"><p>Passer à l'étape « ${esc(C.chapitres[S.pend].nom)} » ? Les fiches de cette étape deviendront visibles.</p><div class="row"><button class="pr" data-act="pend-ok">Oui, j'y suis</button><button class="ch" data-act="pend-no">Annuler</button></div></div>`;
+ return h}
+
 function partie(){
- const c=C.chapitres[S.ch];let h="";
- if(!S.vu)h+=`<div class="card hello"><p class="eb">Bienvenue</p><p>Touchez l'étape où vous en êtes dans la barre ci-dessus : le compagnon masquera tout ce qui vient après dans le jeu. Les rebondissements des livres restent cachés derrière un bouton.</p><button class="pr" data-act="vu">C'est noté</button></div>`;
+ const c=C.chapitres[S.ch];let h=stepper();
  h+=`<p class="eb">Étape ${S.ch+1} sur ${C.chapitres.length}</p><h2>${esc(c.nom)}</h2><p class="mu">${esc(c.lieux)}</p><p>${esc(c.intro)}</p>`;
  h+=`<div class="bl"><h3>À lire dans les livres</h3><p>${esc(c.lire)}</p>${chips(c.lireIds)}</div>`;
  const ls=ents(c.entrees);if(ls.length)h+=`<h3>Autour de vous</h3>`+ls.map(row).join("");
  const ms=(c.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m));if(ms.length)h+=`<h3>Monstres du coin</h3>`+ms.map(mrow).join("");
  for(const k of["hos","bw"])if(S[k]){const d=C.dlc[k];
   h+=`<h3>${d.nom}</h3><p>${esc(d.intro)}</p><div class="bl"><p>${esc(d.lire)}</p></div>`+ents(d.entrees).map(row).join("")+(d.monstres||[]).map(i=>MID[i]).filter(Boolean).map(mrow).join("")}
- const nx=BOOKS.find(b=>!S.lus[b.id]);
- h+=nx?`<div class="card"><p class="eb">Votre prochaine lecture</p><h3 class="ct">${esc(nx.nom)}</h3><p class="mu sm">${esc(nx.role)}</p><p>${esc(nx.resume)}</p><div class="chips"><button class="ch" data-lu="${nx.id}">Je l'ai lu</button><button class="ch" data-o="${nx.id}">Voir la fiche</button><button class="ch" data-tab="livres">Ordre de lecture</button></div></div>`
-  :`<div class="card"><p class="eb">Bibliothèque</p><p>Vous avez lu toute la saga. Il ne reste plus qu'à la relire.</p></div>`;
  h+=eclair();
+ h+=`<div class="tiles"><button class="tile" data-o="quiz">${ICO.quiz}<b>Quiz</b><small>Dix questions selon votre avancée</small></button><button class="tile" data-act="defi">${ICO.invite}<b>Défier un ami</b><small>Les mêmes questions, sans spoiler</small></button></div>`;
+ const nx=BOOKS.find(b=>!S.lus[b.id]);
+ h+=nx?`<div class="card"><p class="eb">Votre prochaine lecture</p><h3 class="ct">${esc(nx.nom)}</h3><p class="mu sm">${esc(nx.role)}</p><p>${esc(nx.resume)}</p><div class="chips"><button class="ch" data-lu="${nx.id}">Je l'ai lu</button><button class="ch" data-o="${nx.id}">Voir la fiche</button></div></div>`
+  :`<div class="card"><p class="eb">Bibliothèque</p><p>Vous avez lu toute la saga. Il ne reste plus qu'à la relire.</p></div>`;
  const an=C.anecdotes.filter(a=>(!a.c||a.c<=S.ch)&&(!any(a.lien)||vis(any(a.lien))));
  if(an.length){const a=an[S.an%an.length];h+=`<h3>Le saviez-vous</h3><p>${esc(a.t)}</p><div class="chips"><button class="ch" data-an>Une autre anecdote</button>${chip(a.lien)}</div>`}
+ if(SM)h+=`<div class="card"><p class="eb">Une question ?</p><p>Demandez à Claude ce que les livres racontent, sans spoiler sur la suite de votre partie.</p><button class="pr" data-o="demander">${ICO.demander}Demander</button></div>`;
+ const ib=installCard();if(ib)h+=ib;
+ h+=`<div class="card"><p class="eb">Entre amis</p><p>Envoyez le compagnon à un ami : il règle sa propre avancée, et rien ne lui est dévoilé.</p><button class="pr" data-share="">${ICO.share}Inviter un ami</button></div>`;
  return h}
 
 function eclair(){
  const key=dayKey()+"-"+S.ch+(S.hos?"h":"")+(S.bw?"b":"");
  if(!S.eclair||S.eclair.key!==key)S.eclair={key,q:makeQuiz("jour-"+key,now(),1)[0],a:null};
  const{q,a}=S.eclair;if(!q)return"";
- return `<div class="card"><p class="eb">Question du jour</p><p class="qq">${esc(q.q)}</p>${opts(q,a,"ej")}${a!=null?feedback(q,a)+`<p><button class="ch" data-tab="quiz">Faire le quiz complet</button></p>`:""}</div>`}
+ const n=S.serie&&(S.serie.jour===dayKey()||S.serie.jour===dayKey(new Date(Date.now()-864e5)))?S.serie.n:0;
+ return `<div class="card hi"><p class="eb">Question du jour${n>1?" · série de "+n+" jours":""}</p><p class="qq">${esc(q.q)}</p>${opts(q,a,"ej")}${a!=null?feedback(q,a):""}</div>`}
 
 function codex(){
- const T=[["all","Tout"],["perso","Personnages"],["lieu","Lieux"],["faction","Peuples et factions"],["concept","Notions"],["livre","Livres"],["mot","Langue ancienne"]];
- return `<h2>Codex</h2><input id="q" type="search" placeholder="Chercher un nom, un surnom, un lieu, un mot elfe" aria-label="Chercher dans le codex" value="${esc(S.q)}" autocomplete="off"><div class="fl">${T.map(([k,n])=>`<button class="ch${S.ty===k?" on":""}" data-t="${k}">${n}</button>`).join("")}</div><p class="mu sm">Trait bleu : issu des livres. Trait ambre : issu du jeu. Les deux : présent dans les deux.</p><div id="lst">${lst()}</div>`}
-
-function lst(){
- const q=norm(S.q.trim());
- if(S.ty==="mot")return lex(q)||`<p class="mu">Aucun mot ne correspond.</p>`;
- const hit=x=>!q||norm([x.nom,...(x.alias||[]),x.role||"",x.resume||""].join(" ")).includes(q);
- const l=E.filter(e=>vis(e)&&(S.ty==="all"||e.t===S.ty)&&hit(e));
+ const T=[["all","Tout"],["perso","Personnages"],["lieu","Lieux"],["faction","Peuples et factions"],["concept","Notions"],["livre","Livres"],["mot","Langue ancienne"],["fav","Carnet"]];
+ const fav=Object.keys(S.fav).filter(i=>any(i)&&vis(any(i)));
+ let h=`<button class="fake" data-act="search">${ICO.search}Chercher un nom, un surnom, une créature…</button>`;
+ h+=`<div class="tiles"><button class="tile" data-o="lignee">${ICO.tree}<b>Lignée de Ciri</b><small>De Lara Dorren à Ciri</small></button><button class="tile" data-t="mot">${ICO.lang}<b>Langue ancienne</b><small>${C.lexique.length} mots elfes</small></button></div>`;
+ const rec=S.hist.filter(i=>any(i)&&vis(any(i))).slice(0,6);
+ if(rec.length&&S.ty==="all")h+=`<h3>Consultés récemment</h3>${chips(rec)}`;
+ h+=`<div class="fl">${T.map(([k,n])=>`<button class="ch${S.ty===k?" on":""}" data-t="${k}">${n}${k==="fav"&&fav.length?" ("+fav.length+")":""}</button>`).join("")}</div><p class="mu sm">Trait bleu : issu des livres. Trait ambre : issu du jeu. Les deux : présent dans les deux.</p>`;
+ if(S.ty==="mot")return h+lex("");
+ if(S.ty==="fav")return h+(fav.length?fav.map(i=>anyRow(any(i))).join(""):`<p class="mu">Votre carnet est vide. Touchez l'étoile d'une fiche pour l'y ranger.</p>`);
+ const l=E.filter(e=>vis(e)&&(S.ty==="all"||e.t===S.ty));
  l.sort((a,b)=>S.ty==="livre"?a.ordre-b.ordre:a.nom.localeCompare(b.nom,"fr"));
- let h="";
- if(S.ty==="all"&&!q){const G=[["perso","Personnages"],["lieu","Lieux"],["faction","Peuples et factions"],["concept","Notions"],["livre","Livres"]];
-  for(const[t,n]of G){const g=l.filter(e=>e.t===t);if(t==="livre")g.sort((a,b)=>a.ordre-b.ordre);if(g.length)h+=`<h3 class="gh">${n}<span>${g.length}</span></h3>`+g.map(row).join("")}}
- else h=l.map(row).join("");
- if(S.ty==="all"&&q){
-  const ms=M.filter(m=>vis(m)&&norm([m.nom,m.en||"",m.cl].join(" ")).includes(q));if(ms.length)h+=`<h3 class="gh">Bestiaire</h3>`+ms.map(mrow).join("");
-  const lx=lex(q);if(lx)h+=`<h3 class="gh">Langue ancienne</h3>`+lx}
- return h||`<p class="mu">Aucune fiche ne correspond. Essayez un autre nom ou un surnom.</p>`}
+ if(S.ty!=="all")return h+l.map(row).join("");
+ for(const[t,n]of[["perso","Personnages"],["lieu","Lieux"],["faction","Peuples et factions"],["concept","Notions"],["livre","Livres"]]){
+  const g=l.filter(e=>e.t===t);if(t==="livre")g.sort((a,b)=>a.ordre-b.ordre);if(g.length)h+=`<h3 class="gh">${n}<span>${g.length}</span></h3>`+g.map(row).join("")}
+ return h}
 
 function lex(q){return C.lexique.filter(w=>!q||norm(w.mot+" "+w.sens+" "+w.note).includes(q)).map(w=>
  `<div class="lx"><p><b>${esc(w.mot)}</b> ${esc(w.sens)}</p><p class="mu sm">${esc(w.note)}</p>${w.lien?chips([w.lien]):""}</div>`).join("")}
 
+function recherche(){return `<input id="q" type="search" enterkeyhint="search" placeholder="Nom, surnom, lieu, créature, mot elfe…" aria-label="Rechercher" value="${esc(S.q)}" autocomplete="off" autocapitalize="off" spellcheck="false"><div id="lst">${resultats()}</div>`}
+function resultats(){
+ const q=norm(S.q.trim());
+ if(!q){const rec=S.hist.filter(i=>any(i)&&vis(any(i))).slice(0,8);
+  return (rec.length?`<h3>Consultés récemment</h3>`+rec.map(i=>anyRow(any(i))).join(""):"")+`<h3>Suggestions</h3>${chips(["ciri","yennefer","chasse","loi-surprise","kaer-morhen","m-griffon","sang-ancien","jaskier"])}`}
+ const hit=x=>norm([x.nom,...(x.alias||[]),x.role||"",x.resume||""].join(" ")).includes(q);
+ const l=E.filter(e=>vis(e)&&hit(e)).sort((a,b)=>(norm(b.nom).startsWith(q)-norm(a.nom).startsWith(q))||a.nom.localeCompare(b.nom,"fr"));
+ const ms=M.filter(m=>vis(m)&&norm([m.nom,m.en||"",m.cl].join(" ")).includes(q));
+ const lx=lex(q),sr=SRCS.filter(s=>srcVis(s)&&norm(s.conte+" "+s.oeuvre+" "+s.artiste).includes(q));
+ let h=l.map(row).join("");
+ if(ms.length)h+=`<h3 class="gh">Bestiaire</h3>`+ms.map(mrow).join("");
+ if(lx)h+=`<h3 class="gh">Langue ancienne</h3>`+lx;
+ if(sr.length)h+=`<h3 class="gh">Aux sources</h3>`+sr.map(s=>`<button class="ro LJ" data-o="contes"><b>${esc(s.conte)}</b><small>${esc(s.oeuvre)} · ${esc(s.artiste)}</small></button>`).join("");
+ return h||`<p class="mu">Rien ne correspond. Essayez un autre nom ou un surnom.</p>`}
+
 function bestiaire(){
  const f=[["all","Tous"],...Object.keys(C.classes).map(c=>[c,c])].map(([k,n])=>`<button class="ch${S.cl===k?" on":""}" data-c="${k}">${n}</button>`).join("");
- return `<h2>Bestiaire</h2><p class="mu">Ce que le jeu recommande, et ce que les livres en disent. Touchez une créature pour voir sa fiche.</p><input id="bq" type="search" placeholder="Chercher une créature, en français ou en anglais" aria-label="Chercher une créature" value="${esc(S.bq)}" autocomplete="off"><div class="fl">${f}</div><div id="blst">${blst()}</div>`}
+ return `<p class="mu">Ce que le jeu recommande, et ce que les livres en disent.</p><input id="bq" type="search" enterkeyhint="search" placeholder="Chercher une créature, en français ou en anglais" aria-label="Chercher une créature" value="${esc(S.bq)}" autocomplete="off"><div class="fl">${f}</div><div id="blst">${blst()}</div>`}
 function blst(){const q=norm(S.bq.trim());
  const l=M.filter(m=>vis(m)&&(S.cl==="all"||m.cl===S.cl)&&(!q||norm([m.nom,m.en||"",m.cl].join(" ")).includes(q)));
  return l.map(mrow).join("")||`<p class="mu">Aucune créature ne correspond.</p>`}
 
-const topbar=id=>`<div class="tb"><button class="ch" data-b>← Retour</button><button class="ch" data-share="${id}">${ICO.share}Partager</button></div>`;
-const askLink=n=>SM?`<p><button class="ch" data-askabout="${esc(n)}">${ICO.demander}Poser une question sur ${esc(n)}</button></p>`:"";
-
+/* ---------- Fiches ---------- */
 function gate(x){const n=x.porte.d?C.dlc[x.porte.d].nom:C.chapitres[x.porte.c].nom;
- return `<div class="tb"><button class="ch" data-b>← Retour</button></div><div class="gate"><p class="eb">Attention, spoiler</p><h2>Fiche verrouillée</h2><p>Cette fiche concerne ${x.porte.d?"l'extension "+esc(n):"un passage du jeu situé à l'étape « "+esc(n)+" »"}, plus loin que là où vous en êtes. Un ami vous l'a peut-être envoyée.</p><div class="row"><button class="pr" data-force="${x.id}">Afficher quand même</button><button class="ch" data-b>Non merci</button></div></div>`}
-
+ return `<div class="gate"><p class="eb">Attention, spoiler</p><h2>Fiche verrouillée</h2><p>Cette fiche concerne ${x.porte.d?"l'extension "+esc(n):"un passage du jeu situé à l'étape « "+esc(n)+" »"}, plus loin que là où vous en êtes. Un ami vous l'a peut-être envoyée.</p><div class="row"><button class="pr" data-force="${x.id}">Afficher quand même</button><button class="ch" data-b>Non merci</button></div></div>`}
+function actions(x){
+ const f=!!S.fav[x.id];
+ let h=`<div class="acts"><button class="ch${f?" on":""}" data-fav="${x.id}" aria-pressed="${f}">${f?ICO.starOn:ICO.star}${f?"Dans le carnet":"Carnet"}</button><button class="ch" data-share="${x.id}">${ICO.share}Partager</button>`;
+ if(C.carte.lieux[x.id])h+=`<button class="ch" data-map="${x.id}">${ICO.pin}Sur la carte</button>`;
+ if(LIGNEE.includes(x.id))h+=`<button class="ch" data-o="lignee">${ICO.tree}Lignée</button>`;
+ if(SM)h+=`<button class="ch" data-askabout="${esc(x.nom)}">${ICO.demander}Demander</button>`;
+ return h+`</div>`}
 function fiche(e){
  if(!vis(e)&&!S.force[e.id])return gate(e);
  const vj=(e.jeu||[]).filter(jv),sealed=(e.jeu||[]).length-vj.length;
- let h=topbar(e.id)+`<p class="eb">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><h2>${esc(e.nom)}</h2>`;
+ let h=`<p class="eb">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><h2>${esc(e.nom)}</h2>`;
  if(e.alias&&e.alias.length)h+=`<p class="mu">Aussi appelé : ${esc(e.alias.join(", "))}</p>`;
- h+=`<p class="mu">${esc(e.role)}</p><p>${esc(e.resume)}</p>`;
+ h+=`<p class="mu">${esc(e.role)}</p>`+actions(e)+`<p class="lead">${esc(e.resume)}</p>`;
  if(e.t==="livre")h+=kv("Titre original",esc(e.vo)+", "+e.annee)+kv("Genre",esc(e.genre))+`<p><button class="ch${S.lus[e.id]?" on":""}" data-lu="${e.id}" aria-pressed="${!!S.lus[e.id]}">${S.lus[e.id]?"Lu ✓":"Marquer comme lu"}</button></p>`;
  if(e.nouvelles)h+=`<h3>Les nouvelles</h3>`+e.nouvelles.map(n=>`<p><b>${esc(n.t)}.</b> ${esc(n.d)}</p>`).join("");
  if(e.livres)h+=bl("Dans les livres",e.livres);
- if(e.rev)h+=(S.sp||S.rv[e.id])?bl("La suite dans les livres",e.rev):`<button class="sp" data-r="${e.id}">Révéler la suite dans les livres (spoilers)</button>`;
+ if(e.rev)h+=revOK(e)?bl("La suite dans les livres",e.rev,false,!S.sp&&!S.rv[e.id]&&e.rl?"Affiché car vous avez lu "+esc(livre(e.rl))+".":""):revBtn(e,e.id);
  if(vj.length||sealed)h+=`<div class="bl j"><h3>Dans le jeu</h3>${vj.map(l=>`<p>${esc(l.t)}</p>`).join("")}${sealed?`<p class="mu">${pl(sealed,"note")} masquée${sealed>1?"s":""} pour ne pas vous dévoiler la suite du jeu.</p>`:""}</div>`;
+ h+=srcBlock(e.id);
  const dn=chips(e.dans||[]),vo=chips(e.voir||[]);
  if(dn)h+=`<h3>À lire pour le retrouver</h3>${dn}`;
  if(vo)h+=`<h3>Voir aussi</h3>${vo}`;
- return h+askLink(e.nom)}
+ return h}
 
 function monstre(m){
  if(!vis(m)&&!S.force[m.id])return gate(m);
- return topbar(m.id)+`<p class="eb">Bestiaire · ${esc(m.cl)}</p><h2>${esc(m.nom)}</h2>${m.en?`<p class="mu">En anglais : ${esc(m.en)}</p>`:""}`
+ return `<p class="eb">Bestiaire · ${esc(m.cl)}</p><h2>${esc(m.nom)}</h2>${m.en?`<p class="mu">En anglais : ${esc(m.en)}</p>`:""}`+actions(m)
   +kv("Huile",oil(m.cl))+kv("Signes",m.signes&&m.signes.map(sg).join(""))+kv("Bombes",m.bombes&&esc(m.bombes.join(", ")))
   +kv("Potions",m.potions&&esc(m.potions.join(", ")))+kv("Autres",m.autres&&esc(m.autres.join(", ")))+kv("Insensible à",m.immun&&sg(m.immun))
   +`<p>${esc(m.conseil)}</p>`+(m.origine?bl("Origines",m.origine):"")+(m.livres?bl("Dans les livres",m.livres):"")
-  +(m.lien&&chip(m.lien)?`<h3>Voir aussi</h3>${chips([m.lien])}`:"")+askLink(m.nom)}
+  +srcBlock(m.id)+(m.lien&&chip(m.lien)?`<h3>Voir aussi</h3>${chips([m.lien])}`:"")}
 
+function lignee(){
+ const node=(id,nom,sub,cls)=>{const e=ID[id];const inner=`<b>${esc(nom)}</b>${sub?`<small>${sub}</small>`:""}`;
+  return e&&vis(e)?`<button class="node ${cls||""}" data-o="${id}">${inner}</button>`:`<div class="node plain ${cls||""}">${inner}</div>`};
+ const duny=revOK(ID.duny)?`le Hérisson d'Erlenwald, alias Emhyr var Emreis`:`le Hérisson d'Erlenwald`;
+ return `<p>Le Sang Ancien de Lara Dorren se transmet de génération en génération jusqu'à Ciri. Touchez un nom pour ouvrir sa fiche.</p><div class="tree">
+<div class="gen">${node("lara-dorren","Lara Dorren","magicienne elfe","k")}<span class="amp">et</span>${node("","Cregennan de Lod","mage humain")}</div><div class="ln"></div>
+<div class="gen">${node("","Riannon","leur fille, élevée parmi les humains")}</div><div class="ln dash"></div>
+<p class="gap">Plusieurs générations. Ciri porte d'ailleurs des noms hérités de sa lignée : Cirilla Fiona Elen Riannon.</p><div class="ln dash"></div>
+<div class="gen">${node("calanthe","Calanthe","reine de Cintra, épouse ensuite Eist Tuirseach","k")}<span class="amp">et</span>${node("","Roegner d'Ebbing","premier époux")}</div><div class="ln"></div>
+<div class="gen">${node("pavetta","Pavetta","princesse de Cintra","k")}<span class="amp">et</span>${node("duny","Duny",esc(duny),"k")}</div><div class="ln"></div>
+<div class="gen">${node("ciri","Ciri","Zireael, l'enfant du Sang Ancien","me")}</div><div class="ln dash"></div>
+<p class="gap">Liés à elle par le destin plutôt que par le sang</p>
+<div class="gen">${node("geralt","Geralt","il l'a réclamée par la Loi de la Surprise")}${node("yennefer","Yennefer","sa mère de cœur")}</div></div>
+${revOK(ID.duny)?"":revBtn(ID.duny,"duny")}${chips(["sang-ancien","loi-surprise","lara-dorren"])}`}
+
+/* ---------- Carte ---------- */
+const MW=400,MH=560;
+let mv={x:0,y:0,w:MW,h:MH};
+const COTE=[[178,0],[174,14],[164,26],[168,40],[156,52],[160,66],[148,78],[144,92],[152,104],[140,116],[138,128],[132,138],[126,148],[128,160],[120,172],[126,184],[116,196],[110,206],[112,218],[104,230],[114,242],[106,252],[100,264],[102,276],[94,288],[100,298],[92,310],[88,320],[94,332],[90,344],[100,356],[96,368],[106,380],[102,394],[112,406],[108,420],[118,434],[114,448],[124,462],[120,478],[130,492],[126,508],[136,522],[132,540],[140,560]];
+const PONTAR=[[132,140],[150,146],[172,148],[192,142],[214,150],[236,144],[258,152],[282,146],[306,154],[330,148]];
+const YARUGA=[[88,320],[108,318],[128,322],[150,316],[172,322],[196,316],[220,324],[244,318],[262,322],[286,316],[310,324],[336,318],[356,326]];
+const MONTS=[[298,82],[352,86],[344,110],[300,114],[366,100],[374,150],[384,172],[372,192],[386,214],[376,236],[388,258],[252,234],[262,224],[286,228]];
+const FORET=[[158,266],[168,262],[178,268],[162,280],[172,284],[182,278]];
+const ILES=[[44,310,12,8,-20],[28,328,8,6,10],[60,330,7,5,0],[40,344,6,4,15],[64,296,7,5,-10],[100,211,4,3,0]];
+const COURT={melitele:"Ellander","verger-blanc":"Verger Blanc",yaruga:"Yaruga",nilfgaard:"Nilfgaard",korath:"Korath"};
+const GAUCHE={"dol-blathanna":1,"novigrad":1,"kaer-morhen":1};
+const poly=p=>"M"+p.map(q=>q.join(" ")).join("L");
+const court=e=>COURT[e.id]||e.nom.replace(/^(Le |La |Les |L')/,"");
+function carteSVG(){
+ const cur=new Set([...C.chapitres[S.ch].entrees,...(S.hos?C.dlc.hos.entrees:[]),...(S.bw?C.dlc.bw.entrees:[])]),k=mv.w/MW;
+ const pins=Object.entries(C.carte.lieux).map(([id,[x,y]])=>{const e=any(id);if(!e||!vis(e))return"";const g=GAUCHE[id];
+  return `<g class="pin ${e.src}${cur.has(id)?" here":""}${S.sel===id?" sel":""}" data-pin="${id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y}) scale(${k})" tabindex="0" role="button" aria-label="${esc(e.nom)}"><circle class="hit" r="16"/>${cur.has(id)?'<circle class="ring" r="12"/>':""}<circle class="dot" r="5.5"/><text x="${g?-9:9}" y="4"${g?' text-anchor="end"':""}>${esc(court(e))}</text></g>`}).join("");
+ return `<svg id="map" viewBox="${mv.x} ${mv.y} ${mv.w} ${mv.h}" style="--k:${k}" role="img" aria-label="Carte schématique du Continent">
+<rect x="-50" y="-50" width="${MW+100}" height="${MH+100}" fill="var(--sea)"/>
+<path class="land" d="${poly(COTE)}L${MW+60} ${MH+60}L${MW+60} -60Z"/>
+${ILES.map(([x,y,rx,ry,a])=>`<ellipse class="land" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" transform="rotate(${a} ${x} ${y})"/>`).join("")}
+${FORET.map(([x,y])=>`<circle class="fo" cx="${x}" cy="${y}" r="5"/>`).join("")}
+<path class="riv" d="${poly(PONTAR)}"/><path class="riv" d="${poly(YARUGA)}"/>
+<path class="mt" d="${MONTS.map(([x,y])=>`M${x-6} ${y+4}L${x} ${y-5}L${x+6} ${y+4}`).join("")}"/>
+<text class="rl" x="292" y="140" style="font-size:calc(var(--k) * 11px)">Pontar</text>
+${C.carte.regions.map(r=>`<text class="rg${r.mer?" mer":""}" x="${r.x}" y="${r.y}" style="font-size:calc(var(--k) * ${r.mer?12:12.5}px)">${esc(r.t)}</text>`).join("")}
+${pins}</svg>`}
+function mapCard(){const e=S.sel&&any(S.sel);if(!e||!vis(e))return"";
+ return `<div class="mapcard" id="mapcard"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><p class="eb" style="margin:6px 0 0">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><button class="ic" data-act="mapclose" aria-label="Fermer">${ICO.close}</button></div><h3 class="ct">${esc(e.nom)}</h3><p class="mu sm">${esc(e.role)}</p><button class="pr" data-o="${e.id}">Ouvrir la fiche</button></div>`}
+function carte(){
+ const pl=Object.keys(C.carte.lieux).map(i=>any(i)).filter(e=>e&&vis(e)).sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
+ const hc=C.carte.horsCarte.map(i=>ID[i]).filter(e=>e&&vis(e));
+ return `<div class="mapw"><div id="mapsvg">${carteSVG()}</div><div class="mapctl"><button class="ic" data-zoom="in" aria-label="Zoomer">${ICO.plus}</button><button class="ic" data-zoom="out" aria-label="Dézoomer">${ICO.minus}</button><button class="ic" data-zoom="reset" aria-label="Voir toute la carte">${ICO.target}</button></div><div id="mapcardw">${mapCard()}</div></div>
+<div class="legend"><span><i style="background:var(--bk)"></i>Livres</span><span><i style="background:var(--ac)"></i>Jeu</span><span><i style="background:var(--ink)"></i>Les deux</span><span><i style="border:2px solid var(--ac)"></i>Vous êtes ici</span></div>
+<p class="mu sm">Carte schématique : les positions sont indicatives et les distances ne sont pas à l'échelle. Pincez pour zoomer, faites glisser pour vous déplacer.</p>
+<h3 class="gh">Lieux de la carte<span>${pl.length}</span></h3>${pl.map(row).join("")}
+${hc.length?`<h3 class="gh">Hors de la carte<span>${hc.length}</span></h3><p class="mu sm">Lieux sans position connue, ou situés dans un autre monde.</p>`+hc.map(row).join(""):""}`}
+function setVB(){const s=$("#map");if(!s)return;const k=mv.w/MW;s.setAttribute("viewBox",`${mv.x} ${mv.y} ${mv.w} ${mv.h}`);s.style.setProperty("--k",k);
+ s.querySelectorAll("[data-pin]").forEach(g=>g.setAttribute("transform",`translate(${g.dataset.x} ${g.dataset.y}) scale(${k})`))}
+function clampV(){mv.x=Math.min(Math.max(mv.x,0),MW-mv.w);mv.y=Math.min(Math.max(mv.y,0),MH-mv.h)}
+function zoomAt(base,f,fx,fy){const w=Math.min(MW,Math.max(100,base.w*f)),h=w*MH/MW;mv={x:base.x+(base.w-w)*fx,y:base.y+(base.h-h)*fy,w,h};clampV();setVB()}
+function selectPin(id){S.sel=id;const w=$("#mapcardw");if(w)w.innerHTML=mapCard();
+ document.querySelectorAll("#map [data-pin]").forEach(g=>g.classList.toggle("sel",g.dataset.pin===id));if(id)vib(6)}
+function focusPin(id){const p=C.carte.lieux[id];if(!p)return;const w=180,h=w*MH/MW;mv={x:p[0]-w/2,y:p[1]-h/2,w,h};clampV()}
+function mapInit(){
+ const s=$("#map");if(!s||s.dataset.ok)return;s.dataset.ok=1;
+ const pts=new Map();let st=null,moved=false,downPin=null;
+ const snap=()=>({mv:{...mv},pts:new Map([...pts].map(([k,v])=>[k,{...v}]))});
+ s.addEventListener("pointerdown",e=>{try{s.setPointerCapture(e.pointerId)}catch(_){}pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pts.size===1){moved=false;const g=e.target.closest&&e.target.closest("[data-pin]");downPin=g?g.dataset.pin:null}st=snap()});
+ s.addEventListener("pointermove",e=>{if(!pts.has(e.pointerId)||!st)return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});const r=s.getBoundingClientRect();
+  if(pts.size===1&&st.pts.size===1){const a=[...st.pts.values()][0],b=[...pts.values()][0],dx=b.x-a.x,dy=b.y-a.y;
+   if(Math.hypot(dx,dy)>6)moved=true;if(!moved)return;const u=st.mv.w/r.width;mv={...st.mv,x:st.mv.x-dx*u,y:st.mv.y-dy*u};clampV();setVB()}
+  else if(pts.size===2&&st.pts.size===2){moved=true;const[a,b]=[...pts.values()],[a0,b0]=[...st.pts.values()];
+   const f=Math.hypot(a0.x-b0.x,a0.y-b0.y)/Math.max(1,Math.hypot(a.x-b.x,a.y-b.y));
+   zoomAt(st.mv,f,((a0.x+b0.x)/2-r.left)/r.width,((a0.y+b0.y)/2-r.top)/r.height)}});
+ const up=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);if(!moved&&e.type==="pointerup"&&pts.size===0)selectPin(downPin);st=pts.size?snap():null};
+ s.addEventListener("pointerup",up);s.addEventListener("pointercancel",up);
+ s.addEventListener("wheel",e=>{e.preventDefault();const r=s.getBoundingClientRect();zoomAt({...mv},e.deltaY>0?1.15:1/1.15,(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height)},{passive:false});
+ s.addEventListener("keydown",e=>{const g=e.target.closest&&e.target.closest("[data-pin]");if(g&&(e.key==="Enter"||e.key===" ")){e.preventDefault();selectPin(g.dataset.pin)}})}
+
+/* ---------- Livres ---------- */
 function livres(){
- const seg=[["ordre","Ordre de lecture"],["frise","Frise"],["ecrans","Jeux et écrans"]];
- return `<h2>Livres</h2><div class="seg" role="tablist" aria-label="Rubriques">${seg.map(([k,n])=>`<button role="tab" aria-selected="${S.lv===k}" class="${S.lv===k?"on":""}" data-lv="${k}">${n}</button>`).join("")}</div>`
-  +({ordre,frise,ecrans}[S.lv]||ordre)()}
-
-function ordre(){
+ const seg=[["lecture","Lecture"],["contes","Contes"],["frise","Frise"],["ecrans","Écrans"]];
+ return `<div class="seg" role="tablist" aria-label="Rubriques">${seg.map(([k,n])=>`<button role="tab" aria-selected="${S.lv===k}" class="${S.lv===k?"on":""}" data-lv="${k}">${n}</button>`).join("")}</div>`
+  +({lecture,contes,frise,ecrans}[S.lv]||lecture)()}
+function lecture(){
  const nl=BOOKS.filter(b=>S.lus[b.id]).length;
  const quand=id=>C.chapitres.filter(c=>c.lireIds.includes(id)).map(c=>c.court).concat(Object.values(C.dlc).filter(d=>d.lireIds.includes(id)).map(d=>d.nom));
- return `<p>Commencez par les deux recueils de nouvelles, puis lisez les cinq romans de la saga dans l'ordre. « La Saison des orages » se glisse où vous voulez après les nouvelles, et « La Croisée des corbeaux », une préquelle, se lit à tout moment.</p>
-<div class="prog"><div class="bar"><i style="width:${Math.round(nl/BOOKS.length*100)}%"></i></div><span>${nl} sur ${BOOKS.length} lus</span></div><ol class="books">`
+ return `<p>Commencez par les deux recueils de nouvelles, puis lisez les cinq romans de la saga dans l'ordre. « La Saison des orages » se glisse où vous voulez après les nouvelles, et « La Croisée des corbeaux », une préquelle, se lit à tout moment.</p><p class="mu sm">Cochez les livres lus : leurs rebondissements s'afficheront d'eux-mêmes dans les fiches.</p>
+<div class="prog"><div class="bar-p"><i style="width:${Math.round(nl/BOOKS.length*100)}%"></i></div><span>${nl} sur ${BOOKS.length} lus</span></div><ol class="books">`
  +BOOKS.map((b,i)=>{const q=quand(b.id),lu=!!S.lus[b.id];
   return `<li class="${lu?"lu":""}"><span class="num">${i+1}</span><div class="bi"><h3 class="ct"><button class="lnk" data-o="${b.id}">${esc(b.nom)}</button></h3><p class="mu sm">${esc(b.genre)} · ${esc(b.vo)}, ${b.annee}</p><p>${esc(b.resume)}</p>${q.length?`<p class="sm"><b>Idéal pendant :</b> ${esc(q.join(", "))}</p>`:""}<button class="ch${lu?" on":""}" data-lu="${b.id}" aria-pressed="${lu}">${lu?"Lu ✓":"Marquer comme lu"}</button></div></li>`}).join("")
  +`</ol><p class="mu sm">En français, la saga est publiée chez Bragelonne, et en poche chez Milady, dans la traduction de Laurence Dyèvre.</p>`}
-
+function contes(){
+ const card=s=>`<div class="srcard">${fig(s)}<p class="eb">${esc(s.origine)}</p><h3 class="ct">${esc(s.conte)}</h3><p class="mu sm">Dans le Sorceleur : ${esc(s.oeuvre)}</p><p>${esc(s.texte)}</p>${chips(s.liens)}</div>`;
+ const fk=SRCS.filter(s=>s.groupe==="folklore"&&srcVis(s));
+ return `<p>Sapkowski aime détourner les contes de notre enfance, et le jeu puise dans le folklore slave. Voici d'où viennent quelques-unes de leurs créatures et de leurs histoires.</p>
+<h3 class="gh">Contes détournés</h3>${SRCS.filter(s=>s.groupe==="contes").map(card).join("")}
+${fk.length?`<h3 class="gh">Folklore slave</h3>${fk.map(card).join("")}`:""}
+<p class="mu sm">Illustrations du domaine public, issues de Wikimedia Commons. Le détail des œuvres figure dans les réglages.</p>`}
 function frise(){
  const l=C.chrono.map((x,i)=>({...x,k:"f"+i})).filter(x=>!x.c||x.c<=S.ch);
  return `<p class="mu">Des origines du monde jusqu'aux jeux. Point bleu : les livres. Point ambre : les jeux.</p><div class="tl">`+l.map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}`
-  +(x.rev&&!S.sp&&!S.rv[x.k]?`<button class="sp" data-r="${x.k}">Révéler le détail (spoilers des livres)</button>`:`<p>${esc(x.d)}</p>`)
+  +(x.rev&&!revOK(x,x.k)?revBtn(x,x.k):`<p>${esc(x.d)}</p>`)
   +(x.lien&&chip(x.lien)?`<button class="ch" data-o="${x.lien}">Voir la fiche</button>`:"")+`</div>`).join("")+`</div>`}
-
 function ecrans(){
  return `<p class="mu">Les jeux et adaptations nés des livres de Sapkowski. Point bleu : films et séries. Point ambre : jeux.</p><div class="tl">`
   +C.ecrans.map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}<p>${esc(x.d)}</p></div>`).join("")+`</div>`}
 
+/* ---------- Quiz ---------- */
 function quiz(){
  const z=S.quiz;
- if(S.defi&&(!z||z.seed!==S.defi))return `<h2>Défi entre amis</h2><div class="card"><p class="eb">Défi n° ${esc(S.defi.toUpperCase())}</p><p>Un ami vous lance un défi : dix questions sur l'univers du Sorceleur, les mêmes pour tout le monde. Aucune ne dévoile la suite du jeu ni la fin des livres.</p><button class="pr" data-act="relever">Relever le défi</button></div><p><button class="ch" data-act="quit">Faire plutôt un quiz adapté à ma partie</button></p>`;
- if(!z)return `<h2>Quiz</h2><p>Dix questions sur les livres, le bestiaire et la langue ancienne.</p><div class="cards"><div class="card"><h3 class="ct">Quiz de ma partie</h3><p>Les questions s'adaptent à votre avancée dans le jeu et aux extensions commencées.</p><button class="pr" data-act="solo">Commencer</button></div><div class="card"><h3 class="ct">Défi entre amis</h3><p>Lancez un défi puis envoyez le lien : vos amis répondent aux mêmes questions, sans aucun spoiler pour personne.</p><button class="pr" data-act="defi">Lancer un défi</button></div></div>${S.record?`<p class="mu">Votre record : ${S.record.s} sur ${S.record.n}.</p>`:""}`;
+ if(S.defi&&(!z||z.seed!==S.defi))return `<div class="card hi"><p class="eb">Défi n° ${esc(S.defi.toUpperCase())}</p><p>Un ami vous lance un défi : dix questions sur l'univers du Sorceleur, les mêmes pour tout le monde. Aucune ne dévoile la suite du jeu ni la fin des livres.</p><button class="pr wide" data-act="relever">Relever le défi</button></div><p><button class="ch" data-act="quit">Faire plutôt un quiz adapté à ma partie</button></p>`;
+ if(!z)return `<p>Dix questions sur les livres, le bestiaire, les contes et la langue ancienne.</p><div class="card"><h3 class="ct">Quiz de ma partie</h3><p>Les questions s'adaptent à votre avancée dans le jeu et aux extensions commencées.</p><button class="pr wide" data-act="solo">Commencer</button></div><div class="card"><h3 class="ct">Défi entre amis</h3><p>Lancez un défi puis envoyez le lien : vos amis répondent aux mêmes questions, sans aucun spoiler pour personne.</p><button class="pr wide" data-act="defi">Lancer un défi</button></div>${S.record?`<p class="mu">Votre record : ${S.record.s} sur ${S.record.n}.</p>`:""}`;
  const n=z.qs.length,s=score(z);
  if(z.i>=n){const r=rang(s,n);
-  return `<h2>${z.defi?"Défi n° "+esc(z.seed.toUpperCase()):"Résultat du quiz"}</h2><div class="card res"><p class="big">${s}<span> / ${n}</span></p><p class="eb">${r.t}</p><p>${r.d}</p></div><div class="row"><button class="pr" data-act="sharescore">${ICO.share} ${z.defi?"Envoyer le défi à mes amis":"Partager mon score"}</button><button class="ch" data-act="again">Rejouer</button></div>`
+  return `<div class="card res"><p class="eb">${z.defi?"Défi n° "+esc(z.seed.toUpperCase()):"Résultat"}</p><p class="big">${s}<span> / ${n}</span></p><p class="eb">${r.t}</p><p>${r.d}</p></div><div class="row"><button class="pr" data-act="sharescore">${ICO.share}${z.defi?"Envoyer le défi":"Partager mon score"}</button><button class="ch" data-act="again">Rejouer</button></div>`
    +`<h3>Récapitulatif</h3><ol class="recap">`+z.qs.map((q,i)=>`<li class="${z.ans[i]===q.ok?"ok":"ko"}">${esc(q.q)}<br><span class="mu">${esc(q.opts[q.ok])}</span></li>`).join("")+`</ol>`}
  const q=z.qs[z.i],a=z.ans[z.i];
- return `<h2>${z.defi?"Défi n° "+esc(z.seed.toUpperCase()):"Quiz"}</h2><div class="prog"><div class="bar"><i style="width:${Math.round((z.i+(a!=null?1:0))/n*100)}%"></i></div><span>Question ${z.i+1} sur ${n} · ${pl(s,"point")}</span></div><p class="qq">${esc(q.q)}</p>${opts(q,a,"qa")}`
-  +(a!=null?feedback(q,a)+`<p><button class="pr" data-act="next">${z.i+1<n?"Question suivante":"Voir mon score"}</button></p>`:"")
+ return `${z.defi?`<p class="eb">Défi n° ${esc(z.seed.toUpperCase())}</p>`:""}<div class="prog"><div class="bar-p"><i style="width:${Math.round((z.i+(a!=null?1:0))/n*100)}%"></i></div><span>${z.i+1} / ${n} · ${pl(s,"point")}</span></div><p class="qq">${esc(q.q)}</p>${opts(q,a,"qa")}`
+  +(a!=null?feedback(q,a)+`<p><button class="pr wide" data-act="next">${z.i+1<n?"Question suivante":"Voir mon score"}</button></p>`:"")
   +`<p><button class="ch" data-act="quit">Abandonner</button></p>`}
 
 function demander(){
- if(!SM)return `<h2>Demander</h2><p>Les questions à Claude ne sont possibles que dans la version du compagnon publiée sur Claude.</p>${LIEN.artifact?`<p><a href="${esc(LIEN.artifact)}" target="_blank" rel="noopener">Ouvrir cette version</a></p>`:""}`;
+ if(!SM)return `<p>Les questions à Claude ne sont possibles que dans la version du compagnon publiée sur Claude.</p>${LIEN.artifact?`<p><a href="${esc(LIEN.artifact)}" target="_blank" rel="noopener">Ouvrir cette version</a></p>`:""}`;
  const ex=["Qu'est-ce que la Loi de la Surprise ?","Pourquoi Geralt a-t-il les cheveux blancs ?","Quelle différence entre les Aen Seidhe et les Aen Elle ?","Quel livre lire en ce moment ?"];
- return `<h2>Demander</h2><p class="mu">Posez une question sur les livres ou le monde du Sorceleur. La réponse tient compte de votre avancée dans le jeu et des livres que vous avez lus.</p><div class="chips">${ex.map(x=>`<button class="ch" data-ex="${esc(x)}">${esc(x)}</button>`).join("")}</div><textarea id="qs" rows="3" placeholder="Par exemple : qui sont les Aen Elle ?" aria-label="Votre question">${esc(S.ask.q)}</textarea><p class="row"><button class="pr" id="go"${S.ask.busy?" disabled":""}>Poser la question</button><button class="ch" id="stop"${S.ask.busy?"":" hidden"}>Arrêter</button></p><div id="out" class="out" aria-live="polite">${esc(S.ask.out)}</div><p class="mu sm">Réponse générée par Claude à partir du codex et de ses propres connaissances : vérifiez les détails importants dans les livres.</p>`}
+ return `<p class="mu">Posez une question sur les livres ou le monde du Sorceleur. La réponse tient compte de votre avancée dans le jeu et des livres que vous avez lus.</p><div class="chips">${ex.map(x=>`<button class="ch" data-ex="${esc(x)}">${esc(x)}</button>`).join("")}</div><textarea id="qs" rows="3" placeholder="Par exemple : qui sont les Aen Elle ?" aria-label="Votre question">${esc(S.ask.q)}</textarea><p class="row"><button class="pr" id="go"${S.ask.busy?" disabled":""}>Poser la question</button><button class="ch" id="stop"${S.ask.busy?"":" hidden"}>Arrêter</button></p><div id="out" class="out" aria-live="polite">${esc(S.ask.out)}</div><p class="mu sm">Réponse générée par Claude à partir du codex et de ses propres connaissances : vérifiez les détails importants dans les livres.</p>`}
 
-const footer=()=>`<footer class="ft"><p>Guide non officiel, réalisé par des fans. La saga du Sorceleur est l'œuvre d'Andrzej Sapkowski ; The Witcher est une série de jeux de CD Projekt Red.</p><p><button class="lnk" data-share="">Envoyer le compagnon à un ami</button></p></footer>`;
+/* ---------- Installation, réglages ---------- */
+function installHow(){
+ if(standalone())return `<p>Le compagnon est installé sur cet appareil.</p>`;
+ if(inFrame)return `<p>Pour l'installer comme une application, ouvrez-le depuis son site, puis ajoutez-le à votre écran d'accueil.</p><p><a href="${esc(LIEN.pages)}" target="_blank" rel="noopener">Ouvrir le site du compagnon</a></p>`;
+ if(installEvt)return `<p>Ajoutez le compagnon à votre écran d'accueil : il s'ouvre comme une application et fonctionne hors ligne.</p><button class="pr" data-act="install">${ICO.install}Installer l'application</button>`;
+ if(isIOS)return `<ol class="steps"><li>Touchez le bouton Partager de Safari, le carré avec une flèche vers le haut.</li><li>Choisissez « Sur l'écran d'accueil ».</li><li>Touchez « Ajouter ». Le compagnon s'ouvre ensuite comme une application, même hors ligne.</li></ol>`;
+ return `<p>Dans le menu de votre navigateur, choisissez « Installer l'application » ou « Ajouter à l'écran d'accueil ». Le compagnon s'ouvrira ensuite comme une application, même hors ligne.</p>`}
+function installCard(){if(standalone())return"";return `<div class="card"><p class="eb">Application</p><h3 class="ct">Gardez-le sous le pouce</h3>${installHow()}</div>`}
+const sw=(id,on,label,sub)=>`<label class="line" for="${id}"><span>${label}${sub?`<small>${sub}</small>`:""}</span><input class="sw" type="checkbox" id="${id}"${on?" checked":""}></label>`;
+function reglages(){
+ const seg=(name,cur,list)=>`<div class="seg" role="radiogroup">${list.map(([k,n])=>`<button role="radio" aria-checked="${cur===k}" class="${cur===k?"on":""}" data-${name}="${k}">${n}</button>`).join("")}</div>`;
+ return `<div class="set"><h3>Où en êtes-vous dans le jeu ?</h3>${C.chapitres.map((c,i)=>`<button class="pick" data-setch="${i}" aria-pressed="${i===S.ch}"><i></i><span>${esc(c.nom)}<small>${esc(c.lieux)}</small></span></button>`).join("")}
+${sw("o-hos",S.hos,"J'ai commencé Hearts of Stone")}${sw("o-bw",S.bw,"J'ai commencé Blood and Wine")}</div>
+<div class="set"><h3>Livres lus</h3><p class="mu sm">Les rebondissements d'un livre coché s'affichent d'eux-mêmes.</p>${BOOKS.map(b=>sw("lu-"+b.id,!!S.lus[b.id],esc(b.nom),esc(b.genre)+", "+b.annee)).join("")}
+${sw("o-sp",S.sp,"Tout révéler des livres","Affiche toutes les suites, même des livres non cochés")}</div>
+<div class="set"><h3>Affichage</h3>${inFrame?"":`<p class="sm">Thème</p>${seg("theme",S.theme,[["auto","Automatique"],["light","Clair"],["dark","Sombre"]])}`}
+<p class="sm">Taille du texte</p>${seg("taille",S.taille,[["normal","Normale"],["grand","Grande"],["tres-grand","Très grande"]])}
+${"wakeLock" in navigator?sw("o-eveil",S.eveil,"Garder l'écran allumé","Pratique quand le téléphone est posé près de la manette"):""}</div>
+<div class="set"><h3>Application</h3>${installHow()}<div class="chips"><button class="ch" data-share="">${ICO.share}Partager le compagnon</button><button class="ch" data-act="onb">Revoir l'accueil</button></div>
+${S.reset?`<div class="pend"><p>Effacer votre avancée, vos lectures et votre carnet sur cet appareil ?</p><div class="row"><button class="pr" data-act="reset-ok">Tout effacer</button><button class="ch" data-act="reset-no">Annuler</button></div></div>`:`<p><button class="lnk" data-act="reset">Effacer mes données</button></p>`}</div>
+<div class="set"><h3>Crédits des illustrations</h3><p class="mu sm">Œuvres du domaine public, via Wikimedia Commons.</p>${SRCS.map(s=>`<p class="sm">${esc(credit(s))}. <a href="${esc(s.page)}" target="_blank" rel="noopener">Source</a></p>`).join("")}</div>
+<p class="mu sm">Compagnon du Sorceleur, version ${VERSION}. Guide non officiel, réalisé par des fans. La saga du Sorceleur est l'œuvre d'Andrzej Sapkowski ; The Witcher est une série de jeux de CD Projekt Red.</p>`}
+
+/* ---------- Accueil guidé ---------- */
+function renderOnb(){
+ const o=$("#onb");if(S.vu){o.hidden=true;o.innerHTML="";return}
+ const n=standalone()?3:4,st=Math.min(S.onb,n-1);
+ const dots=`<div class="dots" aria-hidden="true">${Array.from({length:n},(_,i)=>`<i class="${i===st?"on":""}"></i>`).join("")}</div>`;
+ let h="";
+ if(st===0)h=`<div class="hero">${EMBLEME}</div><h2>Compagnon du Sorceleur</h2><p>Le lore des livres d'Andrzej Sapkowski, au rythme de votre partie de The Witcher 3.</p><ul class="feat"><li>${ICO.codex}<span>Un codex de ${E.length} fiches qui ne dévoile rien de ce qui vient après dans le jeu.</span></li><li>${ICO.carte}<span>La carte du Continent, le bestiaire et la lignée de Ciri.</span></li><li>${ICO.invite}<span>Un quiz et des défis à envoyer à vos amis.</span></li></ul><div class="grow"></div>${dots}<button class="pr wide" data-onb="next">Commencer</button>`;
+ else if(st===1)h=`<p class="eb">Étape 1</p><h2>Où en êtes-vous dans le jeu ?</h2><p class="mu">Tout ce qui vient après restera caché. Vous pourrez changer à tout moment.</p>${C.chapitres.map((c,i)=>`<button class="pick" data-onbch="${i}" aria-pressed="${i===S.ch}"><i></i><span>${esc(c.nom)}<small>${esc(c.lieux)}</small></span></button>`).join("")}${sw("onb-hos",S.hos,"J'ai commencé Hearts of Stone")}${sw("onb-bw",S.bw,"J'ai commencé Blood and Wine")}<div class="grow"></div>${dots}<div class="onbb"><button class="ch" data-onb="prev">Retour</button><button class="pr" data-onb="next">Continuer</button></div>`;
+ else if(st===2)h=`<p class="eb">Étape 2</p><h2>Quels livres avez-vous lus ?</h2><p class="mu">Leurs rebondissements s'afficheront dans les fiches. Les autres resteront cachés derrière un bouton.</p>${BOOKS.map(b=>sw("onb-lu-"+b.id,!!S.lus[b.id],esc(b.nom),esc(b.genre))).join("")}<div class="grow"></div>${dots}<div class="onbb"><button class="ch" data-onb="prev">Retour</button><button class="pr" data-onb="${n===3?"done":"next"}">${n===3?"C'est parti":"Continuer"}</button></div>`;
+ else h=`<p class="eb">Dernière étape</p><h2>Installez l'application</h2><p class="mu">Le compagnon s'ouvrira depuis votre écran d'accueil, en plein écran, même sans connexion.</p>${installHow()}<div class="grow"></div>${dots}<div class="onbb"><button class="ch" data-onb="prev">Retour</button><button class="pr" data-onb="done">${installEvt?"Plus tard":"C'est parti"}</button></div>`;
+ o.innerHTML=`<div class="onbc" role="dialog" aria-modal="true" aria-label="Bienvenue">${h}</div>`;o.hidden=false}
 
 /* ---------- Rendu ---------- */
-function renderRoute(){
- const r=$("#route");
- r.innerHTML=C.chapitres.map((c,i)=>`<button class="st${i<S.ch?" done":""}${i===S.ch?" on":""}" data-i="${i}" aria-pressed="${i===S.ch}"><i></i>${esc(c.court)}</button>`).join("");
- const b=$("#route .on");if(b)r.scrollLeft=b.offsetLeft-r.clientWidth/2+b.offsetWidth/2}
-function renderTabs(){
- $("#tabs").innerHTML=TABS.filter(([k])=>k!=="demander"||SM).map(([k,n])=>`<button data-tab="${k}" class="${k===S.tab?"on":""}"${k===S.tab?' aria-current="page"':""}>${ICO[k]}<span>${n}</span></button>`).join("")}
+const footer=()=>`<footer class="ft"><p>Guide non officiel, réalisé par des fans. La saga du Sorceleur est l'œuvre d'Andrzej Sapkowski ; The Witcher est une série de jeux de CD Projekt Red.</p></footer>`;
+function renderBar(){
+ const pushed=!!(S.id||S.page);
+ const t=S.page?TITRES[S.page]:TITRES[S.tab];
+ const left=pushed?`<button class="ic" data-b aria-label="Retour">${ICO.back}</button>`:`<span class="ic em" aria-hidden="true">${EMBLEME}</span>`;
+ const right=(S.page==="recherche"?"":`<button class="ic" data-act="search" aria-label="Rechercher">${ICO.search}</button>`)
+  +(pushed?(S.page==="reglages"?"":`<button class="ic" data-share="${esc(shareToken())}" aria-label="Partager cette page">${ICO.share}</button>`):`<button class="ic" data-o="reglages" aria-label="Réglages">${ICO.reglages}</button>`);
+ $("#bar").innerHTML=`${left}<h1>${esc(t)}</h1>${right}`}
+function renderTabs(){$("#tabs").innerHTML=TABS.map(([k,n])=>`<button data-tab="${k}" class="${k===S.tab?"on":""}"${k===S.tab?' aria-current="page"':""}>${ICO[k]}<span>${n}</span></button>`).join("")}
 function render(){
- renderRoute();renderTabs();
- const v=S.id?(ID[S.id]?fiche(ID[S.id]):monstre(MID[S.id])):({partie,codex,bestiaire,livres,quiz,demander}[S.tab]||partie)();
- $("#main").innerHTML=v+footer()}
+ renderBar();renderTabs();
+ const v=S.id?(ID[S.id]?fiche(ID[S.id]):monstre(MID[S.id])):S.page?({quiz,demander,reglages,recherche,lignee}[S.page])():({partie,codex,carte,bestiaire,livres}[S.tab]||partie)();
+ $("#main").innerHTML=v+(S.page==="reglages"?"":footer());
+ const r=$("#route .on");if(r){const p=r.parentNode;p.scrollLeft=r.offsetLeft-p.clientWidth/2+r.offsetWidth/2}
+ if(S.tab==="carte"&&!S.id&&!S.page)mapInit();
+ renderOnb()}
 
 /* ---------- Navigation ---------- */
 const cur=()=>{try{return decodeURIComponent(location.hash.slice(1))}catch(e){return""}};
 const isRoot=t=>TABK.includes(t)||SEGS[t];
 function go(t){if(cur()===t){mem[t]=0;route()}else location.hash=t}
 function replaceHash(t){try{history.replaceState(null,"","#"+t)}catch(e){}trail[trail.length-1]=t}
-function back(){go(trail.length>1?trail[trail.length-2]:S.tab)}
-function route(){
- const t=cur()||"partie";
- const popped=trail.length>1&&trail[trail.length-2]===t;
- if(isRoot(t))trail=[t];else if(popped)trail.pop();else if(trail[trail.length-1]!==t)trail.push(t);
- S.id=null;S.defi=null;
+function back(){if(trail.length>1)history.back();else go(S.page&&PAGES[S.page]||S.tab)}
+function parse(t){
+ const from=S.tab;S.id=null;S.page=null;S.defi=null;
  if(SEGS[t]){S.tab="livres";S.lv=t}
- else if(t==="livres"){S.tab="livres";S.lv="ordre"}
+ else if(t==="livres"){S.tab="livres";S.lv="lecture"}
  else if(TABK.includes(t))S.tab=t;
- else if(/^defi-[a-z0-9]{3,12}$/.test(t)){S.tab="quiz";S.defi=t.slice(5)}
- else if(ID[t]){S.id=t;S.tab=ID[t].t==="livre"?"livres":"codex"}
+ else if(t in PAGES){S.page=t;if(PAGES[t])S.tab=PAGES[t]}
+ else if(/^defi-[a-z0-9]{3,12}$/.test(t)){S.page="quiz";S.tab="partie";S.defi=t.slice(5)}
+ else if(ID[t]){S.id=t;S.tab=ID[t].t==="livre"?"livres":ID[t].t==="lieu"&&from==="carte"?"carte":"codex"}
  else if(MID[t]){S.id=t;S.tab="bestiaire"}
  else S.tab="partie";
- render();
- scrollTo(0,popped||isRoot(t)?mem[t]||0:0)}
+ if(S.id&&(vis(any(S.id))||S.force[S.id])){S.hist=[S.id,...S.hist.filter(i=>i!==S.id)].slice(0,12);save()}}
+function route(){
+ const t=cur()||"partie",prevRoot=isRoot(trail[trail.length-1]||"partie");
+ const popped=trail.length>1&&trail[trail.length-2]===t;
+ if(isRoot(t))trail=[t];else if(popped)trail.pop();else if(trail[trail.length-1]!==t)trail.push(t);
+ parse(t);
+ const apply=()=>{render();scrollTo(0,popped||isRoot(t)?mem[t]||0:0)};
+ if(!first&&document.startViewTransition&&!calme()){document.documentElement.dataset.nav=popped?"pop":isRoot(t)&&prevRoot?"tab":"push";document.startViewTransition(apply)}
+ else apply();
+ first=false}
 addEventListener("hashchange",ev=>{try{mem[decodeURIComponent(new URL(ev.oldURL).hash.slice(1))||"partie"]=scrollY}catch(e){}route()});
-const shareToken=()=>S.id||(S.defi?"defi-"+S.defi:S.tab==="partie"?"":S.tab==="livres"&&S.lv!=="ordre"?S.lv:S.tab);
+const shareToken=()=>S.id||(S.defi?"defi-"+S.defi:S.page&&S.page!=="reglages"&&S.page!=="recherche"?S.page:S.tab==="partie"?"":S.tab==="livres"&&S.lv!=="lecture"?S.lv:S.tab);
+/* La recherche s'ouvre sans délai pour que le clavier apparaisse aussi sur iPhone. */
+function openSearch(){
+ mem[cur()||"partie"]=scrollY;
+ if(cur()!=="recherche"){try{history.pushState(null,"","#recherche")}catch(e){location.hash="recherche";return}trail.push("recherche")}
+ parse("recherche");render();scrollTo(0,0);const q=$("#q");if(q){q.focus();q.select()}}
+/* Glisser depuis le bord gauche pour revenir en arrière dans l'application installée sur iPhone. */
+let swipe=null;
+if(isIOS&&navigator.standalone){
+ addEventListener("touchstart",e=>{const t=e.touches[0];swipe=e.touches.length===1&&t.clientX<24&&(S.id||S.page)?{x:t.clientX,y:t.clientY}:null},{passive:true});
+ addEventListener("touchmove",e=>{if(!swipe)return;const dx=e.touches[0].clientX-swipe.x;$("#main").style.transform=dx>0?`translateX(${Math.min(dx,140)*.4}px)`:""},{passive:true});
+ addEventListener("touchend",e=>{if(!swipe)return;const t=e.changedTouches[0];$("#main").style.transform="";if(t.clientX-swipe.x>70&&Math.abs(t.clientY-swipe.y)<70)back();swipe=null});
+}
 
 /* ---------- Partage ---------- */
-function shareBase(){if(!inFrame&&/^https?:$/.test(location.protocol))return location.href.split("#")[0];return LIEN.artifact||LIEN.pages}
+function shareBase(){if(!inFrame&&/^https?:$/.test(location.protocol))return location.href.split("#")[0];return LIEN.pages}
 const shareUrl=t=>shareBase()+(t?"#"+t:"");
-const titleOf=t=>any(t)?any(t).nom:t.startsWith("defi-")?"ce défi":({codex:"le codex",bestiaire:"le bestiaire",livres:"l'ordre de lecture",frise:"la frise",ecrans:"les jeux et écrans",quiz:"le quiz",demander:"Demander"})[t]||"cette page";
+const titleOf=t=>any(t)?any(t).nom:t.startsWith("defi-")?"ce défi":TITRES[t]||({contes:"les contes",frise:"la frise",ecrans:"les jeux et écrans"})[t]||"cette page";
 function loadQR(){return qrLib||(qrLib=new Promise((ok,ko)=>{if(window.QRious)return ok(window.QRious);
  const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js";s.onload=()=>window.QRious?ok(window.QRious):ko();s.onerror=()=>{qrLib=null;ko()};document.head.appendChild(s)}))}
+const drawQR=(c,url)=>loadQR().then(Q=>{new Q({element:c,value:url,size:c.width,padding:Math.round(c.width/14),background:"#ffffff",foreground:"#17262c",level:"M"});c.hidden=false});
 function openSheet(tok,msg){
  const url=shareUrl(tok);sheetUrl=url;sheetMsg=msg||"";
  let h=msg?`<p>Votre message est prêt : copiez-le, puis collez-le dans votre conversation.</p><textarea id="sh-m" rows="4" readonly>${esc(msg+"\n"+url)}</textarea><p><button class="pr" data-copy="sh-m">Copier le message</button></p>`
   :`<p>Envoyez ce lien à vos amis. Chacun indique sa propre avancée dans le jeu, et le compagnon ne leur dévoile rien de ce qui vient après.</p><label class="mu sm" for="sh-l">${tok?"Lien vers "+esc(titleOf(tok)):"Lien vers le compagnon"}</label><div class="cp"><input id="sh-l" type="text" readonly value="${esc(url)}"><button class="pr" data-copy="sh-l">Copier</button></div>`;
- if(!inFrame&&navigator.share)h+=`<p><button class="ch" id="sh-send">${ICO.share}Envoyer avec une application</button></p>`;
+ if(!inFrame&&navigator.share)h+=`<p><button class="pr wide" id="sh-send">${ICO.share}Envoyer avec une application</button></p>`;
  if(tok&&!msg)h+=`<p><button class="lnk" data-share="">Partager plutôt l'accueil du compagnon</button></p>`;
- h+=`<div class="qrw" id="qrw" hidden><canvas id="qr" width="400" height="400" role="img" aria-label="QR code du lien"></canvas><p class="mu sm">À scanner avec l'appareil photo d'un téléphone.</p></div>`;
- if(location.protocol==="file:")h+=`<p class="mu sm">Vous consultez une copie enregistrée sur cet appareil. Vous pouvez aussi envoyer le fichier lui-même : il s'ouvre dans n'importe quel navigateur, même hors ligne.</p>`;
+ h+=`<div class="qrw"><canvas id="qr" width="400" height="400" role="img" aria-label="QR code du lien" hidden></canvas><p class="mu sm">À scanner avec l'appareil photo d'un téléphone.</p></div>`;
+ if(location.protocol==="file:")h+=`<p class="mu sm">Vous consultez une copie enregistrée sur cet appareil. Vous pouvez aussi envoyer le fichier lui-même : il s'ouvre dans n'importe quel navigateur.</p>`;
  $("#sh-body").innerHTML=h;$("#sheet").hidden=false;$("#sh-x").focus();
- loadQR().then(Q=>{const c=$("#qr");if(!c||sheetUrl!==url)return;new Q({element:c,value:url,size:400,padding:28,background:"#ffffff",foreground:"#17262c",level:"M"});$("#qrw").hidden=false}).catch(()=>{})}
+ drawQR($("#qr"),url).catch(()=>{const w=$(".qrw");if(w)w.hidden=true})}
 const closeSheet=()=>{$("#sheet").hidden=true};
 function copy(id){const el=$("#"+id);if(!el)return;
- const fail=()=>{el.focus();el.select();toast("Texte sélectionné : copiez-le avec un appui long ou Ctrl+C")};
- try{navigator.clipboard.writeText(el.value).then(()=>toast(id==="sh-m"?"Message copié":"Lien copié"),fail)}catch(e){fail()}}
+ const fail=()=>{el.focus();el.select();toast("Texte sélectionné : copiez-le avec un appui long")};
+ try{navigator.clipboard.writeText(el.value).then(()=>{toast(id==="sh-m"?"Message copié":"Lien copié");vib(8)},fail)}catch(e){fail()}}
 function shareScore(){
  const z=S.quiz,s=score(z),n=z.qs.length,tok=z.defi?"defi-"+z.seed:"quiz";
  const msg=z.defi?`J'ai fait ${s}/${n} au défi n° ${z.seed.toUpperCase()} du Compagnon du Sorceleur. Mêmes questions pour toi, et aucun spoiler :`:`J'ai fait ${s}/${n} au quiz du Compagnon du Sorceleur. À ton tour :`;
  const url=shareUrl(tok);
  if(!inFrame&&navigator.share){navigator.share({title:"Compagnon du Sorceleur",text:msg,url}).catch(e=>{if(e&&e.name!=="AbortError")openSheet(tok,msg)});return}
  try{navigator.clipboard.writeText(msg+"\n"+url).then(()=>toast("Message copié : collez-le dans votre conversation"),()=>openSheet(tok,msg))}catch(e){openSheet(tok,msg)}}
+function openLb(id){const s=SRCS.find(x=>x.id===id);if(!s)return;const l=$("#lb");
+ l.innerHTML=`<img src="${s.img}" alt="${esc(s.conte)}"><p>${esc(credit(s))}. Domaine public.</p><button class="ch" id="lb-x">Fermer</button>`;l.hidden=false;$("#lb-x").focus()}
 
 /* ---------- Demander à Claude ---------- */
 async function ask(){
@@ -1701,7 +2154,7 @@ async function ask(){
  const c=C.chapitres[S.ch],w=norm(q).split(/[^a-z0-9]+/).filter(x=>x.length>2);
  const sc=(txt,name)=>{const h=norm(txt),n=norm(name);return w.reduce((a,x)=>a+(h.includes(x)?1:0)+(n.includes(x)?2:0),0)};
  const top=(l,f,k)=>l.map(x=>[f(x),x]).filter(x=>x[0]>0).sort((a,b)=>b[0]-a[0]).slice(0,k).map(x=>x[1]);
- const ce=top(E.filter(vis),e=>sc([e.nom,...(e.alias||[]),e.role,e.resume].join(" "),e.nom),8).map(e=>[`## ${e.nom} (${e.role})`,e.resume,e.livres||"",S.sp&&e.rev?e.rev:"",(e.jeu||[]).filter(jv).map(l=>l.t).join(" ")].filter(Boolean).join("\n"));
+ const ce=top(E.filter(vis),e=>sc([e.nom,...(e.alias||[]),e.role,e.resume].join(" "),e.nom),8).map(e=>[`## ${e.nom} (${e.role})`,e.resume,e.livres||"",e.rev&&revOK(e)?e.rev:"",(e.jeu||[]).filter(jv).map(l=>l.t).join(" ")].filter(Boolean).join("\n"));
  const cm=top(M.filter(vis),m=>sc([m.nom,m.en||"",m.cl].join(" "),m.nom),3).map(m=>[`## ${m.nom} (bestiaire, ${m.cl})`,"Conseil du jeu : "+m.conseil,m.livres||"",m.origine||""].filter(Boolean).join("\n"));
  const cw=top(C.lexique,x=>sc(x.mot+" "+x.sens,x.mot),4).map(x=>`- ${x.mot} : ${x.sens}. ${x.note}`);
  const ctx=[...ce,...cm,...(cw.length?["## Langue ancienne\n"+cw.join("\n")]:[])].join("\n\n");
@@ -1710,7 +2163,7 @@ async function ask(){
  const prompt=`Tu es le compagnon d'un joueur de The Witcher 3: Wild Hunt et un expert des livres d'Andrzej Sapkowski (saga du Sorceleur). Réponds en français, en 8 phrases au plus, sans titres ni listes à puces, en distinguant ce qui vient des livres de ce qui vient des jeux. Si tu n'es pas sûr d'un détail, dis-le au lieu d'inventer.
 Avancée du joueur : chapitre « ${c.nom} » (${c.lieux}) ; extensions commencées : ${ext}.
 Livres déjà lus : ${lus}. Ordre de lecture conseillé : ${BOOKS.map(b=>b.nom).join(", ")}. Si on te demande quoi lire, tiens-en compte.
-Spoilers : ne révèle rien du jeu qui dépasse ce chapitre. ${S.sp?"Le joueur accepte les spoilers sur la fin des livres.":"Ne révèle pas les rebondissements de la fin des livres : si la question l'exige, préviens d'abord et reste allusif."}
+Spoilers : ne révèle rien du jeu qui dépasse ce chapitre. ${S.sp?"Le joueur accepte les spoilers sur la fin des livres.":"Ne révèle pas les rebondissements des livres qu'il n'a pas lus : si la question l'exige, préviens d'abord et reste allusif."}
 
 Notes du codex :
 ${ctx||"(aucune fiche pertinente)"}
@@ -1724,55 +2177,111 @@ Question : ${q}`;
   S.ask.out=e&&e.code==="refused"?m.refused:((e&&e.text)||"")+(e&&e.code==="cancelled"?"":((e&&e.text)?"\n\n":"")+(m[e&&e.code]||"La réponse n'a pas abouti. Vous pouvez réessayer."));
  }finally{S.ask.busy=false;set()}}
 
+/* ---------- Thème, écran, installation ---------- */
+function applyDisplay(){
+ const r=document.documentElement;
+ if(!inFrame){if(S.theme==="auto")delete r.dataset.theme;else r.dataset.theme=S.theme}
+ if(S.taille==="normal")delete r.dataset.taille;else r.dataset.taille=S.taille;
+ const bg=getComputedStyle(r).getPropertyValue("--bg").trim();
+ let m=document.getElementById("tc");if(!m){m=document.createElement("meta");m.name="theme-color";m.id="tc";document.head.prepend(m)}
+ m.content=bg||"#17262c"}
+async function setWake(on){
+ try{if(on&&"wakeLock" in navigator){if(!wake){wake=await navigator.wakeLock.request("screen");wake.addEventListener("release",()=>{wake=null})}}
+  else if(wake){await wake.release();wake=null}}catch(e){if(on&&document.visibilityState==="visible")toast("Impossible de garder l'écran allumé sur cet appareil")}}
+document.addEventListener("visibilitychange",()=>{if(S.eveil&&document.visibilityState==="visible")setWake(true)});
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyDisplay)}catch(e){}
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;if(S.page==="reglages"||S.tab==="partie"||!S.vu)render()});
+addEventListener("appinstalled",()=>{installEvt=null;toast("Compagnon installé sur votre écran d'accueil");render()});
+async function install(){if(!installEvt)return;installEvt.prompt();try{await installEvt.userChoice}catch(e){}installEvt=null;render()}
+
 /* ---------- Actions ---------- */
 function startQuiz(defi,seed){S.quiz={seed,defi,qs:makeQuiz((defi?"defi-":"solo-")+seed,defi?SAFE:now(),10),i:0,ans:[]}}
+function setCh(i){S.ch=i;S.pend=null;S.eclair=null;save()}
 function act(a){
  const z=S.quiz;
- if(a==="vu"){S.vu=true;save();render()}
+ if(a==="search")openSearch();
+ else if(a==="pend-ok"){setCh(S.pend);render()}
+ else if(a==="pend-no"){S.pend=null;render()}
  else if(a==="solo"){startQuiz(false,newSeed());if(S.defi){S.defi=null;replaceHash("quiz")}render();scrollTo(0,0)}
- else if(a==="defi"){const s=newSeed();startQuiz(true,s);S.defi=s;replaceHash("defi-"+s);render();scrollTo(0,0)}
+ else if(a==="defi"){const s=newSeed();startQuiz(true,s);if(S.page==="quiz"){S.defi=s;replaceHash("defi-"+s);render();scrollTo(0,0)}else go("defi-"+s)}
  else if(a==="relever"){startQuiz(true,S.defi);render();scrollTo(0,0)}
  else if(a==="next"&&z){z.i++;if(z.i>=z.qs.length){const s=score(z);if(!S.record||s/z.qs.length>S.record.s/S.record.n){S.record={s,n:z.qs.length};save()}}render();scrollTo(0,0)}
  else if(a==="quit"||a==="again"){S.quiz=null;if(S.defi){S.defi=null;replaceHash("quiz")}render();scrollTo(0,0)}
- else if(a==="sharescore"&&z)shareScore()}
+ else if(a==="sharescore"&&z)shareScore();
+ else if(a==="mapclose")selectPin(null);
+ else if(a==="install")install();
+ else if(a==="onb"){S.vu=false;S.onb=0;render()}
+ else if(a==="reset"){S.reset=true;render()}
+ else if(a==="reset-no"){S.reset=false;render()}
+ else if(a==="reset-ok"){try{localStorage.removeItem("cs")}catch(e){}Object.assign(S,{ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,reset:false,onb:0,quiz:null,eclair:null});setWake(false);applyDisplay();go("partie");render()}
+ else if(a==="reload")location.reload()}
+
+function onbStep(d){
+ if(d==="next")S.onb++;else if(d==="prev")S.onb=Math.max(0,S.onb-1);
+ else if(d==="done"){S.vu=true;S.onb=0;save();toast("Bonne route, sorceleur");render();return}
+ renderOnb();const o=$("#onb");if(o)o.scrollTop=0}
 
 document.addEventListener("click",ev=>{
  const t=ev.target.closest("button");
- if(!t){if(ev.target.id==="sheet")closeSheet();return}
+ if(!t){if(ev.target.id==="sheet")closeSheet();else if(ev.target.closest("#lb"))$("#lb").hidden=true;return}
  const d=t.dataset;
- if(d.i!==undefined){S.ch=+d.i;S.vu=true;save();render()}
+ if(d.i!==undefined){const i=+d.i;if(i>S.ch)S.pend=i;else setCh(i);render()}
  else if(d.o)go(d.o);
  else if(d.b!==undefined)back();
- else if(d.tab)go(d.tab);
- else if(d.t){S.ty=d.t;render()}
+ else if(d.tab){if(d.tab===S.tab&&!S.id&&!S.page)scrollTo({top:0,behavior:calme()?"auto":"smooth"});else go(d.tab)}
+ else if(d.t){S.ty=d.t;if(S.tab!=="codex"||S.id||S.page)go("codex");else render()}
  else if(d.c){S.cl=d.c;render()}
- else if(d.lv)go(d.lv==="ordre"?"livres":d.lv);
+ else if(d.lv)go(d.lv==="lecture"?"livres":d.lv);
  else if(d.r){S.rv[d.r]=1;render()}
- else if(d.force){S.force[d.force]=1;render()}
- else if(d.lu){const k=d.lu;if(S.lus[k])delete S.lus[k];else S.lus[k]=1;save();render();toast(S.lus[k]?"« "+ID[k].nom+" » marqué comme lu":"« "+ID[k].nom+" » retiré de vos lectures")}
+ else if(d.force){S.force[d.force]=1;parse(cur());render()}
+ else if(d.lu){const k=d.lu;if(S.lus[k])delete S.lus[k];else S.lus[k]=1;save();render();vib(8);toast(S.lus[k]?"« "+ID[k].nom+" » marqué comme lu":"« "+ID[k].nom+" » retiré de vos lectures")}
+ else if(d.fav){const k=d.fav;if(S.fav[k])delete S.fav[k];else S.fav[k]=1;save();render();vib(8);toast(S.fav[k]?"Ajouté au carnet":"Retiré du carnet")}
+ else if(d.map){focusPin(d.map);S.sel=d.map;go("carte")}
+ else if(d.zoom){if(d.zoom==="reset"){mv={x:0,y:0,w:MW,h:MH};setVB()}else zoomAt({...mv},d.zoom==="in"?1/1.4:1.4,.5,.5)}
  else if(d.an!==undefined){S.an++;render()}
- else if(d.ej!==undefined&&S.eclair){S.eclair.a=+d.ej;render()}
- else if(d.qa!==undefined&&S.quiz&&S.quiz.ans[S.quiz.i]==null){S.quiz.ans[S.quiz.i]=+d.qa;render()}
+ else if(d.ej!==undefined&&S.eclair&&S.eclair.a==null){S.eclair.a=+d.ej;vib(S.eclair.a===S.eclair.q.ok?12:[20,40,20]);
+  const td=dayKey(),hier=dayKey(new Date(Date.now()-864e5));if(!S.serie||S.serie.jour!==td){S.serie={jour:td,n:S.serie&&S.serie.jour===hier?S.serie.n+1:1};save()}render()}
+ else if(d.qa!==undefined&&S.quiz&&S.quiz.ans[S.quiz.i]==null){S.quiz.ans[S.quiz.i]=+d.qa;vib(+d.qa===S.quiz.qs[S.quiz.i].ok?12:[20,40,20]);render()}
  else if(d.act)act(d.act);
+ else if(d.onb)onbStep(d.onb);
+ else if(d.onbch!==undefined){S.ch=+d.onbch;S.eclair=null;save();renderOnb()}
+ else if(d.setch!==undefined){setCh(+d.setch);render()}
+ else if(d.theme){S.theme=d.theme;save();applyDisplay();render()}
+ else if(d.taille){S.taille=d.taille;save();applyDisplay();render()}
  else if(d.share!==undefined)openSheet(d.share);
  else if(d.copy)copy(d.copy);
+ else if(d.lb)openLb(d.lb);
  else if(d.ex){S.ask.q=d.ex;const x=$("#qs");if(x){x.value=d.ex;x.focus()}}
  else if(d.askabout){S.ask.q=`Que racontent les livres et le jeu sur ${d.askabout} ?`;go("demander")}
  else if(t.id==="go")ask();
  else if(t.id==="stop"&&ctl)ctl.abort();
- else if(t.id==="share-open")openSheet(shareToken());
  else if(t.id==="sh-x")closeSheet();
+ else if(t.id==="lb-x")$("#lb").hidden=true;
  else if(t.id==="sh-send")navigator.share({title:"Compagnon du Sorceleur",text:sheetMsg||"Le lore des livres du Sorceleur, au rythme de ta partie de The Witcher 3.",url:sheetUrl}).catch(()=>{});
 });
+document.addEventListener("change",ev=>{const t=ev.target,id=t.id;if(!id)return;
+ if(id==="o-hos"||id==="onb-hos"){S.hos=t.checked;S.eclair=null}
+ else if(id==="o-bw"||id==="onb-bw"){S.bw=t.checked;S.eclair=null}
+ else if(id==="o-sp")S.sp=t.checked;
+ else if(id==="o-eveil"){S.eveil=t.checked;setWake(t.checked)}
+ else if(id.startsWith("lu-")||id.startsWith("onb-lu-")){const k=id.replace(/^(onb-)?lu-/,"");if(t.checked)S.lus[k]=1;else delete S.lus[k]}
+ else return;
+ save();if(!id.startsWith("onb-"))render()});
 document.addEventListener("input",ev=>{const t=ev.target;
- if(t.id==="q"){S.q=t.value;$("#lst").innerHTML=lst()}
+ if(t.id==="q"){S.q=t.value;$("#lst").innerHTML=resultats()}
  else if(t.id==="bq"){S.bq=t.value;$("#blst").innerHTML=blst()}
  else if(t.id==="qs")S.ask.q=t.value});
-document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&!$("#sheet").hidden)closeSheet();
- if(ev.key==="Enter"&&(ev.ctrlKey||ev.metaKey)&&ev.target.id==="qs")ask()});
-for(const k of["hos","bw","sp"]){const el=$("#o-"+k);el.checked=!!S[k];el.onchange=()=>{S[k]=el.checked;save();render()}}
+document.addEventListener("keydown",ev=>{
+ if(ev.key==="Escape"){if(!$("#lb").hidden)$("#lb").hidden=true;else if(!$("#sheet").hidden)closeSheet()}
+ if(ev.key==="Enter"&&(ev.ctrlKey||ev.metaKey)&&ev.target.id==="qs")ask();
+ if(ev.key==="Enter"&&ev.target.id==="q")ev.target.blur()});
 
+/* ---------- Démarrage ---------- */
+applyDisplay();
 route();
+if(S.eveil)setWake(true);
+try{navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{if(e.data==="maj")toast("Nouvelle version du compagnon disponible","reload","Recharger")})}catch(e){}
+if(matchMedia("(min-width: 900px)").matches){const c=$("#desk-qr");if(c)drawQR(c,LIEN.pages).catch(()=>{})}
 (async()=>{try{if(!window.claude||!window.claude.use)return;const s=await window.claude.use("sample");
- if(s){SM=s;const f=document.activeElement;if(f&&/^(INPUT|TEXTAREA)$/.test(f.tagName))renderTabs();else render()}}catch(e){}})();
+ if(s){SM=s;const f=document.activeElement;if(!(f&&/^(INPUT|TEXTAREA)$/.test(f.tagName)))render()}}catch(e){}})();
 </script>

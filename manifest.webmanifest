@@ -1,17 +1,32 @@
 {
+  "id": "./",
   "name": "Compagnon du Sorceleur",
   "short_name": "Sorceleur",
-  "description": "Le lore des livres de Sapkowski au rythme de votre partie de The Witcher 3.",
+  "description": "Le lore des livres de Sapkowski au rythme de votre partie de The Witcher 3 : codex sans spoilers, carte, bestiaire et défis entre amis.",
   "lang": "fr",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#141b1f",
   "theme_color": "#17262c",
+  "categories": ["books", "games", "entertainment"],
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
     { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
     { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Rechercher", "url": "./#recherche", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Carte du Continent", "short_name": "Carte", "url": "./#carte", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Bestiaire", "url": "./#bestiaire", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Quiz", "url": "./#quiz", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ],
+  "screenshots": [
+    { "src": "captures/partie.png", "sizes": "780x1688", "type": "image/png", "form_factor": "narrow", "label": "Votre partie, chapitre par chapitre" },
+    { "src": "captures/carte.png", "sizes": "780x1688", "type": "image/png", "form_factor": "narrow", "label": "La carte du Continent" },
+    { "src": "captures/fiche.png", "sizes": "780x1688", "type": "image/png", "form_factor": "narrow", "label": "Des fiches sans spoilers" }
   ]
 }
