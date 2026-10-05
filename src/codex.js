@@ -9,8 +9,8 @@
    - jeu : notes sur le jeu, chacune visible à partir du chapitre c (ou de l'extension d). */
 window.CODEX = {
 chapitres: [
-  { nom: "Prologue", court: "Prologue", lieux: "Kaer Morhen en rêve, le Verger Blanc, Vizima",
-    intro: "Geralt et Vesemir suivent la trace de Yennefer jusqu'au Verger Blanc, un village temérien tombé sous la coupe de Nilfgaard, avant d'être convoqués par l'empereur en personne.",
+  { nom: "Prologue", court: "Prologue", lieux: "Kaer Morhen en rêve, Blanchefleur, Vizima",
+    intro: "Geralt et Vesemir suivent la trace de Yennefer jusqu'à Blanchefleur, un village temérien tombé sous la coupe de Nilfgaard, avant d'être convoqués par l'empereur en personne.",
     lire: "« Le Dernier Vœu » pour comprendre ce qui unit Geralt et Yennefer, « Le Sang des elfes » pour l'enfance de Ciri à Kaer Morhen.",
     lireIds: ["dernier-voeu", "sang-elfes"],
     entrees: ["geralt", "yennefer", "ciri", "vesemir", "emhyr", "nilfgaard", "chasse", "kaer-morhen", "verger-blanc", "sorceleurs", "signes", "ablette"],
@@ -97,7 +97,7 @@ entrees: [
   livres: "Née bossue, avec du sang elfe, elle est cédée enfant à l'école d'Aretuza, où Tissaia de Vries la forme ; la magie corrige son apparence. Comme beaucoup de magiciennes, elle ne peut pas avoir d'enfant et cherche obstinément un remède, jusqu'à se joindre à une chasse au dragon dans « Les Limites du possible ». Dans « Le Dernier Vœu », elle tente de s'emparer du pouvoir d'un djinn, et le dernier vœu de Geralt les lie. Dans « Le Sang des elfes », elle devient la mentore de Ciri. Son parfum : lilas et groseilles.",
   rl: "dame-lac",
   rev: "Après Thanedd, soupçonnée de trahison, elle part seule sur la piste de Ciri et tombe aux mains de Vilgefortz, qui la retient prisonnière. Libérée lors de l'assaut de Stygga, elle reste aux côtés de Geralt jusqu'au drame de Riv.",
-  jeu: [{ c: 0, t: "Dans TW3, elle collabore avec l'empereur Emhyr pour retrouver Ciri : c'est sa piste que Geralt suit au Verger Blanc. Romance possible." }],
+  jeu: [{ c: 0, t: "Dans TW3, elle collabore avec l'empereur Emhyr pour retrouver Ciri : c'est sa piste que Geralt suit à Blanchefleur. Romance possible." }],
   dans: ["dernier-voeu", "epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
   voir: ["geralt", "ciri", "triss", "tissaia", "vilgefortz", "istredd", "vengerberg"] },
 
@@ -633,7 +633,7 @@ entrees: [
   jeu: [{ c: 1, t: "Grande région du jeu, où la piste de Ciri passe par le Baron sanglant et les Moires." }],
   voir: ["baron", "dames-bois", "keira"] },
 
-{ id: "verger-blanc", t: "lieu", src: "J", nom: "Le Verger Blanc", alias: ["White Orchard"],
+{ id: "verger-blanc", t: "lieu", src: "J", nom: "Blanchefleur", alias: ["White Orchard", "le Verger Blanc"],
   role: "Village du prologue",
   resume: "Création du jeu : un village temérien encore sous le choc de l'invasion nilfgaardienne. C'est là que commence la quête de Geralt dans TW3.",
   jeu: [{ c: 0, t: "Un griffon y sème la terreur : c'est le premier grand monstre du jeu." }],

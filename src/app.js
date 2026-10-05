@@ -312,7 +312,7 @@ const MONTS=[
 const FORET=[[150,276],[142,284],[152,286],[160,293],[146,296],[168,297],[156,303],[175,290],[138,293],[164,306],[181,300],[148,307]];
 const MARAIS=[[144,192],[158,196],[172,192],[186,197]];
 const ILES=[[44,310,12,8,-20],[28,328,8,6,10],[60,330,7,5,0],[40,344,6,4,15],[64,296,7,5,-10],[100,211,4,3,0]];
-const COURT={melitele:"Ellander","verger-blanc":"Verger Blanc",yaruga:"Yaruga",nilfgaard:"Nilfgaard",korath:"Korath"};
+const COURT={melitele:"Ellander",yaruga:"Yaruga",nilfgaard:"Nilfgaard",korath:"Korath"};
 const GAUCHE={"dol-blathanna":1,"novigrad":1,"kaer-morhen":1,"verger-blanc":1};
 const poly=p=>"M"+p.map(q=>q.join(" ")).join("L");
 const court=e=>COURT[e.id]||e.nom.replace(/^(Le |La |Les |L')/,"");

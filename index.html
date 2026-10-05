@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Sorceleur">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
-<meta name="compagnon-version" content="e39d497eba">
+<meta name="compagnon-version" content="6a663e558e">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:title" content="Compagnon du Sorceleur">
@@ -398,8 +398,8 @@ textarea{resize:vertical}
    - jeu : notes sur le jeu, chacune visible à partir du chapitre c (ou de l'extension d). */
 window.CODEX = {
 chapitres: [
-  { nom: "Prologue", court: "Prologue", lieux: "Kaer Morhen en rêve, le Verger Blanc, Vizima",
-    intro: "Geralt et Vesemir suivent la trace de Yennefer jusqu'au Verger Blanc, un village temérien tombé sous la coupe de Nilfgaard, avant d'être convoqués par l'empereur en personne.",
+  { nom: "Prologue", court: "Prologue", lieux: "Kaer Morhen en rêve, Blanchefleur, Vizima",
+    intro: "Geralt et Vesemir suivent la trace de Yennefer jusqu'à Blanchefleur, un village temérien tombé sous la coupe de Nilfgaard, avant d'être convoqués par l'empereur en personne.",
     lire: "« Le Dernier Vœu » pour comprendre ce qui unit Geralt et Yennefer, « Le Sang des elfes » pour l'enfance de Ciri à Kaer Morhen.",
     lireIds: ["dernier-voeu", "sang-elfes"],
     entrees: ["geralt", "yennefer", "ciri", "vesemir", "emhyr", "nilfgaard", "chasse", "kaer-morhen", "verger-blanc", "sorceleurs", "signes", "ablette"],
@@ -486,7 +486,7 @@ entrees: [
   livres: "Née bossue, avec du sang elfe, elle est cédée enfant à l'école d'Aretuza, où Tissaia de Vries la forme ; la magie corrige son apparence. Comme beaucoup de magiciennes, elle ne peut pas avoir d'enfant et cherche obstinément un remède, jusqu'à se joindre à une chasse au dragon dans « Les Limites du possible ». Dans « Le Dernier Vœu », elle tente de s'emparer du pouvoir d'un djinn, et le dernier vœu de Geralt les lie. Dans « Le Sang des elfes », elle devient la mentore de Ciri. Son parfum : lilas et groseilles.",
   rl: "dame-lac",
   rev: "Après Thanedd, soupçonnée de trahison, elle part seule sur la piste de Ciri et tombe aux mains de Vilgefortz, qui la retient prisonnière. Libérée lors de l'assaut de Stygga, elle reste aux côtés de Geralt jusqu'au drame de Riv.",
-  jeu: [{ c: 0, t: "Dans TW3, elle collabore avec l'empereur Emhyr pour retrouver Ciri : c'est sa piste que Geralt suit au Verger Blanc. Romance possible." }],
+  jeu: [{ c: 0, t: "Dans TW3, elle collabore avec l'empereur Emhyr pour retrouver Ciri : c'est sa piste que Geralt suit à Blanchefleur. Romance possible." }],
   dans: ["dernier-voeu", "epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
   voir: ["geralt", "ciri", "triss", "tissaia", "vilgefortz", "istredd", "vengerberg"] },
 
@@ -1022,7 +1022,7 @@ entrees: [
   jeu: [{ c: 1, t: "Grande région du jeu, où la piste de Ciri passe par le Baron sanglant et les Moires." }],
   voir: ["baron", "dames-bois", "keira"] },
 
-{ id: "verger-blanc", t: "lieu", src: "J", nom: "Le Verger Blanc", alias: ["White Orchard"],
+{ id: "verger-blanc", t: "lieu", src: "J", nom: "Blanchefleur", alias: ["White Orchard", "le Verger Blanc"],
   role: "Village du prologue",
   resume: "Création du jeu : un village temérien encore sous le choc de l'invasion nilfgaardienne. C'est là que commence la quête de Geralt dans TW3.",
   jeu: [{ c: 0, t: "Un griffon y sème la terreur : c'est le premier grand monstre du jeu." }],
@@ -2036,7 +2036,7 @@ const MONTS=[
 const FORET=[[150,276],[142,284],[152,286],[160,293],[146,296],[168,297],[156,303],[175,290],[138,293],[164,306],[181,300],[148,307]];
 const MARAIS=[[144,192],[158,196],[172,192],[186,197]];
 const ILES=[[44,310,12,8,-20],[28,328,8,6,10],[60,330,7,5,0],[40,344,6,4,15],[64,296,7,5,-10],[100,211,4,3,0]];
-const COURT={melitele:"Ellander","verger-blanc":"Verger Blanc",yaruga:"Yaruga",nilfgaard:"Nilfgaard",korath:"Korath"};
+const COURT={melitele:"Ellander",yaruga:"Yaruga",nilfgaard:"Nilfgaard",korath:"Korath"};
 const GAUCHE={"dol-blathanna":1,"novigrad":1,"kaer-morhen":1,"verger-blanc":1};
 const poly=p=>"M"+p.map(q=>q.join(" ")).join("L");
 const court=e=>COURT[e.id]||e.nom.replace(/^(Le |La |Les |L')/,"");
