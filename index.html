@@ -86,7 +86,7 @@ body.lit .toast{bottom:calc(var(--tabh) + 72px + env(safe-area-inset-bottom,0px)
 
 /* Onglets */
 .tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:9;width:min(100%,var(--col));display:flex;background:var(--sf);border-top:1px solid var(--ln);padding:0 4px env(safe-area-inset-bottom,0px);user-select:none;-webkit-user-select:none}
-.tabs button{flex:1;min-width:0;height:var(--tabh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:0;border-top:3px solid transparent;margin-top:-1px;font-size:.72rem;color:var(--mu)}
+.tabs button{flex:1;min-width:0;height:var(--tabh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:0;border-top:3px solid transparent;margin-top:-1px;padding:0 2px;font-size:min(.72rem,12.5px);color:var(--mu)}
 .tabs button svg{width:24px;height:24px}
 .tabs button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tabs button.on{color:var(--ink);font-weight:700;border-top-color:var(--ac)}
@@ -129,9 +129,7 @@ body.lit .toast{bottom:calc(var(--tabh) + 72px + env(safe-area-inset-bottom,0px)
 .pr.wide{width:100%}
 .lnk{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline;text-decoration-color:var(--ln);text-underline-offset:3px;text-align:left}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.acts{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px -16px;padding:0 16px}
-.acts .ch{flex:0 0 auto}
-.acts::-webkit-scrollbar{display:none}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .fake{display:flex;align-items:center;gap:10px;width:100%;min-height:46px;margin-top:10px;padding:0 14px;border:1px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--mu);text-align:left}
 .fake svg{width:20px;height:20px}
 .srch{display:flex;gap:6px;align-items:flex-start}
@@ -260,7 +258,7 @@ textarea{resize:vertical}
 .line{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;border-bottom:1px solid var(--ln);padding:6px 0}
 .line>span{min-width:0}
 .line small{display:block;color:var(--mu);font-size:.85rem}
-.sw{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:48px;height:28px;border-radius:99px;background:var(--ln);position:relative;margin:0;cursor:pointer;transition:background-color .15s}
+.sw{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:48px;height:28px;border-radius:99px;background:var(--mu);position:relative;margin:0;cursor:pointer;transition:background-color .15s}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--bg);transition:transform .15s}
 .sw:checked{background:var(--ac)}
 .sw:checked::after{transform:translateX(20px)}
@@ -297,7 +295,9 @@ textarea{resize:vertical}
 .qrw{display:flex;flex-direction:column;align-items:center;margin:12px 0 4px}
 .qrw canvas{width:200px;height:200px;border-radius:8px;border:1px solid var(--ln)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 16px + env(safe-area-inset-bottom,0px));z-index:35;width:max-content;max-width:min(calc(100% - 32px),400px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:.92rem;font-weight:700;text-align:center;display:flex;align-items:center;gap:10px}
-.toast button{background:none;border:1px solid var(--bg);color:var(--bg);border-radius:99px;padding:2px 10px;font-weight:700}
+.toast button{background:none;border:1px solid var(--bg);color:var(--bg);border-radius:99px;min-height:44px;padding:8px 14px;font-weight:700}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.bar h1:focus{outline:none}
 .ft{border-top:1px solid var(--ln);margin-top:40px;padding-top:10px;font-size:.85rem;color:var(--mu)}
 
 /* Grand écran : la colonne garde sa taille de téléphone */
@@ -350,6 +350,7 @@ textarea{resize:vertical}
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Illustration" hidden></div>
 <div class="onb" id="onb" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="sr" id="annonce" aria-live="polite"></div>
 <script>
 /* Données du Compagnon du Sorceleur.
    Chaque fiche du codex a un identifiant unique (id) ; les champs voir, dans, lien,
@@ -431,7 +432,7 @@ entrees: [
   dans: ["dernier-voeu", "epee-providence", "sang-elfes", "temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac", "saison-orages", "croisee"],
   voir: ["ciri", "yennefer", "jaskier", "vesemir", "sorceleurs", "loi-surprise", "visenna", "renfri", "ablette"] },
 
-{ id: "ciri", t: "perso", src: "LJ", nom: "Ciri", alias: ["Cirilla Fiona Elen Riannon", "Zireael", "Falka", "le Lionceau de Cintra"],
+{ id: "ciri", t: "perso", src: "LJ", nom: "Ciri", alias: ["Cirilla Fiona Elen Riannon", "Zireael", "le Lionceau de Cintra"],
   role: "Princesse de Cintra, porteuse du Sang Ancien",
   resume: "Petite-fille de la reine Calanthe et « enfant surprise » de Geralt. Élevée par des sorceleurs, formée à la magie par des magiciennes, elle porte un pouvoir que convoitent les rois, les mages… et un autre monde.",
   livres: "Rescapée de la chute de Cintra, elle retrouve Geralt, qui l'emmène à Kaer Morhen : les sorceleurs l'entraînent à l'épée, Triss puis Yennefer lui enseignent la magie. Ciri est une Source : le Sang Ancien hérité de l'elfe Lara Dorren lui donne sur l'espace et le temps un pouvoir qu'elle ne contrôle pas encore, et ses transes prennent parfois la forme de prophéties. Les elfes l'appellent Zireael, « hirondelle ».",
@@ -542,9 +543,9 @@ entrees: [
 { id: "emhyr", t: "perso", src: "LJ", nom: "Emhyr var Emreis", alias: ["Deithwen Addan yn Carn aep Morvudd", "l'Empereur"],
   role: "Empereur de Nilfgaard",
   resume: "Souverain froid et calculateur de l'empire du Sud, dont les armées envahissent le Nord. Son nom complet signifie « la Flamme Blanche qui danse sur les tumulus de ses ennemis ».",
-  livres: "Il veut à tout prix mettre la main sur Ciri : ses agents la traquent pendant toute la saga, et Nilfgaard va jusqu'à présenter une fausse Cirilla à la cour.",
+  livres: "Il veut à tout prix mettre la main sur Ciri : ses agents la traquent pendant toute la saga.",
   rl: "dame-lac",
-  rev: "Emhyr est Duny, le père de Ciri. Il voulait Ciri pour réaliser la prophétie liée au Sang Ancien ; à Stygga, face à elle, il renonce et la laisse partir, puis épouse la fausse Cirilla pour raisons d'État.",
+  rev: "Emhyr est Duny, le père de Ciri. Il voulait Ciri pour réaliser la prophétie liée au Sang Ancien. Faute de la trouver, il fait présenter à sa cour une fausse Cirilla. À Stygga, face à la vraie, il renonce et la laisse partir, puis épouse la fausse pour raisons d'État.",
   jeu: [
     { c: 0, t: "Dans le prologue, il reçoit Geralt à Vizima et l'engage pour retrouver Ciri." },
     { c: 6, t: "Selon vos choix, Ciri peut devenir son héritière." }],
@@ -606,9 +607,9 @@ entrees: [
 { id: "cahir", t: "perso", src: "L", nom: "Cahir", alias: ["Cahir Mawr Dyffryn aep Ceallach", "le chevalier au heaume ailé"],
   role: "Chevalier nilfgaardien",
   resume: "Le chevalier au heaume ailé qui hante les cauchemars de Ciri : c'est lui qui l'a emportée hors de Cintra en flammes.",
-  livres: "Chargé de capturer Ciri, il échoue à Cintra puis à Thanedd, où elle le blesse. Tombé en disgrâce, il finit par rejoindre la compagnie de Geralt, qui l'accepte de mauvaise grâce.",
+  livres: "Chargé de capturer Ciri, il la laisse échapper à Cintra, puis s'acharne à la retrouver. Tombé en disgrâce, il finit par rejoindre la compagnie de Geralt, qui l'accepte de mauvaise grâce.",
   rl: "dame-lac",
-  rev: "Il meurt à Stygga, tué par Leo Bonhart.",
+  rev: "À Thanedd, il tente encore de s'emparer de Ciri, qui le blesse. Il meurt à Stygga, tué par Leo Bonhart.",
   dans: ["temps-mepris", "bapteme-feu", "tour-hirondelle", "dame-lac"],
   voir: ["ciri", "cintra", "nilfgaard", "bonhart"] },
 
@@ -623,7 +624,7 @@ entrees: [
 { id: "bonhart", t: "perso", src: "L", nom: "Leo Bonhart", alias: [],
   role: "Chasseur de primes",
   resume: "Bretteur redoutable et cruel, peut-être le plus dangereux adversaire de la saga.",
-  livres: "Redoutable bretteur, il traque Ciri à travers un pays en guerre et finit par la capturer.",
+  livres: "Chasseur de primes sans pitié, il croise la route de Ciri dans « La Tour de l'Hirondelle ».",
   rl: "dame-lac",
   rev: "Ciri le tue lors de l'affrontement final à Stygga.",
   dans: ["tour-hirondelle", "dame-lac"],
@@ -650,9 +651,9 @@ entrees: [
 { id: "philippa", t: "perso", src: "LJ", nom: "Philippa Eilhart", alias: [],
   role: "Magicienne de Redanie",
   resume: "Conseillère du roi de Redanie, ambitieuse et manipulatrice, capable de prendre la forme d'une chouette.",
-  livres: "À Thanedd, elle mène la contre-offensive contre les magiciens traîtres, de concert avec l'espion Dijkstra.",
+  livres: "L'une des magiciennes les plus influentes du Nord. Elle manœuvre de concert avec l'espion Dijkstra, au service de la Rédanie.",
   rl: "bapteme-feu",
-  rev: "Elle fonde la Loge des Magiciennes, un cercle secret qui entend tirer les ficelles de la politique du Nord et voit en Ciri un atout.",
+  rev: "À Thanedd, de concert avec Dijkstra, elle fait arrêter les magiciens ralliés à Nilfgaard, et le conclave tourne au coup d'État. Elle fonde ensuite la Loge des Magiciennes, un cercle secret qui entend tirer les ficelles de la politique du Nord et voit en Ciri un atout.",
   jeu: [{ c: 5, t: "Dans TW3, Radovid l'a fait aveugler ; elle conspire contre lui." }],
   dans: ["sang-elfes", "temps-mepris", "bapteme-feu", "dame-lac"],
   voir: ["loge", "dijkstra", "radovid", "thanedd"] },
@@ -692,7 +693,7 @@ entrees: [
 
 { id: "eredin", t: "perso", src: "LJ", nom: "Eredin Bréacc Glas", alias: ["le Roi de la Chasse"],
   role: "Chef de la Chasse sauvage",
-  resume: "Commandant des cavaliers rouges des Aen Elle, ceux que les humains appellent la Chasse sauvage.",
+  resume: "Le chef de la Chasse sauvage, ces cavaliers en armure dont les légendes du Nord font une horde de spectres.",
   livres: "Il apparaît dans « La Dame du Lac », ambitieux et méprisant envers les humains.",
   rl: "dame-lac",
   rev: "À la mort du vieux roi Auberon, Eredin s'impose à la tête des siens ; les jeux affirment qu'il l'a empoisonné.",
@@ -750,15 +751,19 @@ entrees: [
 { id: "keira", t: "perso", src: "LJ", nom: "Keira Metz", alias: [],
   role: "Magicienne du Nord",
   resume: "Magicienne au tempérament vif, plus habile qu'elle n'en a l'air.",
-  livres: "Membre de la Loge des Magiciennes dans la seconde moitié de la saga.",
+  livres: "Magicienne du Nord, conseillère du roi Foltest de Témérie, elle apparaît à partir du « Temps du mépris ».",
+  rl: "bapteme-feu",
+  rev: "Elle compte parmi les plus jeunes membres de la Loge des Magiciennes, fondée par Philippa Eilhart.",
   jeu: [{ c: 1, t: "Dans TW3, elle vit cachée à Velen, où elle joue les guérisseuses de village." }],
-  dans: ["bapteme-feu", "dame-lac"],
+  dans: ["temps-mepris", "bapteme-feu", "dame-lac"],
   voir: ["loge", "velen", "lambert"] },
 
 { id: "fringilla", t: "perso", src: "L", nom: "Fringilla Vigo", alias: [],
   role: "Magicienne nilfgaardienne",
   resume: "Magicienne de l'Empire, ambitieuse et brillante.",
-  livres: "Elle siège à la Loge des Magiciennes aux côtés de ses consœurs du Nord.",
+  livres: "Magicienne au service de l'Empire, elle entre en scène dans « Le Baptême du feu ».",
+  rl: "bapteme-feu",
+  rev: "Elle siège à la Loge des Magiciennes aux côtés de ses consœurs du Nord.",
   dans: ["bapteme-feu", "dame-lac"],
   voir: ["loge", "toussaint", "nilfgaard"] },
 
@@ -801,7 +806,7 @@ entrees: [
   resume: "Création du jeu : un seigneur de guerre qui tient une partie de Velen d'une main de fer et sait quelque chose sur Ciri. Son histoire familiale compte parmi les récits les plus marquants de TW3.",
   voir: ["velen", "dames-bois", "uma"] },
 
-{ id: "dames-bois", t: "perso", src: "J", nom: "Les Dames du Bois", alias: ["Crones", "Ladies of the Wood"], porte: { c: 1 },
+{ id: "dames-bois", t: "perso", src: "J", nom: "Les Moires", alias: ["les Moires de Torséchine", "les Dames de la forêt", "Crones", "Ladies of the Wood"], porte: { c: 1 },
   role: "Entités de Velen",
   resume: "Création du jeu, inspirée des contes slaves : trois entités très anciennes que les habitants de Velen vénèrent autant qu'ils les redoutent.",
   voir: ["velen", "baron"] },
@@ -822,7 +827,7 @@ entrees: [
   resume: "Création du jeu : Imlerith est un colosse en armure, Caranthir un navigateur capable d'ouvrir des passages entre les mondes.",
   voir: ["eredin", "chasse"] },
 
-{ id: "gaunter", t: "perso", src: "J", nom: "Gaunter O'Dimm", alias: ["Man of Glass"], porte: { d: "hos", c: 1 },
+{ id: "gaunter", t: "perso", src: "J", nom: "Gaunter de Meuré", alias: ["Gaunter O'Dimm", "Maître Miroir", "l'Homme de verre"], porte: { d: "hos", c: 1 },
   role: "Marchand de vœux",
   resume: "Création du jeu : un homme affable que Geralt a déjà croisé au tout début de TW3, et dont les marchés ne laissent personne indemne. Il puise dans les contes de pactes avec le diable.",
   voir: ["olgierd"] },
@@ -837,9 +842,9 @@ entrees: [
   resume: "Création du jeu : un vampire supérieur, ami de Regis, au cœur de l'intrigue de Toussaint.",
   voir: ["regis", "vampires", "toussaint"] },
 
-{ id: "syanna", t: "perso", src: "J", nom: "Syanna", alias: ["Sylvia Anna"], porte: { d: "bw", c: 1 },
-  role: "Sœur de la duchesse",
-  resume: "Création du jeu : la sœur cadette d'Anna Henrietta, longtemps tenue à l'écart de la cour.",
+{ id: "syanna", t: "perso", src: "J", nom: "Syanna", alias: [], porte: { d: "bw", c: 1 },
+  role: "Personnage de Toussaint",
+  resume: "Création du jeu : une figure de Toussaint dont l'identité se dévoile au fil de l'enquête de Blood and Wine.",
   voir: ["anna-henrietta", "toussaint"] },
 
 /* ---------- Lieux ---------- */
@@ -979,7 +984,7 @@ entrees: [
 { id: "velen", t: "lieu", src: "J", nom: "Velen", alias: [],
   role: "Région marécageuse",
   resume: "Création du jeu : une région pauvre et marécageuse, aux confins de la Temeria, ravagée par la guerre, où règnent déserteurs, monstres et vieilles légendes.",
-  jeu: [{ c: 1, t: "Grande région du jeu, où la piste de Ciri passe par le Baron sanglant et les Dames du Bois." }],
+  jeu: [{ c: 1, t: "Grande région du jeu, où la piste de Ciri passe par le Baron sanglant et les Moires." }],
   voir: ["baron", "dames-bois", "keira"] },
 
 { id: "verger-blanc", t: "lieu", src: "J", nom: "Le Verger Blanc", alias: ["White Orchard"],
@@ -1184,13 +1189,13 @@ entrees: [
   resume: "Six nouvelles qui creusent la relation tumultueuse de Geralt et Yennefer, et lui font enfin croiser la route de Ciri.",
   nouvelles: [
     { t: "Les Limites du possible", d: "Une chasse au dragon où chevaliers, mercenaires et magiciens se disputent la bête." },
-    { t: "Un éclat de glace", d: "Un triangle amoureux entre Geralt, Yennefer et le mage Istredd." },
+    { t: "Éclat de glace", d: "Un triangle amoureux entre Geralt, Yennefer et le mage Istredd." },
     { t: "Le Feu éternel", d: "À Novigrad, Jaskier et Geralt démêlent l'imbroglio d'un marchand halfelin… et de son double." },
-    { t: "Un petit sacrifice", d: "Une sirène, un duc amoureux et la barde Essi Daven." },
+    { t: "Une once d'abnégation", d: "Une sirène, un duc amoureux et la barde Essi Daven." },
     { t: "L'Épée de la providence", d: "Dans la forêt des dryades, Geralt rencontre une petite fille têtue : Ciri." },
-    { t: "Quelque chose de plus", d: "Blessé et fiévreux, Geralt affronte ses souvenirs pendant que Cintra tombe." }],
+    { t: "Quelque chose en plus", d: "Blessé et fiévreux, Geralt affronte ses souvenirs pendant que Cintra tombe." }],
   rl: "epee-providence",
-  rev: "« Quelque chose de plus » se clôt sur les retrouvailles de Geralt et de Ciri après la chute de Cintra : le destin a fini par les réunir.",
+  rev: "« Quelque chose en plus » se clôt sur les retrouvailles de Geralt et de Ciri après la chute de Cintra : le destin a fini par les réunir.",
   jeu: [{ c: 2, t: "« Le Feu éternel » présente le doppler Dudu, que l'on retrouve à Novigrad." }],
   voir: ["ciri", "yennefer", "dudu", "brokilon", "borch", "istredd", "essi", "eithne"] },
 
@@ -1255,7 +1260,7 @@ entrees: [
 { id: "visenna", t: "perso", src: "L", nom: "Visenna", alias: [],
   role: "Magicienne guérisseuse, mère de Geralt",
   resume: "Une guérisseuse itinérante, douée pour la magie, qui confia son fils encore tout petit aux sorceleurs de Kaer Morhen.",
-  livres: "Geralt ne l'a pratiquement pas connue et n'en parle presque jamais. Dans « Quelque chose de plus », blessé et fiévreux, il la revoit en rêve, et la blessure de l'abandon refait surface.",
+  livres: "Geralt ne l'a pratiquement pas connue et n'en parle presque jamais. Dans « Quelque chose en plus », blessé et fiévreux, il est soigné par une guérisseuse : à demi conscient, il comprend que c'est elle, mais elle refuse qu'il la regarde. La blessure de l'abandon refait surface.",
   dans: ["epee-providence"],
   voir: ["geralt", "kaer-morhen", "sorceleurs"] },
 
@@ -1271,7 +1276,7 @@ entrees: [
 { id: "istredd", t: "perso", src: "L", nom: "Istredd", alias: [],
   role: "Mage et archéologue",
   resume: "Mage érudit, passionné par les vestiges des civilisations disparues, et ancien amant de Yennefer.",
-  livres: "Dans « Un éclat de glace », Geralt et lui se disputent Yennefer, qui refuse de se laisser attribuer comme un prix. La rivalité des deux hommes les mène jusqu'au défi d'un duel.",
+  livres: "Dans « Éclat de glace », Geralt et lui se disputent Yennefer, qui refuse de se laisser attribuer comme un prix. La rivalité des deux hommes les mène jusqu'au défi d'un duel.",
   dans: ["epee-providence"],
   voir: ["yennefer", "geralt"] },
 
@@ -1286,7 +1291,7 @@ entrees: [
 
 { id: "essi", t: "perso", src: "L", nom: "Essi Daven", alias: [],
   role: "Barde, amie de Jaskier",
-  resume: "Jeune poétesse au talent éclatant, qui accompagne Jaskier et Geralt dans « Un petit sacrifice ».",
+  resume: "Jeune poétesse au talent éclatant, qui accompagne Jaskier et Geralt dans « Une once d'abnégation ».",
   livres: "Une nouvelle douce-amère, où se répondent l'amour impossible d'un duc pour une sirène et celui d'Essi pour Geralt, qui reste attaché à Yennefer.",
   rl: "epee-providence",
   rev: "La nouvelle se clôt sur une note grave : Essi mourra jeune, quelques années plus tard, emportée par une épidémie.",
@@ -1505,7 +1510,7 @@ bestiaire: [
     conseil: "Elles attaquent en vol et en groupe : Aard et arbalète les ramènent au sol." },
   { id: "m-sirenes", nom: "Sirènes", en: "Siren", cl: "Hybrides", signes: ["Aard", "Igni"], bombes: ["Mitraille"], autres: ["Arbalète"],
     conseil: "Nombreuses le long des côtes de Skellige : arbalète et Aard pour les faire chuter, Igni en prime.",
-    livres: "Bien différentes de celles du jeu, les sirènes des livres sont des êtres marins doués de raison : l'une d'elles est au cœur d'« Un petit sacrifice ».", lien: "essi" },
+    livres: "Bien différentes de celles du jeu, les sirènes des livres sont des êtres marins doués de raison : l'une d'elles est au cœur d'« Une once d'abnégation ».", lien: "essi" },
   { id: "m-succube", nom: "Succube", en: "Succubus", cl: "Hybrides", signes: ["Quen"], bombes: ["Dimeritium"], immun: "Axii",
     conseil: "Insensible à Axii : comptez sur Quen et les esquives." },
   { id: "m-arachas", nom: "Arachas", en: "Arachas", cl: "Insectoïdes", signes: ["Igni"], potions: ["Loriot doré"],
@@ -1612,7 +1617,7 @@ anecdotes: [
   { t: "Les sorceleurs recrutaient parfois leurs apprentis grâce à la Loi de la Surprise.", lien: "loi-surprise" },
   { t: "Le titre polonais, « Wiedźmin », est un mot forgé par Sapkowski à partir de « wiedźma », la sorcière.", lien: "sorceleurs" },
   { t: "« Le Moindre Mal » détourne Blanche-Neige : Renfri, princesse chassée par sa belle-mère, a vécu un temps parmi sept gnomes.", lien: "renfri" },
-  { t: "« Un grain de vérité » revisite La Belle et la Bête, et « Un petit sacrifice » La Petite Sirène.", lien: "nivellen" },
+  { t: "« Un grain de vérité » revisite La Belle et la Bête, et « Une once d'abnégation » La Petite Sirène.", lien: "nivellen" },
   { t: "Gwynbleidd, le nom elfe de Geralt, signifie « Loup Blanc ».", lien: "geralt" },
   { t: "Le gwynt, mini-jeu de cartes de TW3, a eu droit à ses propres jeux : Gwent et Thronebreaker.", lien: "gwynt" }
 ]
@@ -1634,11 +1639,11 @@ sources: [
     texte: "Chez Grimm, un garçon né mi-homme mi-hérisson remet sur le bon chemin un roi égaré, qui lui promet en échange la première chose qui l'accueillera chez lui : sa propre fille. Duny, le chevalier à tête de hérisson, et la Loi de la Surprise viennent de là.",
     liens: ["duny", "loi-surprise", "pavetta", "dernier-voeu"] },
   { id: "src-sirene", groupe: "contes", img: "img/sirene.webp", conte: "La Petite Sirène", origine: "Conte de Hans Christian Andersen",
-    oeuvre: "Un petit sacrifice", artiste: "Edmund Dulac", annee: 1911, page: "https://commons.wikimedia.org/wiki/File:Edmund_Dulac_-_The_Mermaid_-_in_the_sea.jpg",
+    oeuvre: "Une once d'abnégation", artiste: "Edmund Dulac", annee: 1911, page: "https://commons.wikimedia.org/wiki/File:Edmund_Dulac_-_The_Mermaid_-_in_the_sea.jpg",
     texte: "Un prince, une sirène et un amour qui exige de renoncer à soi. Sapkowski en tire une histoire d'incompréhension : le duc voudrait que la sirène prenne des jambes, elle voudrait qu'il la rejoigne sous la mer, et aucun des deux ne veut changer.",
     liens: ["essi", "epee-providence", "m-sirenes"] },
   { id: "src-reine-neiges", groupe: "contes", img: "img/reine-neiges.webp", conte: "La Reine des neiges", origine: "Conte de Hans Christian Andersen",
-    oeuvre: "Un éclat de glace", artiste: "Edmund Dulac", annee: 1911, page: "https://commons.wikimedia.org/wiki/File:Edmund_Dulac_-_The_Snow_Queen.jpg",
+    oeuvre: "Éclat de glace", artiste: "Edmund Dulac", annee: 1911, page: "https://commons.wikimedia.org/wiki/File:Edmund_Dulac_-_The_Snow_Queen.jpg",
     texte: "Chez Andersen, un éclat de miroir maléfique glace le cœur du petit Kay. Sapkowski reprend l'image pour Geralt et Yennefer, et laisse planer la question : lequel des deux a le cœur gelé ?",
     liens: ["yennefer", "istredd", "epee-providence"] },
   { id: "src-djinn", groupe: "contes", img: "img/djinn.webp", conte: "Le Pêcheur et le Génie", origine: "Les Mille et Une Nuits",
@@ -1646,8 +1651,8 @@ sources: [
     texte: "Un pêcheur remonte dans ses filets une jarre scellée d'où s'échappe un génie. C'est exactement ce qui arrive à Geralt et Jaskier au début du « Dernier Vœu », avec des conséquences bien moins plaisantes pour le barde.",
     liens: ["m-djinn", "jaskier", "dernier-voeu"] },
   { id: "src-baba-yaga", groupe: "folklore", img: "img/baba-yaga.webp", conte: "Baba Yaga", origine: "Folklore slave",
-    oeuvre: "Les Dames du Bois", artiste: "Ivan Bilibine", annee: 1900, page: "https://commons.wikimedia.org/wiki/File:Bilibin._Baba_Yaga.jpg",
-    texte: "La vieille sorcière des forêts russes, qu'on redoute autant qu'on vient la consulter. Les Dames du Bois de Velen appartiennent à cette famille de vieilles femmes sauvages des contes slaves.",
+    oeuvre: "Les Moires", artiste: "Ivan Bilibine", annee: 1900, page: "https://commons.wikimedia.org/wiki/File:Bilibin._Baba_Yaga.jpg",
+    texte: "La vieille sorcière des forêts russes, qu'on redoute autant qu'on vient la consulter. Les Moires de Velen appartiennent à cette famille de vieilles femmes sauvages des contes slaves.",
     liens: ["dames-bois", "velen"] },
   { id: "src-leshy", groupe: "folklore", img: "img/leshy.webp", conte: "Le léchi", origine: "Folklore slave",
     oeuvre: "Le leshen", artiste: "Viktor Vasnetsov", annee: 1885, page: "https://commons.wikimedia.org/wiki/File:Leshiy_by_Vasnetsov.jpg",
@@ -1685,7 +1690,8 @@ carte: {
 /* Compagnon du Sorceleur : application pour téléphone.
    Navigation par ancre (#ciri, #carte, #defi-ab12…) pour que chaque écran se partage par un simple lien,
    et que le bouton retour du téléphone fonctionne comme dans une application. */
-const C=window.CODEX,E=C.entrees,M=C.bestiaire,SRCS=C.sources,ID={},MID={};
+const C=window.CODEX,E=C.entrees,M=C.bestiaire,SRCS=C.sources,ID=Object.create(null),MID=Object.create(null);
+const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 E.forEach(e=>ID[e.id]=e);M.forEach(m=>MID[m.id]=m);
 const BOOKS=E.filter(e=>e.t==="livre").sort((a,b)=>a.ordre-b.ordre);
 const SIGNES=["Aard","Igni","Yrden","Quen","Axii"];
@@ -1783,7 +1789,7 @@ const micBtn=id=>SR&&!inFrame?`<button class="ic mic${micOn===id?" on":""}" data
 const lireBtn=(k,label)=>TTS?`<button class="ch${lu&&lu.k===k?" on":""}" data-lire="${k}">${ICO.speaker}${label||"Écouter"}</button>`:"";
 const revBtn=(x,k)=>`<button class="sp" data-r="${k}">Révéler la suite${x.rl?" (spoilers jusqu'à "+esc(livre(x.rl))+")":" (spoilers des livres)"}</button>`;
 let tt;
-function toast(m,act,label){const t=$("#toast");t.innerHTML=esc(m)+(act?`<button data-act="${act}">${label}</button>`:"");t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},act?9000:2800)}
+function toast(m,act,label){const t=$("#toast");t.innerHTML=esc(m)+(act?`<button data-act="${act}">${label}</button>`:"");t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},act?30000:2800)}
 
 /* ---------- Quiz : questions tirées du codex, reproductibles à partir d'une graine ---------- */
 function rng(seed){let a=2166136261;for(const c of String(seed))a=Math.imul(a^c.charCodeAt(0),16777619);
@@ -1858,7 +1864,7 @@ function partie(){
  const ls=ents(c.entrees);if(ls.length)h+=`<h3>Autour de vous</h3>`+ls.map(row).join("");
  const ms=(c.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m));if(ms.length)h+=`<h3>Monstres du coin</h3>`+ms.map(mrow).join("");
  for(const k of["hos","bw"])if(S[k]){const d=C.dlc[k];
-  h+=`<h3>${d.nom}</h3><p>${esc(d.intro)}</p><div class="bl"><p>${esc(d.lire)}</p></div>`+ents(d.entrees).map(row).join("")+(d.monstres||[]).map(i=>MID[i]).filter(Boolean).map(mrow).join("")}
+  h+=`<h3>${d.nom}</h3><p>${esc(d.intro)}</p><div class="bl"><p>${esc(d.lire)}</p></div>`+ents(d.entrees).map(row).join("")+(d.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m)).map(mrow).join("")}
  h+=eclair();
  h+=`<div class="tiles"><button class="tile" data-o="quiz">${ICO.quiz}<b>Quiz</b><small>Dix questions selon votre avancée</small></button><button class="tile" data-act="defi">${ICO.invite}<b>Défier un ami</b><small>Les mêmes questions, sans spoiler</small></button></div>`;
  const nx=BOOKS.find(b=>!S.lus[b.id]);
@@ -1997,7 +2003,7 @@ function carteSVG(){
  const cur=new Set([...C.chapitres[S.ch].entrees,...(S.hos?C.dlc.hos.entrees:[]),...(S.bw?C.dlc.bw.entrees:[])]),k=mv.w/MW;
  const pins=Object.entries(C.carte.lieux).map(([id,[x,y]])=>{const e=any(id);if(!e||!vis(e))return"";const g=GAUCHE[id];
   return `<g class="pin ${e.src}${cur.has(id)?" here":""}${S.sel===id?" sel":""}" data-pin="${id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y}) scale(${k})" tabindex="0" role="button" aria-label="${esc(e.nom)}"><circle class="hit" r="16"/>${cur.has(id)?'<circle class="ring" r="12"/>':""}<circle class="dot" r="5.5"/><text x="${g?-9:9}" y="4"${g?' text-anchor="end"':""}>${esc(court(e))}</text></g>`}).join("");
- return `<svg id="map" viewBox="${mv.x} ${mv.y} ${mv.w} ${mv.h}" style="--k:${k}" role="img" aria-label="Carte schématique du Continent">
+ return `<svg id="map" viewBox="${mv.x} ${mv.y} ${mv.w} ${mv.h}" style="--k:${k};touch-action:${mv.w>=MW?"pan-y":"none"}" role="img" aria-label="Carte schématique du Continent">
 <rect x="-50" y="-50" width="${MW+100}" height="${MH+100}" fill="var(--sea)"/>
 <path class="land" d="${poly(COTE)}L${MW+60} ${MH+60}L${MW+60} -60Z"/>
 ${ILES.map(([x,y,rx,ry,a])=>`<ellipse class="land" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" transform="rotate(${a} ${x} ${y})"/>`).join("")}
@@ -2018,7 +2024,7 @@ function carte(){
 <h3 class="gh">Lieux de la carte<span>${pl.length}</span></h3>${pl.map(row).join("")}
 ${hc.length?`<h3 class="gh">Hors de la carte<span>${hc.length}</span></h3><p class="mu sm">Lieux sans position connue, ou situés dans un autre monde.</p>`+hc.map(row).join(""):""}`}
 function setVB(){const s=$("#map");if(!s)return;const k=mv.w/MW;s.setAttribute("viewBox",`${mv.x} ${mv.y} ${mv.w} ${mv.h}`);s.style.setProperty("--k",k);
- s.querySelectorAll("[data-pin]").forEach(g=>g.setAttribute("transform",`translate(${g.dataset.x} ${g.dataset.y}) scale(${k})`))}
+ s.querySelectorAll("[data-pin]").forEach(g=>g.setAttribute("transform",`translate(${g.dataset.x} ${g.dataset.y}) scale(${k})`));s.style.touchAction=mv.w>=MW?"pan-y":"none"}
 function clampV(){mv.x=Math.min(Math.max(mv.x,0),MW-mv.w);mv.y=Math.min(Math.max(mv.y,0),MH-mv.h)}
 function zoomAt(base,f,fx,fy){const w=Math.min(MW,Math.max(100,base.w*f)),h=w*MH/MW;mv={x:base.x+(base.w-w)*fx,y:base.y+(base.h-h)*fy,w,h};clampV();setVB()}
 function selectPin(id){S.sel=id;const w=$("#mapcardw");if(w)w.innerHTML=mapCard();
@@ -2068,7 +2074,7 @@ function frise(){
   +(x.lien&&chip(x.lien)?`<button class="ch" data-o="${x.lien}">Voir la fiche</button>`:"")+`</div>`).join("")+`</div>`}
 function ecrans(){
  return `<p class="mu">Les jeux et adaptations nés des livres de Sapkowski. Point bleu : films et séries. Point ambre : jeux.</p><div class="tl">`
-  +C.ecrans.map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}<p>${esc(x.d)}</p></div>`).join("")+`</div>`}
+  +C.ecrans.filter(x=>!x.c||x.c<=S.ch).map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}<p>${esc(x.d)}</p></div>`).join("")+`</div>`}
 
 /* ---------- Quiz ---------- */
 function quiz(){
@@ -2138,36 +2144,48 @@ function renderBar(){
  $("#bar").innerHTML=`${left}<h1>${esc(t)}</h1>${right}`}
 function renderTabs(){$("#tabs").innerHTML=TABS.map(([k,n])=>`<button data-tab="${k}" class="${k===S.tab?"on":""}"${k===S.tab?' aria-current="page"':""}>${ICO[k]}<span>${n}</span></button>`).join("")}
 function render(){
+ const a=document.activeElement;let cle="";
+ if(a&&a!==document.body&&a.closest&&a.closest("#main,#bar"))cle=[...a.attributes].filter(x=>x.name==="id"||x.name.startsWith("data-")).map(x=>`[${x.name}="${CSS.escape(x.value)}"]`).join("");
  renderBar();renderTabs();
  const v=S.id?(ID[S.id]?fiche(ID[S.id]):monstre(MID[S.id])):S.page?({quiz,demander,reglages,recherche,lignee}[S.page])():({partie,codex,carte,bestiaire,livres}[S.tab]||partie)();
  $("#main").innerHTML=v+(S.page==="reglages"?"":footer());
  const r=$("#route .on");if(r){const p=r.parentNode;p.scrollLeft=r.offsetLeft-p.clientWidth/2+r.offsetWidth/2}
  if(S.tab==="carte"&&!S.id&&!S.page)mapInit();
+ if(cle){let x=null;try{x=document.querySelector(cle)}catch(e){}if(x&&!x.disabled)x.focus({preventScroll:true});else{const nx=$('[data-act="next"]');if(nx)nx.focus({preventScroll:true})}}
  renderOnb()}
+/* Rendu différé si l'on est en train d'écrire, pour ne pas fermer le clavier. */
+const renderDoux=()=>{const f=document.activeElement;if(f&&/^(INPUT|TEXTAREA)$/.test(f.tagName))return;render()};
+const annoncer=m=>{const a=$("#annonce");if(a){a.textContent="";setTimeout(()=>{a.textContent=m},60)}};
 
 /* ---------- Navigation ---------- */
 const cur=()=>{try{return decodeURIComponent(location.hash.slice(1))}catch(e){return""}};
-const isRoot=t=>TABK.includes(t)||SEGS[t];
+const isRoot=t=>TABK.includes(t)||own(SEGS,t);
 function go(t){if(cur()===t){mem[t]=0;route()}else location.hash=t}
-function replaceHash(t){try{history.replaceState(null,"","#"+t)}catch(e){}trail[trail.length-1]=t}
-function back(){if(trail.length>1)history.back();else go(S.page&&PAGES[S.page]||S.tab)}
+function replaceHash(t){try{history.replaceState({n:prof},"","#"+t)}catch(e){}trail[trail.length-1]=t}
+function back(){if(trail.length>1)history.back();else{replaceHash(S.page&&PAGES[S.page]||S.tab);route()}}
 function parse(t){
  const from=S.tab;S.id=null;S.page=null;S.defi=null;
- if(SEGS[t]){S.tab="livres";S.lv=t}
+ if(own(SEGS,t)){S.tab="livres";S.lv=t}
  else if(t==="livres"){S.tab="livres";S.lv="lecture"}
  else if(TABK.includes(t))S.tab=t;
- else if(t in PAGES){S.page=t;if(PAGES[t])S.tab=PAGES[t]}
+ else if(own(PAGES,t)){S.page=t;if(PAGES[t])S.tab=PAGES[t]}
  else if(/^defi-[a-z0-9]{3,12}$/.test(t)){S.page="quiz";S.tab="partie";S.defi=t.slice(5)}
  else if(ID[t]){S.id=t;S.tab=ID[t].t==="livre"?"livres":ID[t].t==="lieu"&&from==="carte"?"carte":"codex"}
  else if(MID[t]){S.id=t;S.tab="bestiaire"}
  else S.tab="partie";
  if(S.id&&(vis(any(S.id))||S.force[S.id])){S.hist=[S.id,...S.hist.filter(i=>i!==S.id)].slice(0,12);save()}}
+let prof=0;
 function route(){
  const t=cur()||"partie",prevRoot=isRoot(trail[trail.length-1]||"partie");
- const popped=trail.length>1&&trail[trail.length-2]===t;
- if(isRoot(t))trail=[t];else if(popped)trail.pop();else if(trail[trail.length-1]!==t)trail.push(t);
+ /* Chaque entrée d'historique porte sa profondeur : revenir à une entrée moins profonde est un retour. */
+ const st=history.state,n=st&&typeof st.n==="number"?st.n:null;let popped=false;
+ if(n==null){prof++;try{history.replaceState({...(st||{}),n:prof},"")}catch(e){}}else{popped=n<prof;prof=n}
+ if(isRoot(t))trail=[t];
+ else if(popped){if(trail.length>1&&trail[trail.length-2]===t)trail.pop();else trail=[t]}
+ else if(trail[trail.length-1]!==t)trail.push(t);
  parse(t);
- const apply=()=>{render();scrollTo(0,popped||isRoot(t)?mem[t]||0:0)};
+ const nav=!first;
+ const apply=()=>{render();scrollTo(0,popped||isRoot(t)?mem[t]||0:0);if(nav){const h=$("#bar h1");if(h){h.tabIndex=-1;h.focus({preventScroll:true})}}};
  if(!first&&document.startViewTransition&&!calme()){document.documentElement.dataset.nav=popped?"pop":isRoot(t)&&prevRoot?"tab":"push";document.startViewTransition(apply)}
  else apply();
  first=false}
@@ -2176,7 +2194,7 @@ const shareToken=()=>S.id||(S.defi?"defi-"+S.defi:S.page&&S.page!=="reglages"&&S
 /* La recherche s'ouvre sans délai pour que le clavier apparaisse aussi sur iPhone. */
 function openSearch(){
  mem[cur()||"partie"]=scrollY;
- if(cur()!=="recherche"){try{history.pushState(null,"","#recherche")}catch(e){location.hash="recherche";return}trail.push("recherche")}
+ if(cur()!=="recherche"){try{history.pushState({n:++prof},"","#recherche")}catch(e){location.hash="recherche";return}trail.push("recherche")}
  parse("recherche");render();scrollTo(0,0);const q=$("#q");if(q){q.focus();q.select()}}
 /* Glisser depuis le bord gauche pour revenir en arrière dans l'application installée sur iPhone. */
 let swipe=null;
@@ -2201,9 +2219,13 @@ function openSheet(tok,msg){
  if(tok&&!msg)h+=`<p><button class="lnk" data-share="">Partager plutôt l'accueil du compagnon</button></p>`;
  h+=`<div class="qrw"><canvas id="qr" width="400" height="400" role="img" aria-label="QR code du lien" hidden></canvas><p class="mu sm">À scanner avec l'appareil photo d'un téléphone.</p></div>`;
  if(location.protocol==="file:")h+=`<p class="mu sm">Vous consultez une copie enregistrée sur cet appareil. Vous pouvez aussi envoyer le fichier lui-même : il s'ouvre dans n'importe quel navigateur.</p>`;
- $("#sh-body").innerHTML=h;$("#sheet").hidden=false;$("#sh-x").focus();
+ $("#sh-body").innerHTML=h;ouvrirCouche();$("#sheet").hidden=false;$("#sh-x").focus();
  drawQR($("#qr"),url).catch(()=>{const w=$(".qrw");if(w)w.hidden=true})}
-const closeSheet=()=>{$("#sheet").hidden=true};
+let retourFocus=null;
+function ouvrirCouche(){if(!retourFocus||!retourFocus.isConnected)retourFocus=document.activeElement;if(!(history.state&&history.state.ov))try{history.pushState({...(history.state||{}),ov:1},"")}catch(e){}}
+function fermerCouches(){$("#sheet").hidden=true;$("#lb").hidden=true;if(retourFocus&&retourFocus.isConnected)retourFocus.focus({preventScroll:true});retourFocus=null}
+const closeSheet=()=>{if(history.state&&history.state.ov)history.back();else fermerCouches()};
+addEventListener("popstate",fermerCouches);
 function copy(id){const el=$("#"+id);if(!el)return;
  const fail=()=>{el.focus();el.select();toast("Texte sélectionné : copiez-le avec un appui long")};
  try{navigator.clipboard.writeText(el.value).then(()=>{toast(id==="sh-m"?"Message copié":"Lien copié");vib(8)},fail)}catch(e){fail()}}
@@ -2214,11 +2236,11 @@ function shareScore(){
  if(!inFrame&&navigator.share){navigator.share({title:"Compagnon du Sorceleur",text:msg,url}).catch(e=>{if(e&&e.name!=="AbortError")openSheet(tok,msg)});return}
  try{navigator.clipboard.writeText(msg+"\n"+url).then(()=>toast("Message copié : collez-le dans votre conversation"),()=>openSheet(tok,msg))}catch(e){openSheet(tok,msg)}}
 function openLb(id){const s=SRCS.find(x=>x.id===id);if(!s)return;const l=$("#lb");
- l.innerHTML=`<img src="${s.img}" alt="${esc(s.conte)}"><p>${esc(credit(s))}. Domaine public.</p><button class="ch" id="lb-x">Fermer</button>`;l.hidden=false;$("#lb-x").focus()}
+ l.innerHTML=`<img src="${s.img}" alt="${esc(s.conte)}"><p>${esc(credit(s))}. Domaine public.</p><button class="ch" id="lb-x">Fermer</button>`;ouvrirCouche();l.hidden=false;$("#lb-x").focus()}
 
 /* ---------- Demander à Claude ---------- */
 async function ask(){
- const el=$("#qs"),q=(el?el.value:S.ask.q).trim();if(!q||!SM||S.ask.busy)return;
+ const el=$("#qs"),q=(el?el.value:S.ask.q).trim();if(!q||!canAsk()||S.ask.busy)return;
  S.ask.q=q;S.ask.busy=true;S.ask.out="Réflexion en cours…";ctl=new AbortController();
  const set=()=>{const o=$("#out"),g=$("#go"),s=$("#stop");if(o)o.textContent=S.ask.out;if(g)g.disabled=S.ask.busy;if(s)s.hidden=!S.ask.busy};set();
  const c=C.chapitres[S.ch],w=norm(q).split(/[^a-z0-9]+/).filter(x=>x.length>2);
@@ -2253,7 +2275,7 @@ Question : ${q}`;
 const NANO_OPTS={expectedInputs:[{type:"text",languages:["fr"]}],expectedOutputs:[{type:"text",languages:["fr"]}]};
 async function nanoInit(){
  try{if(SM||inFrame||!("LanguageModel" in self))return;const a=await self.LanguageModel.availability(NANO_OPTS);
-  if(a&&a!=="unavailable"){NANO=a;render()}}catch(e){}}
+  if(a&&a!=="unavailable"){NANO=a;renderDoux()}}catch(e){}}
 function nanoCreate(signal){
  return self.LanguageModel.create({...NANO_OPTS,signal,monitor(m){m.addEventListener("downloadprogress",e=>{NANO="downloading";const p=$("#nano-p");if(p)p.textContent=`Téléchargement du modèle : ${Math.round((e.loaded||0)*100)} %`})}})}
 async function askNano(prompt,signal){
@@ -2312,25 +2334,25 @@ function renderPlayer(){
 /* Rappel quotidien : synchronisation périodique d'Android, une fois l'application installée. */
 async function psyncInit(){
  try{if(inFrame||!("serviceWorker" in navigator)||!("Notification" in window))return;const reg=await navigator.serviceWorker.ready;
-  if(reg&&"periodicSync" in reg){PSYNC=true;if(S.page==="reglages")render()}}catch(e){}}
+  if(reg&&"periodicSync" in reg&&standalone()){PSYNC=true;if(S.page==="reglages")renderDoux()}}catch(e){}}
 async function setRappel(on){
  try{const reg=await navigator.serviceWorker.ready;
   if(!on){await reg.periodicSync.unregister("question-du-jour");return true}
-  if(await Notification.requestPermission()!=="granted"){toast("Notifications refusées : autorisez-les dans les réglages du site");return false}
   const st=await navigator.permissions.query({name:"periodic-background-sync"}).catch(()=>({state:"prompt"}));
   if(st.state==="denied"){toast("Android n'autorise les rappels qu'une fois l'application installée");return false}
+  if(await Notification.requestPermission()!=="granted"){toast("Notifications refusées : autorisez-les dans les réglages du site");return false}
   await reg.periodicSync.register("question-du-jour",{minInterval:864e5});toast("Rappel activé");return true}
  catch(e){toast("Les rappels ne sont pas disponibles sur cet appareil");return false}}
 
 /* Liens reçus : partage depuis une autre application (menu Partager d'Android) ou lien ouvert dans l'application déjà lancée. */
-let dernierLien="";
+let lancement=location.href; /* launchQueue renvoie l'adresse de lancement une seconde fois au démarrage */
 function recevoir(u){
- try{const key=u.href;if(key===dernierLien)return false;dernierLien=key;
+ try{
   const p=u.searchParams,brut=[p.get("lien"),p.get("texte"),p.get("titre")].filter(Boolean).join(" ").trim();
   let h=u.hash.slice(1);
   const m=brut.match(/#([a-z0-9-]{2,40})/i);if(!h&&m)h=m[1];
-  if(p.toString()){try{history.replaceState(null,"",u.pathname+(h?"#"+h:""))}catch(e){}}
-  if(h&&(TABK.includes(h)||SEGS[h]||h in PAGES||any(h)||/^defi-[a-z0-9]{3,12}$/.test(h))){if(cur()!==h)location.hash=h;return true}
+  if(location.search){try{history.replaceState(history.state,"",location.pathname+location.hash)}catch(e){}}
+  if(h&&(TABK.includes(h)||own(SEGS,h)||own(PAGES,h)||any(h)||/^defi-[a-z0-9]{3,12}$/.test(h))){if(cur()!==h)location.hash=h;else route();return true}
   if(brut&&!/^https?:/i.test(brut)){S.q=brut.replace(/https?:\S+/g,"").trim().slice(0,60);if(cur()!=="recherche")location.hash="recherche";else route();return true}}
  catch(e){}return false}
 
@@ -2343,12 +2365,12 @@ function applyDisplay(){
  let m=document.getElementById("tc");if(!m){m=document.createElement("meta");m.name="theme-color";m.id="tc";document.head.prepend(m)}
  m.content=bg||"#17262c"}
 async function setWake(on){
- try{if(on&&"wakeLock" in navigator){if(!wake){wake=await navigator.wakeLock.request("screen");wake.addEventListener("release",()=>{wake=null})}}
-  else if(wake){await wake.release();wake=null}}catch(e){if(on&&document.visibilityState==="visible")toast("Impossible de garder l'écran allumé sur cet appareil")}}
-document.addEventListener("visibilitychange",()=>{if(S.eveil&&document.visibilityState==="visible")setWake(true)});
+ try{if(on&&"wakeLock" in navigator){if(!wake){const v=await navigator.wakeLock.request("screen");v.addEventListener("release",()=>{if(wake===v)wake=null});wake=v}}
+  else if(!on&&wake){const v=wake;wake=null;await v.release()}}catch(e){if(on&&document.visibilityState==="visible")toast("Impossible de garder l'écran allumé sur cet appareil")}}
+document.addEventListener("visibilitychange",()=>{if((S.eveil||lu)&&document.visibilityState==="visible")setWake(true)});
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyDisplay)}catch(e){}
-addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;if(S.page==="reglages"||S.tab==="partie"||!S.vu)render()});
-addEventListener("appinstalled",()=>{installEvt=null;toast("Compagnon installé sur votre écran d'accueil");render()});
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;if(S.page==="reglages"||S.tab==="partie"||!S.vu)renderDoux()});
+addEventListener("appinstalled",()=>{installEvt=null;toast("Compagnon installé sur votre écran d'accueil");renderDoux()});
 async function install(){if(!installEvt)return;installEvt.prompt();try{await installEvt.userChoice}catch(e){}installEvt=null;render()}
 
 /* ---------- Actions ---------- */
@@ -2370,7 +2392,9 @@ function act(a){
  else if(a==="onb"){S.vu=false;S.onb=0;render()}
  else if(a==="reset"){S.reset=true;render()}
  else if(a==="reset-no"){S.reset=false;render()}
- else if(a==="reset-ok"){try{localStorage.removeItem("cs")}catch(e){}Object.assign(S,{ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,reset:false,onb:0,quiz:null,eclair:null});setWake(false);applyDisplay();go("partie");render()}
+ else if(a==="reset-ok"){try{localStorage.removeItem("cs")}catch(e){}if(ctl)ctl.abort();lireStop(true);if(PSYNC&&S.rappel)setRappel(false);
+  Object.assign(S,{ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,debit:1,rappel:false,reset:false,onb:0,quiz:null,eclair:null,rv:{},force:{},q:"",bq:"",sel:null,pend:null,ask:{q:"",out:"",busy:false}});
+  setWake(false);applyDisplay();go("partie");render()}
  else if(a==="lire-pause")lirePause();
  else if(a==="lire-play")lireReprendre();
  else if(a==="lire-stop")lireStop();
@@ -2384,7 +2408,7 @@ function onbStep(d){
 
 document.addEventListener("click",ev=>{
  const t=ev.target.closest("button");
- if(!t){if(ev.target.id==="sheet")closeSheet();else if(ev.target.closest("#lb"))$("#lb").hidden=true;return}
+ if(!t){if(ev.target.id==="sheet"||ev.target.closest("#lb"))closeSheet();return}
  const d=t.dataset;
  if(d.i!==undefined){const i=+d.i;if(i>S.ch)S.pend=i;else setCh(i);render()}
  else if(d.o)go(d.o);
@@ -2400,9 +2424,9 @@ document.addEventListener("click",ev=>{
  else if(d.map){focusPin(d.map);S.sel=d.map;go("carte")}
  else if(d.zoom){if(d.zoom==="reset"){mv={x:0,y:0,w:MW,h:MH};setVB()}else zoomAt({...mv},d.zoom==="in"?1/1.4:1.4,.5,.5)}
  else if(d.an!==undefined){S.an++;render()}
- else if(d.ej!==undefined&&S.eclair&&S.eclair.a==null){S.eclair.a=+d.ej;vib(S.eclair.a===S.eclair.q.ok?12:[20,40,20]);
+ else if(d.ej!==undefined&&S.eclair&&S.eclair.a==null){S.eclair.a=+d.ej;vib(S.eclair.a===S.eclair.q.ok?12:[20,40,20]);annoncer(S.eclair.a===S.eclair.q.ok?"Bonne réponse.":"Raté. La bonne réponse : "+S.eclair.q.opts[S.eclair.q.ok]+".");
   const td=dayKey(),hier=dayKey(new Date(Date.now()-864e5));if(!S.serie||S.serie.jour!==td){S.serie={jour:td,n:S.serie&&S.serie.jour===hier?S.serie.n+1:1};save()}render()}
- else if(d.qa!==undefined&&S.quiz&&S.quiz.ans[S.quiz.i]==null){S.quiz.ans[S.quiz.i]=+d.qa;vib(+d.qa===S.quiz.qs[S.quiz.i].ok?12:[20,40,20]);render()}
+ else if(d.qa!==undefined&&S.quiz&&S.quiz.ans[S.quiz.i]==null){const q=S.quiz.qs[S.quiz.i],ok=+d.qa===q.ok;S.quiz.ans[S.quiz.i]=+d.qa;vib(ok?12:[20,40,20]);render();annoncer(ok?"Bonne réponse.":"Raté. La bonne réponse : "+q.opts[q.ok]+".")}
  else if(d.act)act(d.act);
  else if(d.onb)onbStep(d.onb);
  else if(d.onbch!==undefined){S.ch=+d.onbch;S.eclair=null;save();renderOnb()}
@@ -2420,7 +2444,7 @@ document.addEventListener("click",ev=>{
  else if(t.id==="go")ask();
  else if(t.id==="stop"&&ctl)ctl.abort();
  else if(t.id==="sh-x")closeSheet();
- else if(t.id==="lb-x")$("#lb").hidden=true;
+ else if(t.id==="lb-x")closeSheet();
  else if(t.id==="sh-send")navigator.share({title:"Compagnon du Sorceleur",text:sheetMsg||"Le lore des livres du Sorceleur, au rythme de ta partie de The Witcher 3.",url:sheetUrl}).catch(()=>{});
 });
 document.addEventListener("change",ev=>{const t=ev.target,id=t.id;if(!id)return;
@@ -2437,7 +2461,7 @@ document.addEventListener("input",ev=>{const t=ev.target;
  else if(t.id==="bq"){S.bq=t.value;$("#blst").innerHTML=blst()}
  else if(t.id==="qs")S.ask.q=t.value});
 document.addEventListener("keydown",ev=>{
- if(ev.key==="Escape"){if(!$("#lb").hidden)$("#lb").hidden=true;else if(!$("#sheet").hidden)closeSheet()}
+ if(ev.key==="Escape"&&(!$("#lb").hidden||!$("#sheet").hidden))closeSheet();
  if(ev.key==="Enter"&&(ev.ctrlKey||ev.metaKey)&&ev.target.id==="qs")ask();
  if(ev.key==="Enter"&&ev.target.id==="q")ev.target.blur()});
 
@@ -2447,7 +2471,7 @@ try{if(location.search)recevoir(new URL(location.href))}catch(e){}
 route();
 renderPlayer();
 nanoInit();psyncInit();
-try{if("launchQueue" in window)window.launchQueue.setConsumer(p=>{if(p&&p.targetURL)recevoir(new URL(p.targetURL))})}catch(e){}
+try{if("launchQueue" in window)window.launchQueue.setConsumer(p=>{if(!p||!p.targetURL)return;if(p.targetURL===lancement){lancement="";return}lancement="";recevoir(new URL(p.targetURL))})}catch(e){}
 if(S.eveil)setWake(true);
 try{navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{if(e.data==="maj")toast("Nouvelle version du compagnon disponible","reload","Recharger")})}catch(e){}
 if(matchMedia("(min-width: 900px)").matches){const c=$("#desk-qr");if(c)drawQR(c,LIEN.pages).catch(()=>{})}

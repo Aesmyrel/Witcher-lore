@@ -1,12 +1,13 @@
 // Généré par scripts/build.mjs : ne pas modifier à la main.
 // Le compagnon s'ouvre instantanément depuis le cache, même hors ligne, puis se met à jour en arrière-plan.
-const VERSION = "compagnon-93fdae5799";
+const VERSION = "compagnon-53112f08f2";
 const ASSETS = ["./","manifest.webmanifest","icons/icon.svg","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png","icons/badge-96.png","img/blanche-neige.webp","img/belle-bete.webp","img/herisson.webp","img/sirene.webp","img/reine-neiges.webp","img/djinn.webp","img/baba-yaga.webp","img/leshy.webp","img/kikimora.webp","img/sirin.webp"];
 const EXTERNES = ["fonts.googleapis.com", "fonts.gstatic.com", "cdnjs.cloudflare.com"];
-const ANECDOTES = ["Le nom elfique de Ciri, Zireael, signifie « hirondelle », comme la potion de soin des sorceleurs.","Geralt s'est choisi lui-même le nom « de Riv », pour inspirer confiance à ses clients.","Toutes les juments de Geralt s'appellent Ablette, de livre en livre.","Triss est surnommée « la Quatorzième de la Colline » : on l'a crue morte à la bataille de Sodden.","Coën fait partie des sorceleurs qui ont entraîné Ciri à Kaer Morhen, mais on ne le croise pas dans TW3.","Zoltan Chivay vient du « Baptême du feu » : dans TW3, il est l'un des alliés les plus fidèles de Geralt.","Le journal de quêtes de TW3 est rédigé du point de vue de Jaskier.","Le nom complet d'Emhyr signifie « la Flamme Blanche qui danse sur les tumulus de ses ennemis ».","La toute première quête de TW3 porte le nom du parfum de Yennefer : lilas et groseilles.","Sapkowski a publié la première nouvelle du Sorceleur en 1986, dans le magazine polonais Fantastyka.","Dans « Les Limites du possible », Geralt rappelle qu'il ne tue pas les dragons.","Dans les légendes du Nord, l'apparition de la Chasse sauvage annonce la guerre.","Le Hérisson d'Erlenwald, chevalier maudit du « Dernier Vœu », cache un secret que la saga ne dévoile qu'à la toute fin.","Regis distille une eau-de-vie de mandragore dont ses compagnons de route se souviennent longtemps.","« La Croisée des corbeaux » raconte les débuts de Geralt à dix-huit ans, au sortir de Kaer Morhen.","Les sorceleurs recrutaient parfois leurs apprentis grâce à la Loi de la Surprise.","Le titre polonais, « Wiedźmin », est un mot forgé par Sapkowski à partir de « wiedźma », la sorcière.","« Le Moindre Mal » détourne Blanche-Neige : Renfri, princesse chassée par sa belle-mère, a vécu un temps parmi sept gnomes.","« Un grain de vérité » revisite La Belle et la Bête, et « Un petit sacrifice » La Petite Sirène.","Gwynbleidd, le nom elfe de Geralt, signifie « Loup Blanc ».","Le gwynt, mini-jeu de cartes de TW3, a eu droit à ses propres jeux : Gwent et Thronebreaker."];
+const ANECDOTES = ["Le nom elfique de Ciri, Zireael, signifie « hirondelle », comme la potion de soin des sorceleurs.","Geralt s'est choisi lui-même le nom « de Riv », pour inspirer confiance à ses clients.","Toutes les juments de Geralt s'appellent Ablette, de livre en livre.","Triss est surnommée « la Quatorzième de la Colline » : on l'a crue morte à la bataille de Sodden.","Coën fait partie des sorceleurs qui ont entraîné Ciri à Kaer Morhen, mais on ne le croise pas dans TW3.","Zoltan Chivay vient du « Baptême du feu » : dans TW3, il est l'un des alliés les plus fidèles de Geralt.","Le journal de quêtes de TW3 est rédigé du point de vue de Jaskier.","Le nom complet d'Emhyr signifie « la Flamme Blanche qui danse sur les tumulus de ses ennemis ».","La toute première quête de TW3 porte le nom du parfum de Yennefer : lilas et groseilles.","Sapkowski a publié la première nouvelle du Sorceleur en 1986, dans le magazine polonais Fantastyka.","Dans « Les Limites du possible », Geralt rappelle qu'il ne tue pas les dragons.","Dans les légendes du Nord, l'apparition de la Chasse sauvage annonce la guerre.","Le Hérisson d'Erlenwald, chevalier maudit du « Dernier Vœu », cache un secret que la saga ne dévoile qu'à la toute fin.","Regis distille une eau-de-vie de mandragore dont ses compagnons de route se souviennent longtemps.","« La Croisée des corbeaux » raconte les débuts de Geralt à dix-huit ans, au sortir de Kaer Morhen.","Les sorceleurs recrutaient parfois leurs apprentis grâce à la Loi de la Surprise.","Le titre polonais, « Wiedźmin », est un mot forgé par Sapkowski à partir de « wiedźma », la sorcière.","« Le Moindre Mal » détourne Blanche-Neige : Renfri, princesse chassée par sa belle-mère, a vécu un temps parmi sept gnomes.","« Un grain de vérité » revisite La Belle et la Bête, et « Une once d'abnégation » La Petite Sirène.","Gwynbleidd, le nom elfe de Geralt, signifie « Loup Blanc ».","Le gwynt, mini-jeu de cartes de TW3, a eu droit à ses propres jeux : Gwent et Thronebreaker."];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // cache: "reload" contourne le cache HTTP de GitHub Pages (max-age=600) pour bien stocker la nouvelle version.
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS.map((u) => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (e) => {
@@ -24,14 +25,17 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin === location.origin) {
-    const page = req.mode === "navigate";
+    // Seule la page d'accueil est servie comme application ; les autres fichiers (images, captures) restent eux-mêmes.
+    const page = req.mode === "navigate" && (url.pathname === new URL(self.registration.scope).pathname || url.pathname.endsWith("/index.html"));
     const cle = page ? new Request(self.registration.scope) : req;
     e.respondWith(caches.open(VERSION).then(async (cache) => {
       const enCache = await cache.match(cle, { ignoreSearch: true });
-      const reseau = fetch(req).then(async (res) => {
+      // Copie faite avant que la réponse en cache ne soit lue par la page.
+      const copie = page && enCache ? enCache.clone() : null;
+      const reseau = fetch(page ? new Request(req.url, { cache: "no-cache" }) : req).then(async (res) => {
         if (res.ok) {
-          if (page && enCache) {
-            const [avant, apres] = await Promise.all([enCache.clone().text(), res.clone().text()]);
+          if (copie) {
+            const [avant, apres] = await Promise.all([copie.text(), res.clone().text()]);
             if (avant !== apres) prevenir();
           }
           await cache.put(cle, res.clone());

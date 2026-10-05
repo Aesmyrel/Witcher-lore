@@ -158,7 +158,8 @@ const EXTERNES = ["fonts.googleapis.com", "fonts.gstatic.com", "cdnjs.cloudflare
 const ANECDOTES = ${JSON.stringify(anecdotes)};
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // cache: "reload" contourne le cache HTTP de GitHub Pages (max-age=600) pour bien stocker la nouvelle version.
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS.map((u) => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (e) => {
@@ -176,14 +177,17 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin === location.origin) {
-    const page = req.mode === "navigate";
+    // Seule la page d'accueil est servie comme application ; les autres fichiers (images, captures) restent eux-mêmes.
+    const page = req.mode === "navigate" && (url.pathname === new URL(self.registration.scope).pathname || url.pathname.endsWith("/index.html"));
     const cle = page ? new Request(self.registration.scope) : req;
     e.respondWith(caches.open(VERSION).then(async (cache) => {
       const enCache = await cache.match(cle, { ignoreSearch: true });
-      const reseau = fetch(req).then(async (res) => {
+      // Copie faite avant que la réponse en cache ne soit lue par la page.
+      const copie = page && enCache ? enCache.clone() : null;
+      const reseau = fetch(page ? new Request(req.url, { cache: "no-cache" }) : req).then(async (res) => {
         if (res.ok) {
-          if (page && enCache) {
-            const [avant, apres] = await Promise.all([enCache.clone().text(), res.clone().text()]);
+          if (copie) {
+            const [avant, apres] = await Promise.all([copie.text(), res.clone().text()]);
             if (avant !== apres) prevenir();
           }
           await cache.put(cle, res.clone());

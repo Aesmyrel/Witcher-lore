@@ -1,7 +1,8 @@
 /* Compagnon du Sorceleur : application pour téléphone.
    Navigation par ancre (#ciri, #carte, #defi-ab12…) pour que chaque écran se partage par un simple lien,
    et que le bouton retour du téléphone fonctionne comme dans une application. */
-const C=window.CODEX,E=C.entrees,M=C.bestiaire,SRCS=C.sources,ID={},MID={};
+const C=window.CODEX,E=C.entrees,M=C.bestiaire,SRCS=C.sources,ID=Object.create(null),MID=Object.create(null);
+const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 E.forEach(e=>ID[e.id]=e);M.forEach(m=>MID[m.id]=m);
 const BOOKS=E.filter(e=>e.t==="livre").sort((a,b)=>a.ordre-b.ordre);
 const SIGNES=["Aard","Igni","Yrden","Quen","Axii"];
@@ -99,7 +100,7 @@ const micBtn=id=>SR&&!inFrame?`<button class="ic mic${micOn===id?" on":""}" data
 const lireBtn=(k,label)=>TTS?`<button class="ch${lu&&lu.k===k?" on":""}" data-lire="${k}">${ICO.speaker}${label||"Écouter"}</button>`:"";
 const revBtn=(x,k)=>`<button class="sp" data-r="${k}">Révéler la suite${x.rl?" (spoilers jusqu'à "+esc(livre(x.rl))+")":" (spoilers des livres)"}</button>`;
 let tt;
-function toast(m,act,label){const t=$("#toast");t.innerHTML=esc(m)+(act?`<button data-act="${act}">${label}</button>`:"");t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},act?9000:2800)}
+function toast(m,act,label){const t=$("#toast");t.innerHTML=esc(m)+(act?`<button data-act="${act}">${label}</button>`:"");t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},act?30000:2800)}
 
 /* ---------- Quiz : questions tirées du codex, reproductibles à partir d'une graine ---------- */
 function rng(seed){let a=2166136261;for(const c of String(seed))a=Math.imul(a^c.charCodeAt(0),16777619);
@@ -174,7 +175,7 @@ function partie(){
  const ls=ents(c.entrees);if(ls.length)h+=`<h3>Autour de vous</h3>`+ls.map(row).join("");
  const ms=(c.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m));if(ms.length)h+=`<h3>Monstres du coin</h3>`+ms.map(mrow).join("");
  for(const k of["hos","bw"])if(S[k]){const d=C.dlc[k];
-  h+=`<h3>${d.nom}</h3><p>${esc(d.intro)}</p><div class="bl"><p>${esc(d.lire)}</p></div>`+ents(d.entrees).map(row).join("")+(d.monstres||[]).map(i=>MID[i]).filter(Boolean).map(mrow).join("")}
+  h+=`<h3>${d.nom}</h3><p>${esc(d.intro)}</p><div class="bl"><p>${esc(d.lire)}</p></div>`+ents(d.entrees).map(row).join("")+(d.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m)).map(mrow).join("")}
  h+=eclair();
  h+=`<div class="tiles"><button class="tile" data-o="quiz">${ICO.quiz}<b>Quiz</b><small>Dix questions selon votre avancée</small></button><button class="tile" data-act="defi">${ICO.invite}<b>Défier un ami</b><small>Les mêmes questions, sans spoiler</small></button></div>`;
  const nx=BOOKS.find(b=>!S.lus[b.id]);
@@ -313,7 +314,7 @@ function carteSVG(){
  const cur=new Set([...C.chapitres[S.ch].entrees,...(S.hos?C.dlc.hos.entrees:[]),...(S.bw?C.dlc.bw.entrees:[])]),k=mv.w/MW;
  const pins=Object.entries(C.carte.lieux).map(([id,[x,y]])=>{const e=any(id);if(!e||!vis(e))return"";const g=GAUCHE[id];
   return `<g class="pin ${e.src}${cur.has(id)?" here":""}${S.sel===id?" sel":""}" data-pin="${id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y}) scale(${k})" tabindex="0" role="button" aria-label="${esc(e.nom)}"><circle class="hit" r="16"/>${cur.has(id)?'<circle class="ring" r="12"/>':""}<circle class="dot" r="5.5"/><text x="${g?-9:9}" y="4"${g?' text-anchor="end"':""}>${esc(court(e))}</text></g>`}).join("");
- return `<svg id="map" viewBox="${mv.x} ${mv.y} ${mv.w} ${mv.h}" style="--k:${k}" role="img" aria-label="Carte schématique du Continent">
+ return `<svg id="map" viewBox="${mv.x} ${mv.y} ${mv.w} ${mv.h}" style="--k:${k};touch-action:${mv.w>=MW?"pan-y":"none"}" role="img" aria-label="Carte schématique du Continent">
 <rect x="-50" y="-50" width="${MW+100}" height="${MH+100}" fill="var(--sea)"/>
 <path class="land" d="${poly(COTE)}L${MW+60} ${MH+60}L${MW+60} -60Z"/>
 ${ILES.map(([x,y,rx,ry,a])=>`<ellipse class="land" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" transform="rotate(${a} ${x} ${y})"/>`).join("")}
@@ -334,7 +335,7 @@ function carte(){
 <h3 class="gh">Lieux de la carte<span>${pl.length}</span></h3>${pl.map(row).join("")}
 ${hc.length?`<h3 class="gh">Hors de la carte<span>${hc.length}</span></h3><p class="mu sm">Lieux sans position connue, ou situés dans un autre monde.</p>`+hc.map(row).join(""):""}`}
 function setVB(){const s=$("#map");if(!s)return;const k=mv.w/MW;s.setAttribute("viewBox",`${mv.x} ${mv.y} ${mv.w} ${mv.h}`);s.style.setProperty("--k",k);
- s.querySelectorAll("[data-pin]").forEach(g=>g.setAttribute("transform",`translate(${g.dataset.x} ${g.dataset.y}) scale(${k})`))}
+ s.querySelectorAll("[data-pin]").forEach(g=>g.setAttribute("transform",`translate(${g.dataset.x} ${g.dataset.y}) scale(${k})`));s.style.touchAction=mv.w>=MW?"pan-y":"none"}
 function clampV(){mv.x=Math.min(Math.max(mv.x,0),MW-mv.w);mv.y=Math.min(Math.max(mv.y,0),MH-mv.h)}
 function zoomAt(base,f,fx,fy){const w=Math.min(MW,Math.max(100,base.w*f)),h=w*MH/MW;mv={x:base.x+(base.w-w)*fx,y:base.y+(base.h-h)*fy,w,h};clampV();setVB()}
 function selectPin(id){S.sel=id;const w=$("#mapcardw");if(w)w.innerHTML=mapCard();
@@ -384,7 +385,7 @@ function frise(){
   +(x.lien&&chip(x.lien)?`<button class="ch" data-o="${x.lien}">Voir la fiche</button>`:"")+`</div>`).join("")+`</div>`}
 function ecrans(){
  return `<p class="mu">Les jeux et adaptations nés des livres de Sapkowski. Point bleu : films et séries. Point ambre : jeux.</p><div class="tl">`
-  +C.ecrans.map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}<p>${esc(x.d)}</p></div>`).join("")+`</div>`}
+  +C.ecrans.filter(x=>!x.c||x.c<=S.ch).map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}<p>${esc(x.d)}</p></div>`).join("")+`</div>`}
 
 /* ---------- Quiz ---------- */
 function quiz(){
@@ -454,36 +455,48 @@ function renderBar(){
  $("#bar").innerHTML=`${left}<h1>${esc(t)}</h1>${right}`}
 function renderTabs(){$("#tabs").innerHTML=TABS.map(([k,n])=>`<button data-tab="${k}" class="${k===S.tab?"on":""}"${k===S.tab?' aria-current="page"':""}>${ICO[k]}<span>${n}</span></button>`).join("")}
 function render(){
+ const a=document.activeElement;let cle="";
+ if(a&&a!==document.body&&a.closest&&a.closest("#main,#bar"))cle=[...a.attributes].filter(x=>x.name==="id"||x.name.startsWith("data-")).map(x=>`[${x.name}="${CSS.escape(x.value)}"]`).join("");
  renderBar();renderTabs();
  const v=S.id?(ID[S.id]?fiche(ID[S.id]):monstre(MID[S.id])):S.page?({quiz,demander,reglages,recherche,lignee}[S.page])():({partie,codex,carte,bestiaire,livres}[S.tab]||partie)();
  $("#main").innerHTML=v+(S.page==="reglages"?"":footer());
  const r=$("#route .on");if(r){const p=r.parentNode;p.scrollLeft=r.offsetLeft-p.clientWidth/2+r.offsetWidth/2}
  if(S.tab==="carte"&&!S.id&&!S.page)mapInit();
+ if(cle){let x=null;try{x=document.querySelector(cle)}catch(e){}if(x&&!x.disabled)x.focus({preventScroll:true});else{const nx=$('[data-act="next"]');if(nx)nx.focus({preventScroll:true})}}
  renderOnb()}
+/* Rendu différé si l'on est en train d'écrire, pour ne pas fermer le clavier. */
+const renderDoux=()=>{const f=document.activeElement;if(f&&/^(INPUT|TEXTAREA)$/.test(f.tagName))return;render()};
+const annoncer=m=>{const a=$("#annonce");if(a){a.textContent="";setTimeout(()=>{a.textContent=m},60)}};
 
 /* ---------- Navigation ---------- */
 const cur=()=>{try{return decodeURIComponent(location.hash.slice(1))}catch(e){return""}};
-const isRoot=t=>TABK.includes(t)||SEGS[t];
+const isRoot=t=>TABK.includes(t)||own(SEGS,t);
 function go(t){if(cur()===t){mem[t]=0;route()}else location.hash=t}
-function replaceHash(t){try{history.replaceState(null,"","#"+t)}catch(e){}trail[trail.length-1]=t}
-function back(){if(trail.length>1)history.back();else go(S.page&&PAGES[S.page]||S.tab)}
+function replaceHash(t){try{history.replaceState({n:prof},"","#"+t)}catch(e){}trail[trail.length-1]=t}
+function back(){if(trail.length>1)history.back();else{replaceHash(S.page&&PAGES[S.page]||S.tab);route()}}
 function parse(t){
  const from=S.tab;S.id=null;S.page=null;S.defi=null;
- if(SEGS[t]){S.tab="livres";S.lv=t}
+ if(own(SEGS,t)){S.tab="livres";S.lv=t}
  else if(t==="livres"){S.tab="livres";S.lv="lecture"}
  else if(TABK.includes(t))S.tab=t;
- else if(t in PAGES){S.page=t;if(PAGES[t])S.tab=PAGES[t]}
+ else if(own(PAGES,t)){S.page=t;if(PAGES[t])S.tab=PAGES[t]}
  else if(/^defi-[a-z0-9]{3,12}$/.test(t)){S.page="quiz";S.tab="partie";S.defi=t.slice(5)}
  else if(ID[t]){S.id=t;S.tab=ID[t].t==="livre"?"livres":ID[t].t==="lieu"&&from==="carte"?"carte":"codex"}
  else if(MID[t]){S.id=t;S.tab="bestiaire"}
  else S.tab="partie";
  if(S.id&&(vis(any(S.id))||S.force[S.id])){S.hist=[S.id,...S.hist.filter(i=>i!==S.id)].slice(0,12);save()}}
+let prof=0;
 function route(){
  const t=cur()||"partie",prevRoot=isRoot(trail[trail.length-1]||"partie");
- const popped=trail.length>1&&trail[trail.length-2]===t;
- if(isRoot(t))trail=[t];else if(popped)trail.pop();else if(trail[trail.length-1]!==t)trail.push(t);
+ /* Chaque entrée d'historique porte sa profondeur : revenir à une entrée moins profonde est un retour. */
+ const st=history.state,n=st&&typeof st.n==="number"?st.n:null;let popped=false;
+ if(n==null){prof++;try{history.replaceState({...(st||{}),n:prof},"")}catch(e){}}else{popped=n<prof;prof=n}
+ if(isRoot(t))trail=[t];
+ else if(popped){if(trail.length>1&&trail[trail.length-2]===t)trail.pop();else trail=[t]}
+ else if(trail[trail.length-1]!==t)trail.push(t);
  parse(t);
- const apply=()=>{render();scrollTo(0,popped||isRoot(t)?mem[t]||0:0)};
+ const nav=!first;
+ const apply=()=>{render();scrollTo(0,popped||isRoot(t)?mem[t]||0:0);if(nav){const h=$("#bar h1");if(h){h.tabIndex=-1;h.focus({preventScroll:true})}}};
  if(!first&&document.startViewTransition&&!calme()){document.documentElement.dataset.nav=popped?"pop":isRoot(t)&&prevRoot?"tab":"push";document.startViewTransition(apply)}
  else apply();
  first=false}
@@ -492,7 +505,7 @@ const shareToken=()=>S.id||(S.defi?"defi-"+S.defi:S.page&&S.page!=="reglages"&&S
 /* La recherche s'ouvre sans délai pour que le clavier apparaisse aussi sur iPhone. */
 function openSearch(){
  mem[cur()||"partie"]=scrollY;
- if(cur()!=="recherche"){try{history.pushState(null,"","#recherche")}catch(e){location.hash="recherche";return}trail.push("recherche")}
+ if(cur()!=="recherche"){try{history.pushState({n:++prof},"","#recherche")}catch(e){location.hash="recherche";return}trail.push("recherche")}
  parse("recherche");render();scrollTo(0,0);const q=$("#q");if(q){q.focus();q.select()}}
 /* Glisser depuis le bord gauche pour revenir en arrière dans l'application installée sur iPhone. */
 let swipe=null;
@@ -517,9 +530,13 @@ function openSheet(tok,msg){
  if(tok&&!msg)h+=`<p><button class="lnk" data-share="">Partager plutôt l'accueil du compagnon</button></p>`;
  h+=`<div class="qrw"><canvas id="qr" width="400" height="400" role="img" aria-label="QR code du lien" hidden></canvas><p class="mu sm">À scanner avec l'appareil photo d'un téléphone.</p></div>`;
  if(location.protocol==="file:")h+=`<p class="mu sm">Vous consultez une copie enregistrée sur cet appareil. Vous pouvez aussi envoyer le fichier lui-même : il s'ouvre dans n'importe quel navigateur.</p>`;
- $("#sh-body").innerHTML=h;$("#sheet").hidden=false;$("#sh-x").focus();
+ $("#sh-body").innerHTML=h;ouvrirCouche();$("#sheet").hidden=false;$("#sh-x").focus();
  drawQR($("#qr"),url).catch(()=>{const w=$(".qrw");if(w)w.hidden=true})}
-const closeSheet=()=>{$("#sheet").hidden=true};
+let retourFocus=null;
+function ouvrirCouche(){if(!retourFocus||!retourFocus.isConnected)retourFocus=document.activeElement;if(!(history.state&&history.state.ov))try{history.pushState({...(history.state||{}),ov:1},"")}catch(e){}}
+function fermerCouches(){$("#sheet").hidden=true;$("#lb").hidden=true;if(retourFocus&&retourFocus.isConnected)retourFocus.focus({preventScroll:true});retourFocus=null}
+const closeSheet=()=>{if(history.state&&history.state.ov)history.back();else fermerCouches()};
+addEventListener("popstate",fermerCouches);
 function copy(id){const el=$("#"+id);if(!el)return;
  const fail=()=>{el.focus();el.select();toast("Texte sélectionné : copiez-le avec un appui long")};
  try{navigator.clipboard.writeText(el.value).then(()=>{toast(id==="sh-m"?"Message copié":"Lien copié");vib(8)},fail)}catch(e){fail()}}
@@ -530,11 +547,11 @@ function shareScore(){
  if(!inFrame&&navigator.share){navigator.share({title:"Compagnon du Sorceleur",text:msg,url}).catch(e=>{if(e&&e.name!=="AbortError")openSheet(tok,msg)});return}
  try{navigator.clipboard.writeText(msg+"\n"+url).then(()=>toast("Message copié : collez-le dans votre conversation"),()=>openSheet(tok,msg))}catch(e){openSheet(tok,msg)}}
 function openLb(id){const s=SRCS.find(x=>x.id===id);if(!s)return;const l=$("#lb");
- l.innerHTML=`<img src="${s.img}" alt="${esc(s.conte)}"><p>${esc(credit(s))}. Domaine public.</p><button class="ch" id="lb-x">Fermer</button>`;l.hidden=false;$("#lb-x").focus()}
+ l.innerHTML=`<img src="${s.img}" alt="${esc(s.conte)}"><p>${esc(credit(s))}. Domaine public.</p><button class="ch" id="lb-x">Fermer</button>`;ouvrirCouche();l.hidden=false;$("#lb-x").focus()}
 
 /* ---------- Demander à Claude ---------- */
 async function ask(){
- const el=$("#qs"),q=(el?el.value:S.ask.q).trim();if(!q||!SM||S.ask.busy)return;
+ const el=$("#qs"),q=(el?el.value:S.ask.q).trim();if(!q||!canAsk()||S.ask.busy)return;
  S.ask.q=q;S.ask.busy=true;S.ask.out="Réflexion en cours…";ctl=new AbortController();
  const set=()=>{const o=$("#out"),g=$("#go"),s=$("#stop");if(o)o.textContent=S.ask.out;if(g)g.disabled=S.ask.busy;if(s)s.hidden=!S.ask.busy};set();
  const c=C.chapitres[S.ch],w=norm(q).split(/[^a-z0-9]+/).filter(x=>x.length>2);
@@ -569,7 +586,7 @@ Question : ${q}`;
 const NANO_OPTS={expectedInputs:[{type:"text",languages:["fr"]}],expectedOutputs:[{type:"text",languages:["fr"]}]};
 async function nanoInit(){
  try{if(SM||inFrame||!("LanguageModel" in self))return;const a=await self.LanguageModel.availability(NANO_OPTS);
-  if(a&&a!=="unavailable"){NANO=a;render()}}catch(e){}}
+  if(a&&a!=="unavailable"){NANO=a;renderDoux()}}catch(e){}}
 function nanoCreate(signal){
  return self.LanguageModel.create({...NANO_OPTS,signal,monitor(m){m.addEventListener("downloadprogress",e=>{NANO="downloading";const p=$("#nano-p");if(p)p.textContent=`Téléchargement du modèle : ${Math.round((e.loaded||0)*100)} %`})}})}
 async function askNano(prompt,signal){
@@ -628,25 +645,25 @@ function renderPlayer(){
 /* Rappel quotidien : synchronisation périodique d'Android, une fois l'application installée. */
 async function psyncInit(){
  try{if(inFrame||!("serviceWorker" in navigator)||!("Notification" in window))return;const reg=await navigator.serviceWorker.ready;
-  if(reg&&"periodicSync" in reg){PSYNC=true;if(S.page==="reglages")render()}}catch(e){}}
+  if(reg&&"periodicSync" in reg&&standalone()){PSYNC=true;if(S.page==="reglages")renderDoux()}}catch(e){}}
 async function setRappel(on){
  try{const reg=await navigator.serviceWorker.ready;
   if(!on){await reg.periodicSync.unregister("question-du-jour");return true}
-  if(await Notification.requestPermission()!=="granted"){toast("Notifications refusées : autorisez-les dans les réglages du site");return false}
   const st=await navigator.permissions.query({name:"periodic-background-sync"}).catch(()=>({state:"prompt"}));
   if(st.state==="denied"){toast("Android n'autorise les rappels qu'une fois l'application installée");return false}
+  if(await Notification.requestPermission()!=="granted"){toast("Notifications refusées : autorisez-les dans les réglages du site");return false}
   await reg.periodicSync.register("question-du-jour",{minInterval:864e5});toast("Rappel activé");return true}
  catch(e){toast("Les rappels ne sont pas disponibles sur cet appareil");return false}}
 
 /* Liens reçus : partage depuis une autre application (menu Partager d'Android) ou lien ouvert dans l'application déjà lancée. */
-let dernierLien="";
+let lancement=location.href; /* launchQueue renvoie l'adresse de lancement une seconde fois au démarrage */
 function recevoir(u){
- try{const key=u.href;if(key===dernierLien)return false;dernierLien=key;
+ try{
   const p=u.searchParams,brut=[p.get("lien"),p.get("texte"),p.get("titre")].filter(Boolean).join(" ").trim();
   let h=u.hash.slice(1);
   const m=brut.match(/#([a-z0-9-]{2,40})/i);if(!h&&m)h=m[1];
-  if(p.toString()){try{history.replaceState(null,"",u.pathname+(h?"#"+h:""))}catch(e){}}
-  if(h&&(TABK.includes(h)||SEGS[h]||h in PAGES||any(h)||/^defi-[a-z0-9]{3,12}$/.test(h))){if(cur()!==h)location.hash=h;return true}
+  if(location.search){try{history.replaceState(history.state,"",location.pathname+location.hash)}catch(e){}}
+  if(h&&(TABK.includes(h)||own(SEGS,h)||own(PAGES,h)||any(h)||/^defi-[a-z0-9]{3,12}$/.test(h))){if(cur()!==h)location.hash=h;else route();return true}
   if(brut&&!/^https?:/i.test(brut)){S.q=brut.replace(/https?:\S+/g,"").trim().slice(0,60);if(cur()!=="recherche")location.hash="recherche";else route();return true}}
  catch(e){}return false}
 
@@ -659,12 +676,12 @@ function applyDisplay(){
  let m=document.getElementById("tc");if(!m){m=document.createElement("meta");m.name="theme-color";m.id="tc";document.head.prepend(m)}
  m.content=bg||"#17262c"}
 async function setWake(on){
- try{if(on&&"wakeLock" in navigator){if(!wake){wake=await navigator.wakeLock.request("screen");wake.addEventListener("release",()=>{wake=null})}}
-  else if(wake){await wake.release();wake=null}}catch(e){if(on&&document.visibilityState==="visible")toast("Impossible de garder l'écran allumé sur cet appareil")}}
-document.addEventListener("visibilitychange",()=>{if(S.eveil&&document.visibilityState==="visible")setWake(true)});
+ try{if(on&&"wakeLock" in navigator){if(!wake){const v=await navigator.wakeLock.request("screen");v.addEventListener("release",()=>{if(wake===v)wake=null});wake=v}}
+  else if(!on&&wake){const v=wake;wake=null;await v.release()}}catch(e){if(on&&document.visibilityState==="visible")toast("Impossible de garder l'écran allumé sur cet appareil")}}
+document.addEventListener("visibilitychange",()=>{if((S.eveil||lu)&&document.visibilityState==="visible")setWake(true)});
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyDisplay)}catch(e){}
-addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;if(S.page==="reglages"||S.tab==="partie"||!S.vu)render()});
-addEventListener("appinstalled",()=>{installEvt=null;toast("Compagnon installé sur votre écran d'accueil");render()});
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;if(S.page==="reglages"||S.tab==="partie"||!S.vu)renderDoux()});
+addEventListener("appinstalled",()=>{installEvt=null;toast("Compagnon installé sur votre écran d'accueil");renderDoux()});
 async function install(){if(!installEvt)return;installEvt.prompt();try{await installEvt.userChoice}catch(e){}installEvt=null;render()}
 
 /* ---------- Actions ---------- */
@@ -686,7 +703,9 @@ function act(a){
  else if(a==="onb"){S.vu=false;S.onb=0;render()}
  else if(a==="reset"){S.reset=true;render()}
  else if(a==="reset-no"){S.reset=false;render()}
- else if(a==="reset-ok"){try{localStorage.removeItem("cs")}catch(e){}Object.assign(S,{ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,reset:false,onb:0,quiz:null,eclair:null});setWake(false);applyDisplay();go("partie");render()}
+ else if(a==="reset-ok"){try{localStorage.removeItem("cs")}catch(e){}if(ctl)ctl.abort();lireStop(true);if(PSYNC&&S.rappel)setRappel(false);
+  Object.assign(S,{ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,debit:1,rappel:false,reset:false,onb:0,quiz:null,eclair:null,rv:{},force:{},q:"",bq:"",sel:null,pend:null,ask:{q:"",out:"",busy:false}});
+  setWake(false);applyDisplay();go("partie");render()}
  else if(a==="lire-pause")lirePause();
  else if(a==="lire-play")lireReprendre();
  else if(a==="lire-stop")lireStop();
@@ -700,7 +719,7 @@ function onbStep(d){
 
 document.addEventListener("click",ev=>{
  const t=ev.target.closest("button");
- if(!t){if(ev.target.id==="sheet")closeSheet();else if(ev.target.closest("#lb"))$("#lb").hidden=true;return}
+ if(!t){if(ev.target.id==="sheet"||ev.target.closest("#lb"))closeSheet();return}
  const d=t.dataset;
  if(d.i!==undefined){const i=+d.i;if(i>S.ch)S.pend=i;else setCh(i);render()}
  else if(d.o)go(d.o);
@@ -716,9 +735,9 @@ document.addEventListener("click",ev=>{
  else if(d.map){focusPin(d.map);S.sel=d.map;go("carte")}
  else if(d.zoom){if(d.zoom==="reset"){mv={x:0,y:0,w:MW,h:MH};setVB()}else zoomAt({...mv},d.zoom==="in"?1/1.4:1.4,.5,.5)}
  else if(d.an!==undefined){S.an++;render()}
- else if(d.ej!==undefined&&S.eclair&&S.eclair.a==null){S.eclair.a=+d.ej;vib(S.eclair.a===S.eclair.q.ok?12:[20,40,20]);
+ else if(d.ej!==undefined&&S.eclair&&S.eclair.a==null){S.eclair.a=+d.ej;vib(S.eclair.a===S.eclair.q.ok?12:[20,40,20]);annoncer(S.eclair.a===S.eclair.q.ok?"Bonne réponse.":"Raté. La bonne réponse : "+S.eclair.q.opts[S.eclair.q.ok]+".");
   const td=dayKey(),hier=dayKey(new Date(Date.now()-864e5));if(!S.serie||S.serie.jour!==td){S.serie={jour:td,n:S.serie&&S.serie.jour===hier?S.serie.n+1:1};save()}render()}
- else if(d.qa!==undefined&&S.quiz&&S.quiz.ans[S.quiz.i]==null){S.quiz.ans[S.quiz.i]=+d.qa;vib(+d.qa===S.quiz.qs[S.quiz.i].ok?12:[20,40,20]);render()}
+ else if(d.qa!==undefined&&S.quiz&&S.quiz.ans[S.quiz.i]==null){const q=S.quiz.qs[S.quiz.i],ok=+d.qa===q.ok;S.quiz.ans[S.quiz.i]=+d.qa;vib(ok?12:[20,40,20]);render();annoncer(ok?"Bonne réponse.":"Raté. La bonne réponse : "+q.opts[q.ok]+".")}
  else if(d.act)act(d.act);
  else if(d.onb)onbStep(d.onb);
  else if(d.onbch!==undefined){S.ch=+d.onbch;S.eclair=null;save();renderOnb()}
@@ -736,7 +755,7 @@ document.addEventListener("click",ev=>{
  else if(t.id==="go")ask();
  else if(t.id==="stop"&&ctl)ctl.abort();
  else if(t.id==="sh-x")closeSheet();
- else if(t.id==="lb-x")$("#lb").hidden=true;
+ else if(t.id==="lb-x")closeSheet();
  else if(t.id==="sh-send")navigator.share({title:"Compagnon du Sorceleur",text:sheetMsg||"Le lore des livres du Sorceleur, au rythme de ta partie de The Witcher 3.",url:sheetUrl}).catch(()=>{});
 });
 document.addEventListener("change",ev=>{const t=ev.target,id=t.id;if(!id)return;
@@ -753,7 +772,7 @@ document.addEventListener("input",ev=>{const t=ev.target;
  else if(t.id==="bq"){S.bq=t.value;$("#blst").innerHTML=blst()}
  else if(t.id==="qs")S.ask.q=t.value});
 document.addEventListener("keydown",ev=>{
- if(ev.key==="Escape"){if(!$("#lb").hidden)$("#lb").hidden=true;else if(!$("#sheet").hidden)closeSheet()}
+ if(ev.key==="Escape"&&(!$("#lb").hidden||!$("#sheet").hidden))closeSheet();
  if(ev.key==="Enter"&&(ev.ctrlKey||ev.metaKey)&&ev.target.id==="qs")ask();
  if(ev.key==="Enter"&&ev.target.id==="q")ev.target.blur()});
 
@@ -763,7 +782,7 @@ try{if(location.search)recevoir(new URL(location.href))}catch(e){}
 route();
 renderPlayer();
 nanoInit();psyncInit();
-try{if("launchQueue" in window)window.launchQueue.setConsumer(p=>{if(p&&p.targetURL)recevoir(new URL(p.targetURL))})}catch(e){}
+try{if("launchQueue" in window)window.launchQueue.setConsumer(p=>{if(!p||!p.targetURL)return;if(p.targetURL===lancement){lancement="";return}lancement="";recevoir(new URL(p.targetURL))})}catch(e){}
 if(S.eveil)setWake(true);
 try{navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{if(e.data==="maj")toast("Nouvelle version du compagnon disponible","reload","Recharger")})}catch(e){}
 if(matchMedia("(min-width: 900px)").matches){const c=$("#desk-qr");if(c)drawQR(c,LIEN.pages).catch(()=>{})}
