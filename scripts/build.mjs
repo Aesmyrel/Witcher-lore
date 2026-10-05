@@ -147,12 +147,15 @@ if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))addEventLis
 // ---------- Service worker ----------
 // La version change avec le contenu : les téléphones récupèrent la nouvelle version et nettoient l'ancienne.
 const version = crypto.createHash("sha256").update(index).update(images.join()).digest("hex").slice(0, 10);
-const assets = ["./", "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", ...images];
+const assets = ["./", "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", "icons/badge-96.png", ...images];
+// Anecdotes sans spoiler du jeu, pour accompagner le rappel quotidien.
+const anecdotes = C.anecdotes.filter((a) => !a.c && !(ids.get(a.lien) || {}).porte).map((a) => a.t);
 const sw = `// Généré par scripts/build.mjs : ne pas modifier à la main.
 // Le compagnon s'ouvre instantanément depuis le cache, même hors ligne, puis se met à jour en arrière-plan.
 const VERSION = "compagnon-${version}";
 const ASSETS = ${JSON.stringify(assets)};
 const EXTERNES = ["fonts.googleapis.com", "fonts.gstatic.com", "cdnjs.cloudflare.com"];
+const ANECDOTES = ${JSON.stringify(anecdotes)};
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -199,6 +202,26 @@ self.addEventListener("fetch", (e) => {
       return res;
     }));
   }
+});
+
+// Rappel quotidien, déclenché par la synchronisation périodique d'Android.
+self.addEventListener("periodicsync", (e) => {
+  if (e.tag !== "question-du-jour") return;
+  const jour = Math.floor(Date.now() / 864e5);
+  e.waitUntil(self.registration.showNotification("Question du jour", {
+    body: "Une nouvelle question vous attend. Le saviez-vous ? " + ANECDOTES[jour % ANECDOTES.length],
+    icon: "icons/icon-192.png", badge: "icons/badge-96.png", tag: "question-du-jour", data: { url: "./#partie" },
+  }));
+});
+
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const cible = new URL(e.notification.data && e.notification.data.url || "./", self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((cs) => {
+    const c = cs.find((x) => x.url.startsWith(self.registration.scope));
+    if (c) return c.focus().then((w) => w && w.navigate ? w.navigate(cible) : w);
+    return self.clients.openWindow(cible);
+  }));
 });
 `;
 

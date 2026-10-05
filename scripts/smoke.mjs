@@ -18,6 +18,12 @@ const pause = (p, ms = 160) => p.waitForTimeout(ms);
 
 async function run(ctxOpts, label, capture) {
   const ctx = await browser.newContext(ctxOpts);
+  // Chromium sans interface n'a pas de voix : une synthèse factice permet de vérifier le lecteur.
+  await ctx.addInitScript(() => {
+    const fake = { speaking: false, getVoices: () => [], cancel() {}, pause() {}, resume() {},
+      speak(u) { setTimeout(() => u.onstart && u.onstart(), 10); setTimeout(() => u.onend && u.onend(), 800); } };
+    Object.defineProperty(window, "speechSynthesis", { value: fake, configurable: true });
+  });
   const page = await ctx.newPage();
   page.on("pageerror", (e) => fail(`${label} pageerror: ${e.message}`));
   page.on("console", (m) => { if (m.type() === "error" && !/fonts|ERR_|net::|Failed to load resource/.test(m.text())) fail(`${label} console: ${m.text()}`); });
@@ -117,7 +123,21 @@ async function run(ctxOpts, label, capture) {
   await page.click('[data-theme="dark"]'); await pause(page, 60);
   if ((await page.evaluate(() => document.documentElement.dataset.theme)) !== "dark") fail(`${label}: le thème sombre ne s'applique pas`);
   if (shots) await page.screenshot({ path: `${shots}/${label}-reglages.png` });
+  await page.click('[data-theme="oled"]'); await pause(page, 60);
+  if ((await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim())) !== "#000") fail(`${label}: le thème Noir ne s'applique pas`);
   await page.click('[data-theme="auto"]'); await pause(page, 60);
+
+  // Capacités du téléphone : lecture à voix haute, dictée, partage reçu d'une autre application
+  await go("ciri");
+  await page.locator('#main [data-lire="ciri"]').click(); await pause(page, 120);
+  if (await page.locator("#player").isHidden()) fail(`${label}: le lecteur à voix haute n'apparaît pas`);
+  await page.click('#player [data-act="lire-stop"]'); await pause(page, 60);
+  if (!(await page.locator("#player").isHidden())) fail(`${label}: le lecteur ne s'arrête pas`);
+  await page.click('.bar [data-act="search"]'); await pause(page, 60);
+  if (!(await page.locator('[data-mic="q"]').count())) fail(`${label}: bouton de dictée absent`);
+  await page.goto(url + "?texte=" + encodeURIComponent("Qui est Avallac'h ?")); await page.waitForSelector("#main #q");
+  if (!(await page.locator("#lst").textContent()).includes("Sage des Aen Elle")) fail(`${label}: le texte partagé n'ouvre pas la recherche`);
+  if (await page.evaluate(() => location.search)) fail(`${label}: les paramètres du partage restent dans l'adresse`);
   const sw = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   if (sw > 0) fail(`${label}: défilement horizontal de ${sw}px`);
   await ctx.close();
@@ -126,6 +146,9 @@ async function run(ctxOpts, label, capture) {
 if (captures) fs.mkdirSync(path.join(root, "captures"), { recursive: true });
 const phone = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true };
 await run({ ...phone, colorScheme: "light" }, "tel-clair", captures);
+// Format proche d'un Pixel 10 Pro XL sous Chrome Android.
+await run({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 3.5, isMobile: true, hasTouch: true, colorScheme: "dark",
+  userAgent: "Mozilla/5.0 (Linux; Android 16; Pixel 10 Pro XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36" }, "pixel");
 await run({ ...phone, colorScheme: "dark" }, "tel-sombre");
 await run({ viewport: { width: 360, height: 740 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, colorScheme: "light" }, "petit");
 await run({ viewport: { width: 1280, height: 860 }, colorScheme: "light" }, "bureau");

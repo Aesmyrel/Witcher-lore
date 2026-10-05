@@ -19,6 +19,12 @@ for (const [file, src, size] of [
   await page.screenshot({ path: path.join(root, "icons", file), omitBackground: true });
 }
 
+// Petite icône monochrome de la barre d'état Android, pour les notifications.
+const badge = svg("icon.svg").replace(/<rect[^>]*\/>/, "").replace(/stroke="#[0-9a-f]{6}"/gi, 'stroke="#ffffff"');
+await page.setViewportSize({ width: 96, height: 96 });
+await page.setContent(`<style>html,body{margin:0;background:transparent}svg{display:block;width:96px;height:96px}</style>${badge}`);
+await page.screenshot({ path: path.join(root, "icons", "badge-96.png"), omitBackground: true });
+
 await page.setViewportSize({ width: 1200, height: 630 });
 await page.setContent(`<!doctype html><html><head>
 <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;700&family=IM+Fell+English&display=swap" rel="stylesheet">

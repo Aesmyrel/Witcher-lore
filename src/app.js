@@ -34,7 +34,11 @@ const ICO={
  install:svg('<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M12 8v6M9.5 11.5L12 14l2.5-2.5"/>'),
  lang:svg('<path d="M4 6h10M9 4v2M6 6c0 4 3 7 7 8M12 6c0 4-3 7-7 8"/><path d="M13 20l4-9 4 9M14.5 17h5"/>'),
  invite:svg('<circle cx="9" cy="8" r="3"/><path d="M3 19c0-3.3 2.7-5 6-5s6 1.7 6 5"/><path d="M18 8v6M15 11h6"/>'),
- conte:svg('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>')
+ conte:svg('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>'),
+ mic:svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
+ speaker:svg('<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>'),
+ pause:svg('<path d="M8 5v14M16 5v14"/>'),play:svg('<path d="M7 5l12 7-12 7z"/>'),stop:svg('<rect x="6" y="6" width="12" height="12" rx="1.5"/>'),
+ puce:svg('<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/>')
 };
 const EMBLEME='<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="var(--ac)" stroke-width="2"/><circle cx="24" cy="24" r="18.5" fill="none" stroke="var(--ln)" stroke-width="1"/><g fill="none" stroke-linecap="round" stroke-width="2.2"><path d="M16.5 31.2L33 13M31.5 31.2L15 13" stroke="currentColor"/><path d="M13.5 28.5l6 5.4M34.5 28.5l-6 5.4M16.5 31.2l-3.3 3.6M31.5 31.2l3.3 3.6" stroke="var(--ac)"/></g></svg>';
 const TABS=[["partie","Partie"],["codex","Codex"],["carte","Carte"],["bestiaire","Bestiaire"],["livres","Livres"]];
@@ -44,11 +48,15 @@ const PAGES={quiz:"partie",demander:"partie",reglages:null,recherche:null,lignee
 const SEGS={contes:1,frise:1,ecrans:1};
 
 let SM=null,ctl=null,qrLib=null,trail=[],sheetUrl="",sheetMsg="",installEvt=null,wake=null,first=true;
+/* Capacités du téléphone : dictée, lecture à voix haute, IA sur l'appareil, rappels. */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const TTS="speechSynthesis" in window&&"SpeechSynthesisUtterance" in window;
+let NANO=null,PSYNC=false,micRec=null,micOn=null,lu=null;
 const mem={};
-const S={ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,
+const S={ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,debit:1,rappel:false,
  tab:"partie",page:null,id:null,lv:"lecture",defi:null,q:"",ty:"all",cl:"all",bq:"",an:0,rv:{},force:{},quiz:null,eclair:null,
  ask:{q:"",out:"",busy:false},pend:null,sel:null,onb:0,reset:false};
-const KEEP=["ch","hos","bw","sp","lus","vu","record","fav","hist","serie","theme","taille","eveil"];
+const KEEP=["ch","hos","bw","sp","lus","vu","record","fav","hist","serie","theme","taille","eveil","debit","rappel"];
 try{const o=JSON.parse(localStorage.getItem("cs")||"{}");KEEP.forEach(k=>{if(k in o)S[k]=o[k]})}catch(e){}
 S.ch=Math.min(Math.max(+S.ch||0,0),C.chapitres.length-1);
 for(const k of["lus","fav"])if(!S[k]||typeof S[k]!=="object")S[k]={};
@@ -86,6 +94,9 @@ const bl=(t,x,j,n)=>`<div class="bl${j?" j":""}"><h3>${t}</h3><p>${esc(x)}</p>${
 const pl=(n,s)=>n+" "+s+(n>1?"s":"");
 const dayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const livre=id=>"« "+ID[id].nom+" »";
+const canAsk=()=>!!(SM||NANO);
+const micBtn=id=>SR&&!inFrame?`<button class="ic mic${micOn===id?" on":""}" data-mic="${id}" aria-label="Dicter"${micOn===id?' aria-pressed="true"':""}>${ICO.mic}</button>`:"";
+const lireBtn=(k,label)=>TTS?`<button class="ch${lu&&lu.k===k?" on":""}" data-lire="${k}">${ICO.speaker}${label||"Écouter"}</button>`:"";
 const revBtn=(x,k)=>`<button class="sp" data-r="${k}">Révéler la suite${x.rl?" (spoilers jusqu'à "+esc(livre(x.rl))+")":" (spoilers des livres)"}</button>`;
 let tt;
 function toast(m,act,label){const t=$("#toast");t.innerHTML=esc(m)+(act?`<button data-act="${act}">${label}</button>`:"");t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{t.hidden=true},act?9000:2800)}
@@ -158,7 +169,7 @@ function stepper(){
 
 function partie(){
  const c=C.chapitres[S.ch];let h=stepper();
- h+=`<p class="eb">Étape ${S.ch+1} sur ${C.chapitres.length}</p><h2>${esc(c.nom)}</h2><p class="mu">${esc(c.lieux)}</p><p>${esc(c.intro)}</p>`;
+ h+=`<p class="eb">Étape ${S.ch+1} sur ${C.chapitres.length}</p><h2>${esc(c.nom)}</h2><p class="mu">${esc(c.lieux)}</p><p>${esc(c.intro)}</p>${TTS?`<div class="chips">${lireBtn("chapitre","Écouter ce chapitre")}</div>`:""}`;
  h+=`<div class="bl"><h3>À lire dans les livres</h3><p>${esc(c.lire)}</p>${chips(c.lireIds)}</div>`;
  const ls=ents(c.entrees);if(ls.length)h+=`<h3>Autour de vous</h3>`+ls.map(row).join("");
  const ms=(c.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m));if(ms.length)h+=`<h3>Monstres du coin</h3>`+ms.map(mrow).join("");
@@ -171,7 +182,7 @@ function partie(){
   :`<div class="card"><p class="eb">Bibliothèque</p><p>Vous avez lu toute la saga. Il ne reste plus qu'à la relire.</p></div>`;
  const an=C.anecdotes.filter(a=>(!a.c||a.c<=S.ch)&&(!any(a.lien)||vis(any(a.lien))));
  if(an.length){const a=an[S.an%an.length];h+=`<h3>Le saviez-vous</h3><p>${esc(a.t)}</p><div class="chips"><button class="ch" data-an>Une autre anecdote</button>${chip(a.lien)}</div>`}
- if(SM)h+=`<div class="card"><p class="eb">Une question ?</p><p>Demandez à Claude ce que les livres racontent, sans spoiler sur la suite de votre partie.</p><button class="pr" data-o="demander">${ICO.demander}Demander</button></div>`;
+ if(canAsk())h+=`<div class="card"><p class="eb">Une question ?</p><p>Demandez ${SM?"à Claude":"à l'IA de votre téléphone"} ce que les livres racontent, sans spoiler sur la suite de votre partie.</p><button class="pr" data-o="demander">${ICO.demander}Demander</button></div>`;
  const ib=installCard();if(ib)h+=ib;
  h+=`<div class="card"><p class="eb">Entre amis</p><p>Envoyez le compagnon à un ami : il règle sa propre avancée, et rien ne lui est dévoilé.</p><button class="pr" data-share="">${ICO.share}Inviter un ami</button></div>`;
  return h}
@@ -203,26 +214,36 @@ function codex(){
 function lex(q){return C.lexique.filter(w=>!q||norm(w.mot+" "+w.sens+" "+w.note).includes(q)).map(w=>
  `<div class="lx"><p><b>${esc(w.mot)}</b> ${esc(w.sens)}</p><p class="mu sm">${esc(w.note)}</p>${w.lien?chips([w.lien]):""}</div>`).join("")}
 
-function recherche(){return `<input id="q" type="search" enterkeyhint="search" placeholder="Nom, surnom, lieu, créature, mot elfe…" aria-label="Rechercher" value="${esc(S.q)}" autocomplete="off" autocapitalize="off" spellcheck="false"><div id="lst">${resultats()}</div>`}
+function recherche(){return `<div class="srch"><input id="q" type="search" enterkeyhint="search" placeholder="Nom, surnom, lieu, créature, mot elfe…" aria-label="Rechercher" value="${esc(S.q)}" autocomplete="off" autocapitalize="off" spellcheck="false">${micBtn("q")}</div>${SR&&!inFrame&&!S.q?`<p class="mu sm">Touchez le micro et dites un nom : pratique quand vous avez la manette en main.</p>`:""}<div id="lst">${resultats()}</div>`}
+/* Recherche par mots-clés : les mots outils sont ignorés, chaque fiche est classée par pertinence. */
+const STOP=new Set("qui que quoi est sont les des une dans pour avec sur par quel quelle quels quelles comment pourquoi ou son ses leur du de la le un et en au aux ce cet cette il elle on veut dire parle moi raconte".split(" "));
+const termes=q=>norm(q).split(/[^a-z0-9']+/).map(w=>w.replace(/^[a-z]'/,"").replace(/'$/,"")).filter(w=>w.length>1&&!STOP.has(w));
+function cherche(list,nom,hay,q){
+ const t=termes(q);if(!t.length)return[];
+ const sc=list.map(x=>{const n=norm(nom(x)),h=norm(hay(x)),k=t.filter(w=>h.includes(w)).length;
+  return{x,k,s:k*10+(t.every(w=>n.includes(w))?6:0)+(n.startsWith(t[0])?4:0)}}).filter(r=>r.k>0);
+ const tous=sc.filter(r=>r.k===t.length);
+ return(tous.length?tous:sc).sort((a,b)=>b.s-a.s||nom(a.x).localeCompare(nom(b.x),"fr")).map(r=>r.x)}
 function resultats(){
- const q=norm(S.q.trim());
- if(!q){const rec=S.hist.filter(i=>any(i)&&vis(any(i))).slice(0,8);
+ const q=S.q.trim();
+ if(!termes(q).length){const rec=S.hist.filter(i=>any(i)&&vis(any(i))).slice(0,8);
   return (rec.length?`<h3>Consultés récemment</h3>`+rec.map(i=>anyRow(any(i))).join(""):"")+`<h3>Suggestions</h3>${chips(["ciri","yennefer","chasse","loi-surprise","kaer-morhen","m-griffon","sang-ancien","jaskier"])}`}
- const hit=x=>norm([x.nom,...(x.alias||[]),x.role||"",x.resume||""].join(" ")).includes(q);
- const l=E.filter(e=>vis(e)&&hit(e)).sort((a,b)=>(norm(b.nom).startsWith(q)-norm(a.nom).startsWith(q))||a.nom.localeCompare(b.nom,"fr"));
- const ms=M.filter(m=>vis(m)&&norm([m.nom,m.en||"",m.cl].join(" ")).includes(q));
- const lx=lex(q),sr=SRCS.filter(s=>srcVis(s)&&norm(s.conte+" "+s.oeuvre+" "+s.artiste).includes(q));
+ const l=cherche(E.filter(vis),e=>e.nom,e=>[e.nom,...(e.alias||[]),e.role,e.resume].join(" "),q);
+ const ms=cherche(M.filter(vis),m=>m.nom,m=>[m.nom,m.en||"",m.cl].join(" "),q);
+ const lw=cherche(C.lexique,w=>w.mot,w=>w.mot+" "+w.sens+" "+w.note,q);
+ const sr=cherche(SRCS.filter(srcVis),s=>s.conte,s=>s.conte+" "+s.oeuvre+" "+s.artiste,q);
  let h=l.map(row).join("");
  if(ms.length)h+=`<h3 class="gh">Bestiaire</h3>`+ms.map(mrow).join("");
- if(lx)h+=`<h3 class="gh">Langue ancienne</h3>`+lx;
+ if(lw.length)h+=`<h3 class="gh">Langue ancienne</h3>`+lw.map(w=>`<div class="lx"><p><b>${esc(w.mot)}</b> ${esc(w.sens)}</p><p class="mu sm">${esc(w.note)}</p>${w.lien?chips([w.lien]):""}</div>`).join("");
  if(sr.length)h+=`<h3 class="gh">Aux sources</h3>`+sr.map(s=>`<button class="ro LJ" data-o="contes"><b>${esc(s.conte)}</b><small>${esc(s.oeuvre)} · ${esc(s.artiste)}</small></button>`).join("");
  return h||`<p class="mu">Rien ne correspond. Essayez un autre nom ou un surnom.</p>`}
 
 function bestiaire(){
  const f=[["all","Tous"],...Object.keys(C.classes).map(c=>[c,c])].map(([k,n])=>`<button class="ch${S.cl===k?" on":""}" data-c="${k}">${n}</button>`).join("");
- return `<p class="mu">Ce que le jeu recommande, et ce que les livres en disent.</p><input id="bq" type="search" enterkeyhint="search" placeholder="Chercher une créature, en français ou en anglais" aria-label="Chercher une créature" value="${esc(S.bq)}" autocomplete="off"><div class="fl">${f}</div><div id="blst">${blst()}</div>`}
+ return `<p class="mu">Ce que le jeu recommande, et ce que les livres en disent.</p><div class="srch"><input id="bq" type="search" enterkeyhint="search" placeholder="Chercher une créature, en français ou en anglais" aria-label="Chercher une créature" value="${esc(S.bq)}" autocomplete="off">${micBtn("bq")}</div><div class="fl">${f}</div><div id="blst">${blst()}</div>`}
 function blst(){const q=norm(S.bq.trim());
- const l=M.filter(m=>vis(m)&&(S.cl==="all"||m.cl===S.cl)&&(!q||norm([m.nom,m.en||"",m.cl].join(" ")).includes(q)));
+ const base=M.filter(m=>vis(m)&&(S.cl==="all"||m.cl===S.cl));
+ const l=termes(q).length?cherche(base,m=>m.nom,m=>[m.nom,m.en||"",m.cl].join(" "),q):base;
  return l.map(mrow).join("")||`<p class="mu">Aucune créature ne correspond.</p>`}
 
 /* ---------- Fiches ---------- */
@@ -230,10 +251,10 @@ function gate(x){const n=x.porte.d?C.dlc[x.porte.d].nom:C.chapitres[x.porte.c].n
  return `<div class="gate"><p class="eb">Attention, spoiler</p><h2>Fiche verrouillée</h2><p>Cette fiche concerne ${x.porte.d?"l'extension "+esc(n):"un passage du jeu situé à l'étape « "+esc(n)+" »"}, plus loin que là où vous en êtes. Un ami vous l'a peut-être envoyée.</p><div class="row"><button class="pr" data-force="${x.id}">Afficher quand même</button><button class="ch" data-b>Non merci</button></div></div>`}
 function actions(x){
  const f=!!S.fav[x.id];
- let h=`<div class="acts"><button class="ch${f?" on":""}" data-fav="${x.id}" aria-pressed="${f}">${f?ICO.starOn:ICO.star}${f?"Dans le carnet":"Carnet"}</button><button class="ch" data-share="${x.id}">${ICO.share}Partager</button>`;
+ let h=`<div class="acts">${lireBtn(x.id)}<button class="ch${f?" on":""}" data-fav="${x.id}" aria-pressed="${f}">${f?ICO.starOn:ICO.star}${f?"Dans le carnet":"Carnet"}</button><button class="ch" data-share="${x.id}">${ICO.share}Partager</button>`;
  if(C.carte.lieux[x.id])h+=`<button class="ch" data-map="${x.id}">${ICO.pin}Sur la carte</button>`;
  if(LIGNEE.includes(x.id))h+=`<button class="ch" data-o="lignee">${ICO.tree}Lignée</button>`;
- if(SM)h+=`<button class="ch" data-askabout="${esc(x.nom)}">${ICO.demander}Demander</button>`;
+ if(canAsk())h+=`<button class="ch" data-askabout="${esc(x.nom)}">${ICO.demander}Demander</button>`;
  return h+`</div>`}
 function fiche(e){
  if(!vis(e)&&!S.force[e.id])return gate(e);
@@ -350,7 +371,7 @@ function lecture(){
   return `<li class="${lu?"lu":""}"><span class="num">${i+1}</span><div class="bi"><h3 class="ct"><button class="lnk" data-o="${b.id}">${esc(b.nom)}</button></h3><p class="mu sm">${esc(b.genre)} · ${esc(b.vo)}, ${b.annee}</p><p>${esc(b.resume)}</p>${q.length?`<p class="sm"><b>Idéal pendant :</b> ${esc(q.join(", "))}</p>`:""}<button class="ch${lu?" on":""}" data-lu="${b.id}" aria-pressed="${lu}">${lu?"Lu ✓":"Marquer comme lu"}</button></div></li>`}).join("")
  +`</ol><p class="mu sm">En français, la saga est publiée chez Bragelonne, et en poche chez Milady, dans la traduction de Laurence Dyèvre.</p>`}
 function contes(){
- const card=s=>`<div class="srcard">${fig(s)}<p class="eb">${esc(s.origine)}</p><h3 class="ct">${esc(s.conte)}</h3><p class="mu sm">Dans le Sorceleur : ${esc(s.oeuvre)}</p><p>${esc(s.texte)}</p>${chips(s.liens)}</div>`;
+ const card=s=>`<div class="srcard">${fig(s)}<p class="eb">${esc(s.origine)}</p><h3 class="ct">${esc(s.conte)}</h3><p class="mu sm">Dans le Sorceleur : ${esc(s.oeuvre)}</p><p>${esc(s.texte)}</p>${TTS?`<div class="chips">${lireBtn(s.id)}</div>`:""}${chips(s.liens)}</div>`;
  const fk=SRCS.filter(s=>s.groupe==="folklore"&&srcVis(s));
  return `<p>Sapkowski aime détourner les contes de notre enfance, et le jeu puise dans le folklore slave. Voici d'où viennent quelques-unes de leurs créatures et de leurs histoires.</p>
 <h3 class="gh">Contes détournés</h3>${SRCS.filter(s=>s.groupe==="contes").map(card).join("")}
@@ -380,9 +401,10 @@ function quiz(){
   +`<p><button class="ch" data-act="quit">Abandonner</button></p>`}
 
 function demander(){
- if(!SM)return `<p>Les questions à Claude ne sont possibles que dans la version du compagnon publiée sur Claude.</p>${LIEN.artifact?`<p><a href="${esc(LIEN.artifact)}" target="_blank" rel="noopener">Ouvrir cette version</a></p>`:""}`;
+ if(!canAsk())return `<p>Les questions à Claude ne sont possibles que dans la version du compagnon publiée sur Claude.</p>${LIEN.artifact?`<p><a href="${esc(LIEN.artifact)}" target="_blank" rel="noopener">Ouvrir cette version</a></p>`:""}`;
+ const local=!SM?`<div class="card hi"><p class="eb">${ICO.puce} Sur votre téléphone</p><p>Les réponses sont générées par Gemini Nano, directement sur l'appareil, sans connexion. Fonction expérimentale de Chrome.</p>${NANO==="downloadable"?`<button class="pr" data-act="nano-dl">Télécharger le modèle</button>`:NANO==="downloading"?`<p class="mu sm" id="nano-p">Téléchargement du modèle en cours…</p>`:""}</div>`:"";
  const ex=["Qu'est-ce que la Loi de la Surprise ?","Pourquoi Geralt a-t-il les cheveux blancs ?","Quelle différence entre les Aen Seidhe et les Aen Elle ?","Quel livre lire en ce moment ?"];
- return `<p class="mu">Posez une question sur les livres ou le monde du Sorceleur. La réponse tient compte de votre avancée dans le jeu et des livres que vous avez lus.</p><div class="chips">${ex.map(x=>`<button class="ch" data-ex="${esc(x)}">${esc(x)}</button>`).join("")}</div><textarea id="qs" rows="3" placeholder="Par exemple : qui sont les Aen Elle ?" aria-label="Votre question">${esc(S.ask.q)}</textarea><p class="row"><button class="pr" id="go"${S.ask.busy?" disabled":""}>Poser la question</button><button class="ch" id="stop"${S.ask.busy?"":" hidden"}>Arrêter</button></p><div id="out" class="out" aria-live="polite">${esc(S.ask.out)}</div><p class="mu sm">Réponse générée par Claude à partir du codex et de ses propres connaissances : vérifiez les détails importants dans les livres.</p>`}
+ return `<p class="mu">Posez une question sur les livres ou le monde du Sorceleur. La réponse tient compte de votre avancée dans le jeu et des livres que vous avez lus.</p><div class="chips">${ex.map(x=>`<button class="ch" data-ex="${esc(x)}">${esc(x)}</button>`).join("")}</div>${local}<div class="srch"><textarea id="qs" rows="3" placeholder="Par exemple : qui sont les Aen Elle ?" aria-label="Votre question">${esc(S.ask.q)}</textarea>${micBtn("qs")}</div><p class="row"><button class="pr" id="go"${S.ask.busy?" disabled":""}>Poser la question</button><button class="ch" id="stop"${S.ask.busy?"":" hidden"}>Arrêter</button></p><div id="out" class="out" aria-live="polite">${esc(S.ask.out)}</div><p class="mu sm">Réponse générée par ${SM?"Claude":"Gemini Nano"} à partir du codex et de ses propres connaissances : vérifiez les détails importants dans les livres.</p>${TTS&&S.ask.out&&!S.ask.busy?`<div class="chips">${lireBtn("reponse","Écouter la réponse")}</div>`:""}`}
 
 /* ---------- Installation, réglages ---------- */
 function installHow(){
@@ -399,9 +421,11 @@ function reglages(){
 ${sw("o-hos",S.hos,"J'ai commencé Hearts of Stone")}${sw("o-bw",S.bw,"J'ai commencé Blood and Wine")}</div>
 <div class="set"><h3>Livres lus</h3><p class="mu sm">Les rebondissements d'un livre coché s'affichent d'eux-mêmes.</p>${BOOKS.map(b=>sw("lu-"+b.id,!!S.lus[b.id],esc(b.nom),esc(b.genre)+", "+b.annee)).join("")}
 ${sw("o-sp",S.sp,"Tout révéler des livres","Affiche toutes les suites, même des livres non cochés")}</div>
-<div class="set"><h3>Affichage</h3>${inFrame?"":`<p class="sm">Thème</p>${seg("theme",S.theme,[["auto","Automatique"],["light","Clair"],["dark","Sombre"]])}`}
+<div class="set"><h3>Affichage</h3>${inFrame?"":`<p class="sm">Thème</p>${seg("theme",S.theme,[["auto","Auto"],["light","Clair"],["dark","Sombre"],["oled","Noir"]])}<p class="mu sm">« Noir » éteint les pixels des écrans OLED, comme celui des Pixel : plus contrasté le soir, et plus économe en batterie.</p>`}
 <p class="sm">Taille du texte</p>${seg("taille",S.taille,[["normal","Normale"],["grand","Grande"],["tres-grand","Très grande"]])}
 ${"wakeLock" in navigator?sw("o-eveil",S.eveil,"Garder l'écran allumé","Pratique quand le téléphone est posé près de la manette"):""}</div>
+${TTS?`<div class="set"><h3>Lecture à voix haute</h3><p class="mu sm">Le bouton « Écouter » lit les fiches avec la voix de votre téléphone. L'écran reste allumé pendant la lecture.</p><p class="sm">Vitesse</p>${seg("debit",String(S.debit),[["0.85","Posée"],["1","Normale"],["1.2","Rapide"]])}<div class="chips">${lireBtn("essai","Essayer")}</div></div>`:""}
+${PSYNC?`<div class="set"><h3>Rappels</h3>${sw("o-rappel",S.rappel,"Rappel de la question du jour","Une notification par jour, quand Android le juge opportun")}</div>`:""}
 <div class="set"><h3>Application</h3>${installHow()}<div class="chips"><button class="ch" data-share="">${ICO.share}Partager le compagnon</button><button class="ch" data-act="onb">Revoir l'accueil</button></div>
 ${S.reset?`<div class="pend"><p>Effacer votre avancée, vos lectures et votre carnet sur cet appareil ?</p><div class="row"><button class="pr" data-act="reset-ok">Tout effacer</button><button class="ch" data-act="reset-no">Annuler</button></div></div>`:`<p><button class="lnk" data-act="reset">Effacer mes données</button></p>`}</div>
 <div class="set"><h3>Crédits des illustrations</h3><p class="mu sm">Œuvres du domaine public, via Wikimedia Commons.</p>${SRCS.map(s=>`<p class="sm">${esc(credit(s))}. <a href="${esc(s.page)}" target="_blank" rel="noopener">Source</a></p>`).join("")}</div>
@@ -531,13 +555,100 @@ Notes du codex :
 ${ctx||"(aucune fiche pertinente)"}
 
 Question : ${q}`;
+ if(!SM){try{S.ask.out=await askNano(prompt,ctl.signal)}catch(e){S.ask.out=e&&e.name==="AbortError"?S.ask.out:"Le modèle de votre téléphone n'a pas pu répondre. Réessayez, ou posez une question plus courte."}finally{S.ask.busy=false;set();if(S.page==="demander")render()}return}
  try{
   const r=await SM(prompt,{signal:ctl.signal,onText:({text})=>{S.ask.out=text;const o=$("#out");if(o)o.textContent=text}});
   S.ask.out=r.text+(r.truncated?"\n\n(Réponse tronquée : posez une question plus ciblée.)":"");
  }catch(e){
   const m={not_granted:"Autorisation refusée : la question ne peut pas être posée ici.",sampling_disabled:"Cette fonction n'est pas disponible pour votre compte.",rate_limited:"Trop de questions d'affilée, ou limite d'usage atteinte. Réessayez un peu plus tard.",session_expired:"Votre session a expiré : reconnectez-vous à Claude, puis réessayez.",refused:"Claude n'a pas voulu répondre à cette question. Essayez de la formuler autrement."};
   S.ask.out=e&&e.code==="refused"?m.refused:((e&&e.text)||"")+(e&&e.code==="cancelled"?"":((e&&e.text)?"\n\n":"")+(m[e&&e.code]||"La réponse n'a pas abouti. Vous pouvez réessayer."));
- }finally{S.ask.busy=false;set()}}
+ }finally{S.ask.busy=false;set();if(S.page==="demander")render()}}
+
+/* ---------- Capacités du téléphone ---------- */
+/* Gemini Nano, l'IA embarquée de Chrome, quand le navigateur la propose aux pages web. */
+const NANO_OPTS={expectedInputs:[{type:"text",languages:["fr"]}],expectedOutputs:[{type:"text",languages:["fr"]}]};
+async function nanoInit(){
+ try{if(SM||inFrame||!("LanguageModel" in self))return;const a=await self.LanguageModel.availability(NANO_OPTS);
+  if(a&&a!=="unavailable"){NANO=a;render()}}catch(e){}}
+function nanoCreate(signal){
+ return self.LanguageModel.create({...NANO_OPTS,signal,monitor(m){m.addEventListener("downloadprogress",e=>{NANO="downloading";const p=$("#nano-p");if(p)p.textContent=`Téléchargement du modèle : ${Math.round((e.loaded||0)*100)} %`})}})}
+async function askNano(prompt,signal){
+ const s=await nanoCreate(signal);NANO="available";let txt="";
+ try{const stream=s.promptStreaming(prompt,{signal});
+  for await(const c of stream){txt=c.startsWith(txt)&&txt?c:txt+c;S.ask.out=txt;const o=$("#out");if(o)o.textContent=txt}}
+ finally{try{s.destroy()}catch(e){}}
+ return txt||"Le modèle n'a rien répondu. Essayez une autre formulation."}
+async function nanoDownload(){try{NANO="downloading";render();const s=await nanoCreate();s.destroy();NANO="available";toast("Modèle prêt : vos questions fonctionnent maintenant hors ligne")}catch(e){NANO="downloadable";toast("Le téléchargement du modèle n'a pas abouti")}render()}
+
+/* Dictée vocale : la reconnaissance de la parole de Chrome, en français. */
+function dicter(id){
+ if(micRec){micRec.stop();return}
+ const el=$("#"+id);if(!el||!SR)return;
+ const r=new SR();r.lang="fr-FR";r.interimResults=true;r.maxAlternatives=1;micRec=r;micOn=id;
+ const btn=$(`[data-mic="${id}"]`);if(btn){btn.classList.add("on");btn.setAttribute("aria-pressed","true")}
+ vib(10);
+ r.onresult=e=>{let t="";for(const x of e.results)t+=x[0].transcript;el.value=t.replace(/[.?!]$/,"");el.dispatchEvent(new Event("input",{bubbles:true}))};
+ r.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed")toast("Micro refusé : autorisez-le dans les réglages du site");else if(e.error==="no-speech")toast("Je n'ai rien entendu. Réessayez.");else if(e.error!=="aborted")toast("La dictée n'a pas fonctionné")};
+ r.onend=()=>{micRec=null;micOn=null;const b=$(`[data-mic="${id}"]`);if(b){b.classList.remove("on");b.removeAttribute("aria-pressed")}if(id==="qs"&&el.value.trim())el.focus()};
+ try{r.start()}catch(e){micRec=null;micOn=null}}
+
+/* Lecture à voix haute, découpée en phrases pour que les textes longs ne soient pas coupés. */
+function texteDe(k){
+ if(k==="essai")return{t:"Essai",x:"Le loup blanc reprend la route. Vous entendez la voix que le compagnon utilisera pour lire les fiches."};
+ if(k==="reponse")return{t:"Réponse",x:S.ask.out};
+ if(k==="chapitre"){const c=C.chapitres[S.ch];return{t:c.nom,x:[c.nom+".",c.intro,"À lire dans les livres : "+c.lire].join(" ")}}
+ const s=SRCS.find(x=>x.id===k);if(s)return{t:s.conte,x:`${s.conte}. ${s.origine}. ${s.texte}`};
+ const e=ID[k];if(e){const vj=(e.jeu||[]).filter(jv).map(l=>l.t);
+  return{t:e.nom,x:[e.nom+".",e.role+".",e.resume,e.livres||"",e.rev&&revOK(e)?e.rev:"",vj.length?"Dans le jeu : "+vj.join(" "):""].filter(Boolean).join(" ")}}
+ const m=MID[k];if(m)return{t:m.nom,x:[m.nom+".",m.cl+".",oil(m.cl)+".",m.signes?"Signes : "+m.signes.join(", ")+".":"",m.bombes?"Bombes : "+m.bombes.join(", ")+".":"",m.conseil,m.origine||"",m.livres||""].filter(Boolean).join(" ")};
+ return null}
+function phrases(x){const l=String(x).replace(/\s+/g," ").match(/[^.!?…]+[.!?…»"]*\s*/g)||[x],out=[];let b="";
+ for(const p of l){if((b+p).length>220&&b){out.push(b.trim());b=""}b+=p}if(b.trim())out.push(b.trim());return out}
+function voix(){const v=speechSynthesis.getVoices().filter(v=>/^fr/i.test(v.lang));return v.find(v=>/google/i.test(v.name)&&/fr-FR/i.test(v.lang))||v.find(v=>/fr-FR/i.test(v.lang))||v[0]||null}
+function lire(k){
+ if(lu&&lu.k===k){lu.pause?lireReprendre():lirePause();return}
+ const d=texteDe(k);if(!d||!d.x)return;lireStop(true);
+ lu={k,t:d.t,parts:phrases(d.x),i:0,pause:false};parler();if(!S.eveil)setWake(true);render()}
+function parler(){
+ if(!lu||lu.pause)return;if(lu.i>=lu.parts.length){lireStop();return}
+ const u=new SpeechSynthesisUtterance(lu.parts[lu.i]);u.lang="fr-FR";try{const v=voix();if(v)u.voice=v}catch(e){}u.rate=+S.debit||1;
+ const me=lu;u.onstart=()=>{me.ok=true};u.onend=()=>{if(lu===me&&!me.pause){me.i++;renderPlayer();parler()}};
+ u.onerror=e=>{if(lu!==me||me.pause||e.error==="interrupted"||e.error==="canceled")return;
+  if(!me.ok){lireStop();toast("La lecture à voix haute n'est pas disponible sur cet appareil");return}
+  me.i++;parler()};
+ speechSynthesis.speak(u);renderPlayer()}
+function lirePause(){if(!lu)return;lu.pause=true;speechSynthesis.cancel();renderPlayer()}
+function lireReprendre(){if(!lu)return;lu.pause=false;parler()}
+function lireStop(silencieux){const was=!!lu;lu=null;try{speechSynthesis.cancel()}catch(e){}if(!S.eveil)setWake(false);renderPlayer();if(was&&!silencieux)render()}
+function renderPlayer(){
+ const p=$("#player");if(!p)return;document.body.classList.toggle("lit",!!lu);
+ if(!lu){p.hidden=true;p.innerHTML="";return}
+ p.innerHTML=`<span class="pl-t"><b>${esc(lu.t)}</b><small>${lu.pause?"En pause":"Lecture"} · ${Math.min(lu.i+1,lu.parts.length)} / ${lu.parts.length}</small></span><button class="ic" data-act="${lu.pause?"lire-play":"lire-pause"}" aria-label="${lu.pause?"Reprendre":"Pause"}">${lu.pause?ICO.play:ICO.pause}</button><button class="ic" data-act="lire-stop" aria-label="Arrêter la lecture">${ICO.stop}</button>`;p.hidden=false}
+
+/* Rappel quotidien : synchronisation périodique d'Android, une fois l'application installée. */
+async function psyncInit(){
+ try{if(inFrame||!("serviceWorker" in navigator)||!("Notification" in window))return;const reg=await navigator.serviceWorker.ready;
+  if(reg&&"periodicSync" in reg){PSYNC=true;if(S.page==="reglages")render()}}catch(e){}}
+async function setRappel(on){
+ try{const reg=await navigator.serviceWorker.ready;
+  if(!on){await reg.periodicSync.unregister("question-du-jour");return true}
+  if(await Notification.requestPermission()!=="granted"){toast("Notifications refusées : autorisez-les dans les réglages du site");return false}
+  const st=await navigator.permissions.query({name:"periodic-background-sync"}).catch(()=>({state:"prompt"}));
+  if(st.state==="denied"){toast("Android n'autorise les rappels qu'une fois l'application installée");return false}
+  await reg.periodicSync.register("question-du-jour",{minInterval:864e5});toast("Rappel activé");return true}
+ catch(e){toast("Les rappels ne sont pas disponibles sur cet appareil");return false}}
+
+/* Liens reçus : partage depuis une autre application (menu Partager d'Android) ou lien ouvert dans l'application déjà lancée. */
+let dernierLien="";
+function recevoir(u){
+ try{const key=u.href;if(key===dernierLien)return false;dernierLien=key;
+  const p=u.searchParams,brut=[p.get("lien"),p.get("texte"),p.get("titre")].filter(Boolean).join(" ").trim();
+  let h=u.hash.slice(1);
+  const m=brut.match(/#([a-z0-9-]{2,40})/i);if(!h&&m)h=m[1];
+  if(p.toString()){try{history.replaceState(null,"",u.pathname+(h?"#"+h:""))}catch(e){}}
+  if(h&&(TABK.includes(h)||SEGS[h]||h in PAGES||any(h)||/^defi-[a-z0-9]{3,12}$/.test(h))){if(cur()!==h)location.hash=h;return true}
+  if(brut&&!/^https?:/i.test(brut)){S.q=brut.replace(/https?:\S+/g,"").trim().slice(0,60);if(cur()!=="recherche")location.hash="recherche";else route();return true}}
+ catch(e){}return false}
 
 /* ---------- Thème, écran, installation ---------- */
 function applyDisplay(){
@@ -576,11 +687,15 @@ function act(a){
  else if(a==="reset"){S.reset=true;render()}
  else if(a==="reset-no"){S.reset=false;render()}
  else if(a==="reset-ok"){try{localStorage.removeItem("cs")}catch(e){}Object.assign(S,{ch:0,hos:false,bw:false,sp:false,lus:{},vu:false,record:null,fav:{},hist:[],serie:null,theme:"auto",taille:"normal",eveil:false,reset:false,onb:0,quiz:null,eclair:null});setWake(false);applyDisplay();go("partie");render()}
+ else if(a==="lire-pause")lirePause();
+ else if(a==="lire-play")lireReprendre();
+ else if(a==="lire-stop")lireStop();
+ else if(a==="nano-dl")nanoDownload();
  else if(a==="reload")location.reload()}
 
 function onbStep(d){
  if(d==="next")S.onb++;else if(d==="prev")S.onb=Math.max(0,S.onb-1);
- else if(d==="done"){S.vu=true;S.onb=0;save();toast("Bonne route, sorceleur");render();return}
+ else if(d==="done"){S.vu=true;S.onb=0;save();toast("Bonne route, sorceleur");render();try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}return}
  renderOnb();const o=$("#onb");if(o)o.scrollTop=0}
 
 document.addEventListener("click",ev=>{
@@ -590,7 +705,7 @@ document.addEventListener("click",ev=>{
  if(d.i!==undefined){const i=+d.i;if(i>S.ch)S.pend=i;else setCh(i);render()}
  else if(d.o)go(d.o);
  else if(d.b!==undefined)back();
- else if(d.tab){if(d.tab===S.tab&&!S.id&&!S.page)scrollTo({top:0,behavior:calme()?"auto":"smooth"});else go(d.tab)}
+ else if(d.tab){vib(5);if(d.tab===S.tab&&!S.id&&!S.page)scrollTo({top:0,behavior:calme()?"auto":"smooth"});else go(d.tab)}
  else if(d.t){S.ty=d.t;if(S.tab!=="codex"||S.id||S.page)go("codex");else render()}
  else if(d.c){S.cl=d.c;render()}
  else if(d.lv)go(d.lv==="lecture"?"livres":d.lv);
@@ -610,6 +725,9 @@ document.addEventListener("click",ev=>{
  else if(d.setch!==undefined){setCh(+d.setch);render()}
  else if(d.theme){S.theme=d.theme;save();applyDisplay();render()}
  else if(d.taille){S.taille=d.taille;save();applyDisplay();render()}
+ else if(d.debit){S.debit=+d.debit;save();render()}
+ else if(d.lire)lire(d.lire);
+ else if(d.mic)dicter(d.mic);
  else if(d.share!==undefined)openSheet(d.share);
  else if(d.copy)copy(d.copy);
  else if(d.lb)openLb(d.lb);
@@ -626,6 +744,7 @@ document.addEventListener("change",ev=>{const t=ev.target,id=t.id;if(!id)return;
  else if(id==="o-bw"||id==="onb-bw"){S.bw=t.checked;S.eclair=null}
  else if(id==="o-sp")S.sp=t.checked;
  else if(id==="o-eveil"){S.eveil=t.checked;setWake(t.checked)}
+ else if(id==="o-rappel"){S.rappel=t.checked;save();setRappel(t.checked).then(ok=>{if(!ok&&t.checked){S.rappel=false;save();render()}});return}
  else if(id.startsWith("lu-")||id.startsWith("onb-lu-")){const k=id.replace(/^(onb-)?lu-/,"");if(t.checked)S.lus[k]=1;else delete S.lus[k]}
  else return;
  save();if(!id.startsWith("onb-"))render()});
@@ -640,7 +759,11 @@ document.addEventListener("keydown",ev=>{
 
 /* ---------- Démarrage ---------- */
 applyDisplay();
+try{if(location.search)recevoir(new URL(location.href))}catch(e){}
 route();
+renderPlayer();
+nanoInit();psyncInit();
+try{if("launchQueue" in window)window.launchQueue.setConsumer(p=>{if(p&&p.targetURL)recevoir(new URL(p.targetURL))})}catch(e){}
 if(S.eveil)setWake(true);
 try{navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{if(e.data==="maj")toast("Nouvelle version du compagnon disponible","reload","Recharger")})}catch(e){}
 if(matchMedia("(min-width: 900px)").matches){const c=$("#desk-qr");if(c)drawQR(c,LIEN.pages).catch(()=>{})}
