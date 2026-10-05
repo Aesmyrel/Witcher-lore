@@ -101,7 +101,7 @@ ${body}
 ${scripts}
 `;
 
-const index = `<!doctype html>
+const modele = `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -115,6 +115,7 @@ const index = `<!doctype html>
 <meta name="apple-mobile-web-app-title" content="Sorceleur">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
+<meta name="compagnon-version" content="__VERSION__">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:title" content="${title}">
@@ -146,7 +147,9 @@ if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))addEventLis
 
 // ---------- Service worker ----------
 // La version change avec le contenu : les téléphones récupèrent la nouvelle version et nettoient l'ancienne.
-const version = crypto.createHash("sha256").update(index).update(images.join()).digest("hex").slice(0, 10);
+const version = crypto.createHash("sha256").update(modele).update(images.join()).digest("hex").slice(0, 10);
+// La page connaît sa version : elle ignore l'annonce d'une version qu'elle affiche déjà.
+const index = modele.replace("__VERSION__", version);
 const assets = ["./", "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", "icons/badge-96.png", ...images];
 // Anecdotes sans spoiler du jeu, pour accompagner le rappel quotidien.
 const anecdotes = C.anecdotes.filter((a) => !a.c && !(ids.get(a.lien) || {}).porte).map((a) => a.t);
@@ -163,21 +166,27 @@ self.addEventListener("install", (e) => {
 });
 
 self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+  e.waitUntil((async () => {
+    // Seuls les caches du compagnon sont concernés : d'autres sites GitHub Pages partagent la même origine.
+    const anciens = (await caches.keys()).filter((k) => k.startsWith("compagnon-") && k !== VERSION);
+    await Promise.all(anciens.map((k) => caches.delete(k)));
+    await self.clients.claim();
+    // Les pages déjà ouvertes affichent l'ancienne version : on leur annonce la nouvelle.
+    // « maj » est compris par les anciennes versions de la page ; les récentes comparent le numéro de version.
+    if (anciens.length) (await self.clients.matchAll({ type: "window" })).forEach((c) => { c.postMessage("maj"); c.postMessage({ maj: VERSION }); });
+  })());
 });
 
-// La page qui vient d'être ouverte n'existe pas toujours encore quand la réponse réseau arrive : on l'attend un peu.
+// Prévient la page qui vient d'être ouverte que son contenu a changé sur le serveur.
+// Elle n'existe pas toujours encore quand la réponse réseau arrive : on l'attend un peu.
+// Si elle a disparu entre-temps (rechargée ou fermée), il n'y a personne à prévenir.
 const prevenir = async (id) => {
-  for (let i = 0; id && i < 40; i++) {
+  if (!id) { (await self.clients.matchAll({ type: "window" })).forEach((c) => c.postMessage({ maj: "contenu" })); return; }
+  for (let i = 0; i < 40; i++) {
     const c = await self.clients.get(id);
-    if (c) { c.postMessage("maj"); return; }
+    if (c) { c.postMessage({ maj: "contenu" }); return; }
     await new Promise((ok) => setTimeout(ok, 250));
   }
-  (await self.clients.matchAll({ type: "window" })).forEach((c) => c.postMessage("maj"));
 };
 
 self.addEventListener("fetch", (e) => {
@@ -194,11 +203,10 @@ self.addEventListener("fetch", (e) => {
       const copie = page && enCache ? enCache.clone() : null;
       const reseau = fetch(page ? new Request(req.url, { cache: "no-cache" }) : req).then(async (res) => {
         if (res.ok) {
-          if (copie) {
-            const [avant, apres] = await Promise.all([copie.text(), res.clone().text()]);
-            if (avant !== apres) await prevenir(e.resultingClientId);
-          }
+          const change = copie ? (await copie.text()) !== (await res.clone().text()) : false;
+          // Mise en cache avant l'annonce : la page rechargée doit trouver la nouvelle version.
           await cache.put(cle, res.clone());
+          if (change) await prevenir(e.resultingClientId);
         }
         return res;
       }).catch(() => null);

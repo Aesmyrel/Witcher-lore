@@ -12,6 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Sorceleur">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
+<meta name="compagnon-version" content="9ae5cf2faf">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:title" content="Compagnon du Sorceleur">
@@ -2473,7 +2474,24 @@ renderPlayer();
 nanoInit();psyncInit();
 try{if("launchQueue" in window)window.launchQueue.setConsumer(p=>{if(!p||!p.targetURL)return;if(p.targetURL===lancement){lancement="";return}lancement="";recevoir(new URL(p.targetURL))})}catch(e){}
 if(S.eveil)setWake(true);
-try{navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{if(e.data==="maj")toast("Nouvelle version du compagnon disponible","reload","Recharger")})}catch(e){}
+/* Mises à jour : sur Android, l'application reste ouverte en arrière-plan et ne se recharge jamais d'elle-même.
+   On cherche donc une nouvelle version à chaque retour au premier plan, et on l'applique dès que ce n'est pas gênant. */
+let majAttente=false,majDepuis=Date.now(),majTouche=false,majVerif=0;
+const majOccupe=()=>!!(S.quiz&&S.quiz.i<S.quiz.qs.length)||!!lu||!!(S.ask&&S.ask.busy)||/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||"");
+function majAppliquer(){try{if(Date.now()-(+sessionStorage.getItem("cs-maj")||0)<15000)return false;sessionStorage.setItem("cs-maj",String(Date.now()))}catch(e){}location.reload();return true}
+function majRecue(){majAttente=true;if(document.hidden)return;
+ if(!majTouche&&Date.now()-majDepuis<10000&&!majOccupe()&&majAppliquer())return;
+ toast("Nouvelle version du compagnon disponible","reload","Recharger")}
+function majVerifier(){if(Date.now()-majVerif<3e5)return;majVerif=Date.now();navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}
+try{if(navigator.serviceWorker&&/^https?:$/.test(location.protocol)){
+ const v=(document.querySelector('meta[name="compagnon-version"]')||{}).content;
+ // { maj: "contenu" } : la page a changé sur le serveur ; { maj: version } : une version a été installée, peut-être celle-ci.
+ navigator.serviceWorker.addEventListener("message",e=>{const m=e.data&&e.data.maj;if(m&&(m==="contenu"||m!=="compagnon-"+v))majRecue()});
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState!=="visible")return;
+  if(majAttente&&!majOccupe()&&majAppliquer())return;
+  majDepuis=Date.now();majTouche=false;if(majAttente)toast("Nouvelle version du compagnon disponible","reload","Recharger");majVerifier()});
+ for(const t of["pointerdown","keydown"])addEventListener(t,()=>{majTouche=true},{capture:true,passive:true});
+ setInterval(()=>{if(!document.hidden)majVerifier()},18e5)}}catch(e){}
 if(matchMedia("(min-width: 900px)").matches){const c=$("#desk-qr");if(c)drawQR(c,LIEN.pages).catch(()=>{})}
 (async()=>{try{if(!window.claude||!window.claude.use)return;const s=await window.claude.use("sample");
  if(s){SM=s;const f=document.activeElement;if(!(f&&/^(INPUT|TEXTAREA)$/.test(f.tagName)))render()}}catch(e){}})();
