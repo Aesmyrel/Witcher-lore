@@ -29,7 +29,8 @@ async function run(ctxOpts, label, capture) {
   page.on("console", (m) => { if (m.type() === "error" && !/fonts|ERR_|net::|Failed to load resource/.test(m.text())) fail(`${label} console: ${m.text()}`); });
   const go = async (h) => { await page.evaluate((x) => { location.hash = x; }, h); await pause(page); };
   const text = () => page.locator("#main").textContent();
-  const expect = async (h, needle) => { await go(h); const t = await text(); if (!t.includes(needle)) fail(`${label} #${h}: « ${needle} » introuvable`); };
+  // On attend l'affichage (jusqu'à 3 s) plutôt qu'une durée fixe : le rendu prend plus ou moins de temps selon l'écran.
+  const expect = async (h, needle) => { await go(h); try { await page.waitForFunction((n) => document.querySelector("#main").textContent.includes(n), needle, { timeout: 3000 }); } catch { fail(`${label} #${h}: « ${needle} » introuvable`); } };
   const snap = async (name) => { await pause(page, 450); await page.evaluate(() => { const t = document.querySelector("#toast"); if (t) t.hidden = true; }); if (shots) await page.screenshot({ path: `${shots}/${label}-${name}.png` }); if (capture && ["partie", "carte", "fiche"].includes(name)) await page.screenshot({ path: path.join(root, "captures", `${name}.png`) }); };
 
   await page.goto(url);
