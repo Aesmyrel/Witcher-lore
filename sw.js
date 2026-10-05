@@ -1,9 +1,9 @@
 // Généré par scripts/build.mjs : ne pas modifier à la main.
 // Le compagnon s'ouvre instantanément depuis le cache, même hors ligne, puis se met à jour en arrière-plan.
-const VERSION = "compagnon-53112f08f2";
+const VERSION = "compagnon-9112ce6611";
 const ASSETS = ["./","manifest.webmanifest","icons/icon.svg","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png","icons/badge-96.png","img/blanche-neige.webp","img/belle-bete.webp","img/herisson.webp","img/sirene.webp","img/reine-neiges.webp","img/djinn.webp","img/baba-yaga.webp","img/leshy.webp","img/kikimora.webp","img/sirin.webp"];
 const EXTERNES = ["fonts.googleapis.com", "fonts.gstatic.com", "cdnjs.cloudflare.com"];
-const ANECDOTES = ["Le nom elfique de Ciri, Zireael, signifie « hirondelle », comme la potion de soin des sorceleurs.","Geralt s'est choisi lui-même le nom « de Riv », pour inspirer confiance à ses clients.","Toutes les juments de Geralt s'appellent Ablette, de livre en livre.","Triss est surnommée « la Quatorzième de la Colline » : on l'a crue morte à la bataille de Sodden.","Coën fait partie des sorceleurs qui ont entraîné Ciri à Kaer Morhen, mais on ne le croise pas dans TW3.","Zoltan Chivay vient du « Baptême du feu » : dans TW3, il est l'un des alliés les plus fidèles de Geralt.","Le journal de quêtes de TW3 est rédigé du point de vue de Jaskier.","Le nom complet d'Emhyr signifie « la Flamme Blanche qui danse sur les tumulus de ses ennemis ».","La toute première quête de TW3 porte le nom du parfum de Yennefer : lilas et groseilles.","Sapkowski a publié la première nouvelle du Sorceleur en 1986, dans le magazine polonais Fantastyka.","Dans « Les Limites du possible », Geralt rappelle qu'il ne tue pas les dragons.","Dans les légendes du Nord, l'apparition de la Chasse sauvage annonce la guerre.","Le Hérisson d'Erlenwald, chevalier maudit du « Dernier Vœu », cache un secret que la saga ne dévoile qu'à la toute fin.","Regis distille une eau-de-vie de mandragore dont ses compagnons de route se souviennent longtemps.","« La Croisée des corbeaux » raconte les débuts de Geralt à dix-huit ans, au sortir de Kaer Morhen.","Les sorceleurs recrutaient parfois leurs apprentis grâce à la Loi de la Surprise.","Le titre polonais, « Wiedźmin », est un mot forgé par Sapkowski à partir de « wiedźma », la sorcière.","« Le Moindre Mal » détourne Blanche-Neige : Renfri, princesse chassée par sa belle-mère, a vécu un temps parmi sept gnomes.","« Un grain de vérité » revisite La Belle et la Bête, et « Une once d'abnégation » La Petite Sirène.","Gwynbleidd, le nom elfe de Geralt, signifie « Loup Blanc ».","Le gwynt, mini-jeu de cartes de TW3, a eu droit à ses propres jeux : Gwent et Thronebreaker."];
+const ANECDOTES = ["Le nom elfique de Ciri, Zireael, signifie « hirondelle », comme la potion de soin des sorceleurs.","Geralt s'est choisi lui-même le nom « de Riv », pour inspirer confiance à ses clients.","Toutes les juments de Geralt s'appellent Ablette, de livre en livre.","Triss est surnommée « la Quatorzième de la Colline » : on l'a crue morte à la bataille de Sodden.","Coën fait partie des sorceleurs qui ont entraîné Ciri à Kaer Morhen, mais on ne le croise pas dans TW3.","Zoltan Chivay vient du « Baptême du feu » : dans TW3, il est l'un des alliés les plus fidèles de Geralt.","Le journal de quêtes de TW3 est rédigé du point de vue de Jaskier.","Le nom complet d'Emhyr signifie « la Flamme Blanche qui danse sur les tumulus de ses ennemis ».","La deuxième quête de TW3, juste après le rêve de Kaer Morhen, s'intitule « Lilas et groseilles à maquereau » : c'est le parfum de Yennefer.","Sapkowski a publié la première nouvelle du Sorceleur en 1986, dans le magazine polonais Fantastyka.","Dans « Les Limites du possible », Geralt rappelle qu'il ne tue pas les dragons.","Dans les légendes du Nord, l'apparition de la Chasse sauvage annonce la guerre.","Le Hérisson d'Erlenwald, chevalier maudit du « Dernier Vœu », cache un secret que la saga ne dévoile qu'à la toute fin.","Regis distille une eau-de-vie de mandragore dont ses compagnons de route se souviennent longtemps.","« La Croisée des corbeaux » raconte les débuts de Geralt à dix-huit ans, au sortir de Kaer Morhen.","Les sorceleurs recrutaient parfois leurs apprentis grâce à la Loi de la Surprise.","Le titre polonais, « Wiedźmin », est un mot forgé par Sapkowski à partir de « wiedźma », la sorcière.","« Le Moindre Mal » détourne Blanche-Neige : Renfri, princesse chassée par sa belle-mère, a vécu un temps parmi sept gnomes.","« Un grain de vérité » revisite La Belle et la Bête, et « Une once d'abnégation » La Petite Sirène.","Gwynbleidd, le nom elfe de Geralt, signifie « Loup Blanc ».","Le gwynt, mini-jeu de cartes de TW3, a eu droit à ses propres jeux : Gwent et Thronebreaker."];
 
 self.addEventListener("install", (e) => {
   // cache: "reload" contourne le cache HTTP de GitHub Pages (max-age=600) pour bien stocker la nouvelle version.
@@ -18,7 +18,15 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-const prevenir = () => self.clients.matchAll({ type: "window" }).then((cs) => cs.forEach((c) => c.postMessage("maj")));
+// La page qui vient d'être ouverte n'existe pas toujours encore quand la réponse réseau arrive : on l'attend un peu.
+const prevenir = async (id) => {
+  for (let i = 0; id && i < 40; i++) {
+    const c = await self.clients.get(id);
+    if (c) { c.postMessage("maj"); return; }
+    await new Promise((ok) => setTimeout(ok, 250));
+  }
+  (await self.clients.matchAll({ type: "window" })).forEach((c) => c.postMessage("maj"));
+};
 
 self.addEventListener("fetch", (e) => {
   const req = e.request;
@@ -36,7 +44,7 @@ self.addEventListener("fetch", (e) => {
         if (res.ok) {
           if (copie) {
             const [avant, apres] = await Promise.all([copie.text(), res.clone().text()]);
-            if (avant !== apres) prevenir();
+            if (avant !== apres) await prevenir(e.resultingClientId);
           }
           await cache.put(cle, res.clone());
         }

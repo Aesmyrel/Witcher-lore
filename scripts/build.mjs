@@ -170,7 +170,15 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-const prevenir = () => self.clients.matchAll({ type: "window" }).then((cs) => cs.forEach((c) => c.postMessage("maj")));
+// La page qui vient d'être ouverte n'existe pas toujours encore quand la réponse réseau arrive : on l'attend un peu.
+const prevenir = async (id) => {
+  for (let i = 0; id && i < 40; i++) {
+    const c = await self.clients.get(id);
+    if (c) { c.postMessage("maj"); return; }
+    await new Promise((ok) => setTimeout(ok, 250));
+  }
+  (await self.clients.matchAll({ type: "window" })).forEach((c) => c.postMessage("maj"));
+};
 
 self.addEventListener("fetch", (e) => {
   const req = e.request;
@@ -188,7 +196,7 @@ self.addEventListener("fetch", (e) => {
         if (res.ok) {
           if (copie) {
             const [avant, apres] = await Promise.all([copie.text(), res.clone().text()]);
-            if (avant !== apres) prevenir();
+            if (avant !== apres) await prevenir(e.resultingClientId);
           }
           await cache.put(cle, res.clone());
         }

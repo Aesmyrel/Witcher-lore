@@ -370,7 +370,7 @@ function lecture(){
 <div class="prog"><div class="bar-p"><i style="width:${Math.round(nl/BOOKS.length*100)}%"></i></div><span>${nl} sur ${BOOKS.length} lus</span></div><ol class="books">`
  +BOOKS.map((b,i)=>{const q=quand(b.id),lu=!!S.lus[b.id];
   return `<li class="${lu?"lu":""}"><span class="num">${i+1}</span><div class="bi"><h3 class="ct"><button class="lnk" data-o="${b.id}">${esc(b.nom)}</button></h3><p class="mu sm">${esc(b.genre)} · ${esc(b.vo)}, ${b.annee}</p><p>${esc(b.resume)}</p>${q.length?`<p class="sm"><b>Idéal pendant :</b> ${esc(q.join(", "))}</p>`:""}<button class="ch${lu?" on":""}" data-lu="${b.id}" aria-pressed="${lu}">${lu?"Lu ✓":"Marquer comme lu"}</button></div></li>`}).join("")
- +`</ol><p class="mu sm">En français, la saga est publiée chez Bragelonne, et en poche chez Milady, dans la traduction de Laurence Dyèvre.</p>`}
+ +`</ol><p class="mu sm">En français, la saga est publiée chez Bragelonne, et en poche chez Milady. Les traductions d'origine sont de Laurence Dyèvre, Alexandre Dayet, Lydia Waleryszak et Caroline Raszka-Dewez. Depuis 2024, Bragelonne réédite la série dans une traduction révisée par Lydia Cantin-Waleryszak, qui a aussi traduit « La Croisée des corbeaux ».</p>`}
 function contes(){
  const card=s=>`<div class="srcard">${fig(s)}<p class="eb">${esc(s.origine)}</p><h3 class="ct">${esc(s.conte)}</h3><p class="mu sm">Dans le Sorceleur : ${esc(s.oeuvre)}</p><p>${esc(s.texte)}</p>${TTS?`<div class="chips">${lireBtn(s.id)}</div>`:""}${chips(s.liens)}</div>`;
  const fk=SRCS.filter(s=>s.groupe==="folklore"&&srcVis(s));
