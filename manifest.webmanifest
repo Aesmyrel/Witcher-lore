@@ -9,8 +9,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#141b1f",
-  "theme_color": "#17262c",
+  "background_color": "#2b2017",
+  "theme_color": "#2b2017",
   "categories": [
     "books",
     "games",

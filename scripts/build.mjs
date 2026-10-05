@@ -89,7 +89,7 @@ const description = "Le lore des livres de Sapkowski au rythme de votre partie d
 const pagesUrl = "https://couefficguillaume-collab.github.io/Witcher-lore/";
 const fonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">`;
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cinzel:wght@600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">`;
 const scripts = `<script>\n${codexSrc.trim()}\n</script>\n<script>\n${appSrc.trim()}\n</script>`;
 
 const fragment = `<title>${title}</title>
@@ -108,8 +108,8 @@ const modele = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${title}</title>
 <meta name="description" content="${description}">
-<meta name="theme-color" content="#e8ecea" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#2b2017" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0c08" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Sorceleur">
@@ -160,20 +160,44 @@ const ASSETS = ${JSON.stringify(assets)};
 const EXTERNES = ["fonts.googleapis.com", "fonts.gstatic.com", "cdnjs.cloudflare.com"];
 const ANECDOTES = ${JSON.stringify(anecdotes)};
 
+// Chaque page porte son numéro de version : le service worker ne met en cache que la sienne.
+const MARQUE = 'name="compagnon-version" content="' + VERSION.slice("compagnon-".length) + '"';
+
 self.addEventListener("install", (e) => {
   // cache: "reload" contourne le cache HTTP de GitHub Pages (max-age=600) pour bien stocker la nouvelle version.
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS.map((u) => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting()));
+  e.waitUntil((async () => {
+    // Juste après une publication, le serveur peut encore servir l'ancienne page : l'installation échoue alors,
+    // et le navigateur réessaiera à la prochaine vérification.
+    const page = await fetch(new Request("./", { cache: "reload" }));
+    if (!page.ok || !(await page.clone().text()).includes(MARQUE)) throw new Error("La page en ligne n'est pas encore celle de " + VERSION);
+    const cache = await caches.open(VERSION);
+    await cache.put("./", page);
+    await cache.addAll(ASSETS.filter((u) => u !== "./").map((u) => new Request(u, { cache: "reload" })));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", (e) => {
   e.waitUntil((async () => {
     // Seuls les caches du compagnon sont concernés : d'autres sites GitHub Pages partagent la même origine.
     const anciens = (await caches.keys()).filter((k) => k.startsWith("compagnon-") && k !== VERSION);
+    // Les pages publiées avant le numéro de version ne cherchent pas de mise à jour d'elles-mêmes.
+    let pagesAnciennes = false;
+    for (const k of anciens) {
+      const r = await (await caches.open(k)).match(self.registration.scope);
+      if (r && !(await r.text()).includes('name="compagnon-version"')) pagesAnciennes = true;
+    }
     await Promise.all(anciens.map((k) => caches.delete(k)));
     await self.clients.claim();
+    if (!anciens.length) return;
     // Les pages déjà ouvertes affichent l'ancienne version : on leur annonce la nouvelle.
     // « maj » est compris par les anciennes versions de la page ; les récentes comparent le numéro de version.
-    if (anciens.length) (await self.clients.matchAll({ type: "window" })).forEach((c) => { c.postMessage("maj"); c.postMessage({ maj: VERSION }); });
+    for (const c of await self.clients.matchAll({ type: "window" })) {
+      c.postMessage("maj");
+      c.postMessage({ maj: VERSION });
+      // Une ancienne page restée en arrière-plan est rechargée tout de suite : on la retrouvera à jour.
+      if (pagesAnciennes && c.visibilityState === "hidden") c.navigate(c.url).catch(() => {});
+    }
   })());
 });
 
@@ -202,11 +226,17 @@ self.addEventListener("fetch", (e) => {
       // Copie faite avant que la réponse en cache ne soit lue par la page.
       const copie = page && enCache ? enCache.clone() : null;
       const reseau = fetch(page ? new Request(req.url, { cache: "no-cache" }) : req).then(async (res) => {
-        if (res.ok) {
-          const change = copie ? (await copie.text()) !== (await res.clone().text()) : false;
-          // Mise en cache avant l'annonce : la page rechargée doit trouver la nouvelle version.
-          await cache.put(cle, res.clone());
-          if (change) await prevenir(e.resultingClientId);
+        if (res.ok && !page) await cache.put(cle, res.clone());
+        else if (res.ok) {
+          const texte = await res.clone().text();
+          if (!texte.includes(MARQUE)) {
+            // Une autre version est en ligne : c'est au service worker de cette version de l'installer en entier.
+            self.registration.update().catch(() => {});
+          } else if (!copie || (await copie.text()) !== texte) {
+            // Mise en cache avant l'annonce : la page rechargée doit trouver la nouvelle version.
+            await cache.put(cle, res.clone());
+            if (copie) await prevenir(e.resultingClientId);
+          }
         }
         return res;
       }).catch(() => null);

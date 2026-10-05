@@ -15,6 +15,8 @@ const actuel = () => { const d = fs.mkdtempSync(path.join(tmp, "v-")); for (cons
 const ancien = (commit) => { const d = fs.mkdtempSync(path.join(tmp, "v-")); execSync(`git archive ${commit} | tar -x -C "${d}"`, { cwd: root }); return d; };
 const version = (d) => (fs.readFileSync(path.join(d, "sw.js"), "utf8").match(/VERSION = "([^"]+)"/) || [])[1];
 const modifier = (d, f, avant, apres) => { const p = path.join(d, f); fs.writeFileSync(p, fs.readFileSync(p, "utf8").replace(avant, apres)); };
+// Publie une nouvelle version : numéro dans sw.js et, si demandé, dans la page (une publication réelle change les deux).
+const publier = (d, v, page = true) => { modifier(d, "sw.js", /VERSION = "[^"]+"/, `VERSION = "compagnon-${v}"`); if (page) modifier(d, "index.html", /compagnon-version" content="[^"]+"/, `compagnon-version" content="${v}"`); };
 
 const types = { ".html": "text/html", ".js": "text/javascript", ".webmanifest": "application/manifest+json", ".png": "image/png", ".svg": "image/svg+xml", ".webp": "image/webp" };
 let site = null, enLigne = true, lenteur = 0;
@@ -88,7 +90,7 @@ async function installer(dir) {
   // 4. Application restée ouverte en arrière-plan : au retour au premier plan, elle trouve et applique la nouvelle version.
   await page.evaluate(() => sessionStorage.clear());
   modifier(dir, "index.html", "<!-- version 3 -->", "<!-- version 4 -->");
-  modifier(dir, "sw.js", /VERSION = "[^"]+"/, 'VERSION = "compagnon-test4"');
+  publier(dir, "test4");
   await attendre(300);
   await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
   if (!(await affiche(page, "version 4"))) errors.push("au retour au premier plan, la nouvelle version ne s'applique pas");
@@ -100,7 +102,34 @@ async function installer(dir) {
   await page.reload(); await attendre(2500);
   if (await toastMaj(page)) errors.push("fausse annonce de nouvelle version après rechargement");
 
-  // 6. Les autres fichiers restent eux-mêmes (une image n'est pas remplacée par l'application).
+  // 6. Juste après une publication, le serveur sert déjà le nouveau sw.js mais encore l'ancienne page :
+  //    rien ne casse, et la version s'installe dès que la page suit.
+  await page.evaluate(() => sessionStorage.clear());
+  publier(dir, "test5", false);
+  await page.reload(); await attendre(2500);
+  if (!(await page.locator("#main h2").count())) errors.push("publication incomplète : l'application ne s'ouvre plus");
+  if (await page.evaluate(() => caches.has("compagnon-test5"))) errors.push("publication incomplète : l'ancienne page est installée sous la nouvelle version");
+  modifier(dir, "index.html", "<!-- version 4 -->", "<!-- version 5 -->");
+  publier(dir, "test5");
+  await page.reload();
+  if (!(await affiche(page, "version 5"))) errors.push("publication terminée : la nouvelle version ne s'installe pas");
+  await page.waitForSelector("#main h2");
+
+  // 7. Pendant un quiz, rien ne s'affiche ni ne se recharge ; la mise à jour est proposée une fois le quiz quitté.
+  await page.evaluate(() => { sessionStorage.clear(); location.hash = "quiz"; });
+  await page.click('[data-act="solo"]');
+  modifier(dir, "index.html", "<!-- version 5 -->", "<!-- version 6 -->");
+  publier(dir, "test6");
+  await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+  await jusqua(page, () => caches.has("compagnon-test6"), null, 10000); await attendre(1500);
+  if (!(await page.locator(".qq").count())) errors.push("pendant un quiz, la page s'est rechargée");
+  if (await toastMaj(page)) errors.push("pendant un quiz, « Recharger » est proposé");
+  await page.evaluate(() => { const b = [...document.querySelectorAll("[data-act]")].find((x) => x.dataset.act === "quit"); if (b) b.click(); else { S.quiz = null; document.body.click(); } });
+  if (!(await annonce(page, 4000))) errors.push("après le quiz, la nouvelle version n'est pas proposée");
+  await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+  if (!(await affiche(page, "version 6"))) errors.push("après le quiz, la nouvelle version ne s'applique pas au retour");
+
+  // 8. Les autres fichiers restent eux-mêmes (une image n'est pas remplacée par l'application).
   const img = await page.goto(base + "icons/icon-192.png");
   if (!/image\/png/.test(img.headers()["content-type"] || "")) errors.push("une image est servie comme page de l'application");
   await ctx.close();

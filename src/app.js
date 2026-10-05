@@ -303,26 +303,63 @@ let mv={x:0,y:0,w:MW,h:MH};
 const COTE=[[178,0],[174,14],[164,26],[168,40],[156,52],[160,66],[148,78],[144,92],[152,104],[140,116],[138,128],[132,138],[126,148],[128,160],[120,172],[126,184],[116,196],[110,206],[112,218],[104,230],[114,242],[106,252],[100,264],[102,276],[94,288],[100,298],[92,310],[88,320],[94,332],[90,344],[100,356],[96,368],[106,380],[102,394],[112,406],[108,420],[118,434],[114,448],[124,462],[120,478],[130,492],[126,508],[136,522],[132,540],[140,560]];
 const PONTAR=[[132,140],[150,146],[172,148],[192,142],[214,150],[236,144],[258,152],[282,146],[306,154],[330,148]];
 const YARUGA=[[88,320],[108,318],[128,322],[150,316],[172,322],[196,316],[220,324],[244,318],[262,322],[286,316],[310,324],[336,318],[356,326]];
-const MONTS=[[298,82],[352,86],[344,110],[300,114],[366,100],[374,150],[384,172],[372,192],[386,214],[376,236],[388,258],[252,234],[262,224],[286,228]];
-const FORET=[[158,266],[168,262],[178,268],[162,280],[172,284],[182,278]];
+const MONTS=[
+ [298,84],[316,78],[340,76],[352,88],[364,78],[366,102],[384,90],[344,110],[300,114],[388,118],[376,130],
+ [374,152],[388,172],[372,194],[388,214],[376,236],[390,256],
+ [246,212],[262,222],[286,228],
+ [272,394],[290,386],[308,392],[326,386],[344,394],
+ [322,488],[340,478],[358,490],[376,478],[350,504]];
+const FORET=[[150,276],[142,284],[152,286],[160,293],[146,296],[168,297],[156,303],[175,290],[138,293],[164,306],[181,300],[148,307]];
+const MARAIS=[[144,192],[158,196],[172,192],[186,197]];
 const ILES=[[44,310,12,8,-20],[28,328,8,6,10],[60,330,7,5,0],[40,344,6,4,15],[64,296,7,5,-10],[100,211,4,3,0]];
 const COURT={melitele:"Ellander","verger-blanc":"Verger Blanc",yaruga:"Yaruga",nilfgaard:"Nilfgaard",korath:"Korath"};
-const GAUCHE={"dol-blathanna":1,"novigrad":1,"kaer-morhen":1};
+const GAUCHE={"dol-blathanna":1,"novigrad":1,"kaer-morhen":1,"verger-blanc":1};
 const poly=p=>"M"+p.map(q=>q.join(" ")).join("L");
 const court=e=>COURT[e.id]||e.nom.replace(/^(Le |La |Les |L')/,"");
+/* Le décor de la carte est calculé une seule fois, avec un hasard fixe : il reste identique d'un affichage à l'autre. */
+const DECOR=(()=>{
+ let n=20251005;const alea=()=>(n=n*16807%2147483647)/2147483647,f=v=>+v.toFixed(1);
+ // Côtes tracées « à la main » : chaque segment est redécoupé et légèrement dévié.
+ const brouille=(p,amp,k)=>{const r=[p[0]];for(let i=1;i<p.length;i++){const[x0,y0]=p[i-1],[x1,y1]=p[i],dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy)||1;
+  for(let j=1;j<k;j++){const t=j/k,d=(alea()-.5)*2*amp;r.push([f(x0+dx*t-dy/L*d),f(y0+dy*t+dx/L*d)])}r.push(p[i])}return r};
+ const cote=poly(brouille(COTE,2.4,3));
+ const iles=ILES.map(([x,y,rx,ry,a])=>{const c=Math.cos(a*Math.PI/180),s=Math.sin(a*Math.PI/180),q=[];
+  for(let i=0;i<12;i++){const t=i/12*2*Math.PI,k=.8+alea()*.34,px=Math.cos(t)*rx*k,py=Math.sin(t)*ry*k;q.push([f(x+px*c-py*s),f(y+px*s+py*c)])}return poly(q)+"Z"}).join("");
+ // Rivières sinueuses : courbes passant par les points du tracé.
+ const lisse=p=>{let d=`M${p[0][0]} ${p[0][1]}`;for(let i=0;i<p.length-1;i++){const a=p[i-1]||p[i],b=p[i],c=p[i+1],e=p[i+2]||c;
+  d+=`C${f(b[0]+(c[0]-a[0])/6)} ${f(b[1]+(c[1]-a[1])/6)} ${f(c[0]-(e[0]-b[0])/6)} ${f(c[1]-(e[1]-b[1])/6)} ${c[0]} ${c[1]}`}return d};
+ // Montagnes hachurées, du fond vers l'avant.
+ const monts=MONTS.map(([x,y])=>[x,y,.85+alea()*.35]).sort((a,b)=>a[1]-b[1]).map(([x,y,k])=>{const w=7*k,h=9*k;
+  return `<path class="m" d="M${f(x-w)} ${y+3}L${f(x-w*.45)} ${f(y-h*.5)}L${f(x-w*.1)} ${f(y-h)}L${f(x+w*.35)} ${f(y-h*.45)}L${f(x+w)} ${y+3}"/><path class="o" d="M${f(x-w*.1)} ${f(y-h)}L${f(x+w*.35)} ${f(y-h*.45)}L${f(x+w)} ${y+3}L${f(x+w*.05)} ${y+3}Z"/><path class="h" d="M${f(x+w*.25)} ${f(y-h*.5)}l-1.4 ${f(h*.55)}M${f(x+w*.52)} ${f(y-h*.2)}l-1.2 ${f(h*.45)}M${f(x+w*.78)} ${f(y+.6)}l-.8 1.8"/>`}).join("");
+ const arbres=FORET.slice().sort((a,b)=>a[1]-b[1]).map(([x,y])=>`<path class="k" d="M${x} ${y}v4"/><circle class="t" cx="${x}" cy="${y-1}" r="3.4"/>`).join("");
+ const marais=MARAIS.map(([x,y])=>`M${x-3} ${y}l1.4 -3M${x} ${y}v-3.6M${x+3} ${y}l-1.4 -3M${x-4.5} ${y+1}h9`).join("");
+ // Rose des vents.
+ const pointe=(deg,L,w,cl="d")=>{const r=deg*Math.PI/180,ux=Math.sin(r),uy=-Math.cos(r),px=Math.cos(r),py=Math.sin(r),T=`${f(ux*L)} ${f(uy*L)}`;
+  return `<path class="${cl}" d="M0 0L${T}L${f(-px*w)} ${f(-py*w)}Z"/><path class="p" d="M0 0L${T}L${f(px*w)} ${f(py*w)}Z"/>`};
+ let graduations="";for(let i=0;i<32;i++){const t=i*Math.PI/16,r=i%4?20.4:19;graduations+=`M${f(Math.sin(t)*r)} ${f(-Math.cos(t)*r)}L${f(Math.sin(t)*22)} ${f(-Math.cos(t)*22)}`}
+ const rose=`<g class="orn" transform="translate(58 424)"><circle class="p" r="22"/><circle r="18.6"/><path d="${graduations}"/>${[45,135,225,315].map(d=>pointe(d,13,2.8)).join("")}${[90,180,270].map(d=>pointe(d,21,4.2)).join("")}${pointe(0,21,4.2,"w")}<circle class="p" r="1.8"/><text class="rn" y="-25.5">N</text></g>`;
+ const navire=`<path class="p" d="M-7 -15Q0 -13 7 -15L6 -4Q0 -2 -6 -4Z"/><path d="M0 -3V-19M0 -19l5 1.6L0 -15.8"/><path class="d" d="M-11 -2H11Q8 4.5 0 4.5Q-8 4.5 -11 -2Z"/><path d="M-15 8q2.5 -2 5 0t5 0t5 0t5 0t5 0t5 0"/>`;
+ const navires=`<g class="orn" transform="translate(64 184)">${navire}</g><g class="orn" transform="translate(80 376) scale(-.75 .75)">${navire}</g>`;
+ const cartouche=`<g class="orn" transform="translate(64 512)"><path class="p" d="M-46 -17H46Q52 -17 52 -11V11Q52 17 46 17H-46Q-52 17 -52 11V-11Q-52 -17 -46 -17Z"/><path d="M-48.5 -13.5H48.5V13.5H-48.5Z" opacity=".55"/><path class="w" d="M-52 0l3 -3 3 3 -3 3ZM52 0l-3 -3 -3 3 3 3Z"/><text class="ct1" y="-1">Le Continent</text><text class="ct2" y="9.5">Royaumes du Nord</text></g>`;
+ return {cote,iles,pontar:lisse(PONTAR),yaruga:lisse(YARUGA),monts,arbres,marais,rose,navires,cartouche}})();
 function carteSVG(){
- const cur=new Set([...C.chapitres[S.ch].entrees,...(S.hos?C.dlc.hos.entrees:[]),...(S.bw?C.dlc.bw.entrees:[])]),k=mv.w/MW;
+ const cur=new Set([...C.chapitres[S.ch].entrees,...(S.hos?C.dlc.hos.entrees:[]),...(S.bw?C.dlc.bw.entrees:[])]),k=mv.w/MW,D=DECOR;
  const pins=Object.entries(C.carte.lieux).map(([id,[x,y]])=>{const e=any(id);if(!e||!vis(e))return"";const g=GAUCHE[id];
-  return `<g class="pin ${e.src}${cur.has(id)?" here":""}${S.sel===id?" sel":""}" data-pin="${id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y}) scale(${k})" tabindex="0" role="button" aria-label="${esc(e.nom)}"><circle class="hit" r="16"/>${cur.has(id)?'<circle class="ring" r="12"/>':""}<circle class="dot" r="5.5"/><text x="${g?-9:9}" y="4"${g?' text-anchor="end"':""}>${esc(court(e))}</text></g>`}).join("");
+  return `<g class="pin ${e.src}${cur.has(id)?" here":""}${S.sel===id?" sel":""}" data-pin="${id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y}) scale(${k})" tabindex="0" role="button" aria-label="${esc(e.nom)}"><circle class="hit" r="16"/>${cur.has(id)?'<circle class="ring" r="12"/>':""}<circle class="dot" r="5.5"/><circle class="pt" r="2.2"/><text x="${g?-10:10}" y="4"${g?' text-anchor="end"':""}>${esc(court(e))}</text></g>`}).join("");
+ const rivage=D.cote+D.iles;
  return `<svg id="map" viewBox="${mv.x} ${mv.y} ${mv.w} ${mv.h}" style="--k:${k};touch-action:${mv.w>=MW?"pan-y":"none"}" role="img" aria-label="Carte schématique du Continent">
-<rect x="-50" y="-50" width="${MW+100}" height="${MH+100}" fill="var(--sea)"/>
-<path class="land" d="${poly(COTE)}L${MW+60} ${MH+60}L${MW+60} -60Z"/>
-${ILES.map(([x,y,rx,ry,a])=>`<ellipse class="land" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" transform="rotate(${a} ${x} ${y})"/>`).join("")}
-${FORET.map(([x,y])=>`<circle class="fo" cx="${x}" cy="${y}" r="5"/>`).join("")}
-<path class="riv" d="${poly(PONTAR)}"/><path class="riv" d="${poly(YARUGA)}"/>
-<path class="mt" d="${MONTS.map(([x,y])=>`M${x-6} ${y+4}L${x} ${y-5}L${x+6} ${y+4}`).join("")}"/>
-<text class="rl" x="292" y="140" style="font-size:calc(var(--k) * 11px)">Pontar</text>
-${C.carte.regions.map(r=>`<text class="rg${r.mer?" mer":""}" x="${r.x}" y="${r.y}" style="font-size:calc(var(--k) * ${r.mer?12:12.5}px)">${esc(r.t)}</text>`).join("")}
+<defs><pattern id="vag" class="vag" width="28" height="20" patternUnits="userSpaceOnUse"><path d="M3 6q2.5 -2.4 5 0t5 0"/><path d="M17 16q2.5 -2.4 5 0t5 0"/></pattern></defs>
+<rect class="sea" x="-50" y="-50" width="${MW+100}" height="${MH+100}"/><rect x="-50" y="-50" width="${MW+100}" height="${MH+100}" fill="url(#vag)"/>
+<path class="rip c" d="${rivage}" stroke-width="23" opacity=".3"/><path class="rip s" d="${rivage}" stroke-width="21.4"/>
+<path class="rip c" d="${rivage}" stroke-width="15" opacity=".45"/><path class="rip s" d="${rivage}" stroke-width="13.4"/>
+<path class="rip c" d="${rivage}" stroke-width="7.6" opacity=".65"/><path class="rip s" d="${rivage}" stroke-width="5.9"/>
+<path class="land" d="${D.cote}L${MW+60} ${MH+60}L${MW+60} -60Z"/><path class="land" d="${D.iles}"/>
+${D.navires}${D.rose}${D.cartouche}
+<g class="fo">${D.arbres}</g><path class="ma" d="${D.marais}"/>
+<path class="riv l" d="${D.pontar}"/><path class="riv f" id="riv-pontar" d="${D.pontar}"/><path class="riv l" d="${D.yaruga}"/><path class="riv f" d="${D.yaruga}"/>
+<g class="mt">${D.monts}</g>
+<text class="rl" dy="-3.5" style="font-size:calc(var(--k) * 11px)"><textPath href="#riv-pontar" startOffset="74%" text-anchor="middle">Pontar</textPath></text>
+${C.carte.regions.map(r=>r.mer?`<text class="rg mer" x="${r.x}" y="${r.y}" style="font-size:calc(var(--k) * 11.5px)">${esc(r.t).split(" ").map((m,i)=>`<tspan x="${r.x}" dy="${i?"1.35em":"0"}">${m}</tspan>`).join("")}</text>`:`<text class="rg" x="${r.x}" y="${r.y}" style="font-size:calc(var(--k) * 11px)">${esc(r.t)}</text>`).join("")}
 ${pins}</svg>`}
 function mapCard(){const e=S.sel&&any(S.sel);if(!e||!vis(e))return"";
  return `<div class="mapcard" id="mapcard"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><p class="eb" style="margin:6px 0 0">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><button class="ic" data-act="mapclose" aria-label="Fermer">${ICO.close}</button></div><h3 class="ct">${esc(e.nom)}</h3><p class="mu sm">${esc(e.role)}</p><button class="pr" data-o="${e.id}">Ouvrir la fiche</button></div>`}
@@ -330,7 +367,7 @@ function carte(){
  const pl=Object.keys(C.carte.lieux).map(i=>any(i)).filter(e=>e&&vis(e)).sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
  const hc=C.carte.horsCarte.map(i=>ID[i]).filter(e=>e&&vis(e));
  return `<div class="mapw"><div id="mapsvg">${carteSVG()}</div><div class="mapctl"><button class="ic" data-zoom="in" aria-label="Zoomer">${ICO.plus}</button><button class="ic" data-zoom="out" aria-label="Dézoomer">${ICO.minus}</button><button class="ic" data-zoom="reset" aria-label="Voir toute la carte">${ICO.target}</button></div><div id="mapcardw">${mapCard()}</div></div>
-<div class="legend"><span><i style="background:var(--bk)"></i>Livres</span><span><i style="background:var(--ac)"></i>Jeu</span><span><i style="background:var(--ink)"></i>Les deux</span><span><i style="border:2px solid var(--ac)"></i>Vous êtes ici</span></div>
+<div class="legend"><span><i class="L"></i>Livres</span><span><i class="J"></i>Jeu</span><span><i class="LJ"></i>Les deux</span><span><i class="ici"></i>Vous êtes ici</span></div>
 <p class="mu sm">Carte schématique : les positions sont indicatives et les distances ne sont pas à l'échelle. Pincez pour zoomer, faites glisser pour vous déplacer.</p>
 <h3 class="gh">Lieux de la carte<span>${pl.length}</span></h3>${pl.map(row).join("")}
 ${hc.length?`<h3 class="gh">Hors de la carte<span>${hc.length}</span></h3><p class="mu sm">Lieux sans position connue, ou situés dans un autre monde.</p>`+hc.map(row).join(""):""}`}
@@ -787,19 +824,24 @@ if(S.eveil)setWake(true);
 /* Mises à jour : sur Android, l'application reste ouverte en arrière-plan et ne se recharge jamais d'elle-même.
    On cherche donc une nouvelle version à chaque retour au premier plan, et on l'applique dès que ce n'est pas gênant. */
 let majAttente=false,majDepuis=Date.now(),majTouche=false,majVerif=0;
-const majOccupe=()=>!!(S.quiz&&S.quiz.i<S.quiz.qs.length)||!!lu||!!(S.ask&&S.ask.busy)||/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||"");
+// Ne jamais recharger sous les yeux de quelqu'un qui joue, écoute, lit une réponse, cherche ou partage.
+const majOccupe=()=>!!S.quiz||!!lu||!!(S.ask&&(S.ask.busy||S.page==="demander"&&(S.ask.out||S.ask.q)))||(S.page==="recherche"&&!!S.q)||!$("#sheet").hidden||!$("#lb").hidden||/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||"");
+let majProposee=false;
+const majProposer=()=>{majProposee=true;toast("Nouvelle version du compagnon disponible","reload","Recharger")};
 function majAppliquer(){try{if(Date.now()-(+sessionStorage.getItem("cs-maj")||0)<15000)return false;sessionStorage.setItem("cs-maj",String(Date.now()))}catch(e){}location.reload();return true}
-function majRecue(){majAttente=true;if(document.hidden)return;
- if(!majTouche&&Date.now()-majDepuis<10000&&!majOccupe()&&majAppliquer())return;
- toast("Nouvelle version du compagnon disponible","reload","Recharger")}
-function majVerifier(){if(Date.now()-majVerif<3e5)return;majVerif=Date.now();navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}
+// Occupé : rien ne s'affiche (un bouton « Recharger » pourrait être touché par erreur) ; on propose dès que c'est fini.
+function majRecue(){majAttente=true;if(document.hidden||majOccupe())return;
+ if(!majTouche&&Date.now()-majDepuis<10000&&majAppliquer())return;
+ majProposer()}
+function majVerifier(){if(Date.now()-majVerif<45000)return;majVerif=Date.now();navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}
 try{if(navigator.serviceWorker&&/^https?:$/.test(location.protocol)){
  const v=(document.querySelector('meta[name="compagnon-version"]')||{}).content;
  // { maj: "contenu" } : la page a changé sur le serveur ; { maj: version } : une version a été installée, peut-être celle-ci.
  navigator.serviceWorker.addEventListener("message",e=>{const m=e.data&&e.data.maj;if(m&&(m==="contenu"||m!=="compagnon-"+v))majRecue()});
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState!=="visible")return;
   if(majAttente&&!majOccupe()&&majAppliquer())return;
-  majDepuis=Date.now();majTouche=false;if(majAttente)toast("Nouvelle version du compagnon disponible","reload","Recharger");majVerifier()});
+  majDepuis=Date.now();majTouche=false;majProposee=false;if(majAttente&&!majOccupe())majProposer();majVerifier()});
+ document.addEventListener("click",()=>setTimeout(()=>{if(majAttente&&!majProposee&&!document.hidden&&!majOccupe())majProposer()},0));
  for(const t of["pointerdown","keydown"])addEventListener(t,()=>{majTouche=true},{capture:true,passive:true});
  setInterval(()=>{if(!document.hidden)majVerifier()},18e5)}}catch(e){}
 if(matchMedia("(min-width: 900px)").matches){const c=$("#desk-qr");if(c)drawQR(c,LIEN.pages).catch(()=>{})}

@@ -1325,8 +1325,8 @@ carte: {
   },
   regions: [
     { t: "Kovir", x: 250, y: 36 }, { t: "Rédanie", x: 230, y: 108 }, { t: "Kaedwen", x: 300, y: 62 },
-    { t: "Temeria", x: 236, y: 196 }, { t: "Aedirn", x: 334, y: 174 }, { t: "Lyria et Rivia", x: 330, y: 284 },
-    { t: "Empire de Nilfgaard", x: 232, y: 456 }, { t: "Grande Mer", x: 56, y: 236, mer: true }
+    { t: "Temeria", x: 236, y: 196 }, { t: "Aedirn", x: 334, y: 174 }, { t: "Lyria et Rivia", x: 322, y: 284 },
+    { t: "Empire de Nilfgaard", x: 232, y: 456 }, { t: "Grande Mer", x: 52, y: 230, mer: true }
   ],
   horsCarte: ["blaviken", "brenna", "korath", "stygga", "tor-zireael", "tir-na-lia", "ile-brumes"]
 }
