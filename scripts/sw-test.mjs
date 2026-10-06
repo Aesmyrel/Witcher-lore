@@ -129,6 +129,16 @@ async function installer(dir) {
   await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
   if (!(await affiche(page, "version 6"))) errors.push("après le quiz, la nouvelle version ne s'applique pas au retour");
 
+  // 7 bis. Un quiz laissé de côté dans un autre onglet ne bloque plus les mises à jour.
+  await page.evaluate(() => { sessionStorage.clear(); location.hash = "quiz"; });
+  await page.waitForSelector('[data-act="solo"]'); await page.click('[data-act="solo"]');
+  await page.evaluate(() => { location.hash = "codex"; }); await attendre(300);
+  modifier(dir, "index.html", "<!-- version 6 -->", "<!-- version 7 -->");
+  publier(dir, "test7");
+  await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+  if (!(await affiche(page, "version 7"))) errors.push("un quiz laissé dans un autre onglet bloque la mise à jour");
+  await page.waitForSelector("#main > *");
+
   // 8. Les autres fichiers restent eux-mêmes (une image n'est pas remplacée par l'application).
   const img = await page.goto(base + "icons/icon-192.png");
   if (!/image\/png/.test(img.headers()["content-type"] || "")) errors.push("une image est servie comme page de l'application");
@@ -136,19 +146,17 @@ async function installer(dir) {
 }
 
 // ---------- Passage depuis les versions déjà publiées ----------
-// Ces versions ne vérifient rien d'elles-mêmes au retour au premier plan : il faut rouvrir l'application une fois.
+// Ces versions ne vérifient rien d'elles-mêmes : à la réouverture, le nouveau service worker recharge leur page.
 const nouvelle = actuel();
 const attendue = version(nouvelle).replace("compagnon-", "");
 for (const commit of ["3be8e4d", "fdd615c", "654f2ed", "f2445bb"]) {
-  try { execSync(`git cat-file -e ${commit}^{commit}`, { cwd: root, stdio: "ignore" }); } catch { continue; }
+  try { execSync(`git cat-file -e ${commit}^{commit}`, { cwd: root, stdio: "ignore" }); } catch { errors.push(`commit ${commit} introuvable : passage depuis cette version non testé`); continue; }
   const { ctx, page } = await installer(ancien(commit));
   site = nouvelle;
   await page.reload();
-  if (!(await annonce(page, 15000))) {
-    errors.push(`depuis ${commit} : la nouvelle version n'est pas proposée à la réouverture`);
+  if (!(await jusqua(page, (v) => document.querySelector('meta[name="compagnon-version"]')?.content === v, attendue, 15000))) {
+    errors.push(`depuis ${commit} : la nouvelle version ne s'affiche pas d'elle-même à la réouverture`);
   } else {
-    await page.click('#toast [data-act="reload"]');
-    if (!(await jusqua(page, (v) => document.querySelector('meta[name="compagnon-version"]')?.content === v, attendue, 10000))) errors.push(`depuis ${commit} : « Recharger » n'affiche pas la nouvelle version`);
     await attendre(2500);
     if (await toastMaj(page)) errors.push(`depuis ${commit} : fausse annonce après la mise à jour`);
   }

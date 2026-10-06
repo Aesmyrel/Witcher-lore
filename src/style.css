@@ -7,9 +7,9 @@
   --bg:#ebdfc4;--sf:#f4ead2;--ink:#2a1f14;--mu:#66533d;--ln:#cbb792;
   --ac:#7c4d08;--bk:#2b4f71;--ok:#2f6a3c;--ko:#9b2e21;--wax:#8c2a1c;
   --land:#ecdfbe;--sea:#c2c8ae;--coast:#5c4831;--forest:#7d8a57;--desk:#d6c6a3;
-  --bind:#2b2017;--bindink:#dccba6;--gold:#d4a54d;
+  --bind:#2b2017;--bindink:#dccba6;--gold:#d4a54d;--ln2:#937c5a;
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .28 0 0 0 0 .12 0 0 0 -.8 .42'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  --taches:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .1 1.1 0 0 0 -.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E");
+  --taches:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .1 1.1 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E");
   --cuir:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='turbulence' baseFrequency='.06 .9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.3 .6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
   --serif:"IM Fell English",Georgia,"Times New Roman",serif;
   --display:"Cinzel","IM Fell English",Georgia,serif;
@@ -17,9 +17,9 @@
   --col:480px;--barh:52px;--tabh:60px;
 }
 /* Sombre : une nuit à Kaer Morhen, encre d'argent et d'or. */
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16120d;--sf:#211b14;--ink:#ece1ca;--mu:#a8977b;--ln:#3d3328;--ac:#dcaa4f;--bk:#a3bfd6;--ok:#86c79a;--ko:#ef917f;--wax:#c45a44;--land:#2d261c;--sea:#141a1b;--coast:#a5916c;--forest:#55603a;--desk:#0e0b08;--bind:#0f0c08;--bindink:#c9b893;--gold:#d8a94f;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .75 0 0 0 0 .55 0 0 0 -.6 .32'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");--taches:none;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#16120d;--sf:#211b14;--ink:#ece1ca;--mu:#a8977b;--ln:#3d3328;--ac:#dcaa4f;--bk:#a3bfd6;--ok:#86c79a;--ko:#ef917f;--wax:#c45a44;--land:#2d261c;--sea:#141a1b;--coast:#a5916c;--forest:#55603a;--desk:#0e0b08;--bind:#0f0c08;--bindink:#c9b893;--gold:#d8a94f;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .75 0 0 0 0 .55 0 0 0 -.6 .32'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");--taches:none;color-scheme:dark}
-:root[data-theme="oled"]{--bg:#000;--sf:#0f0c09;--ink:#ece1ca;--mu:#a8977b;--ln:#2e261d;--ac:#dcaa4f;--bk:#a3bfd6;--ok:#86c79a;--ko:#ef917f;--wax:#c45a44;--land:#1a150f;--sea:#000;--coast:#a5916c;--forest:#55603a;--desk:#000;--bind:#000;--bindink:#c9b893;--gold:#d8a94f;--grain:none;--taches:none;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16120d;--sf:#211b14;--ink:#ece1ca;--mu:#a8977b;--ln:#3d3328;--ac:#dcaa4f;--bk:#a3bfd6;--ok:#86c79a;--ko:#ef917f;--wax:#c45a44;--land:#2d261c;--sea:#141a1b;--coast:#a5916c;--forest:#74804e;--desk:#0e0b08;--bind:#251b12;--ln2:#776752;--bindink:#c9b893;--gold:#d8a94f;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .75 0 0 0 0 .55 0 0 0 -.38 .2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");--taches:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#16120d;--sf:#211b14;--ink:#ece1ca;--mu:#a8977b;--ln:#3d3328;--ac:#dcaa4f;--bk:#a3bfd6;--ok:#86c79a;--ko:#ef917f;--wax:#c45a44;--land:#2d261c;--sea:#141a1b;--coast:#a5916c;--forest:#74804e;--desk:#0e0b08;--bind:#251b12;--ln2:#776752;--bindink:#c9b893;--gold:#d8a94f;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .75 0 0 0 0 .55 0 0 0 -.38 .2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");--taches:none;color-scheme:dark}
+:root[data-theme="oled"]{--bg:#000;--sf:#0f0c09;--ink:#ece1ca;--mu:#a8977b;--ln:#2e261d;--ac:#dcaa4f;--bk:#a3bfd6;--ok:#86c79a;--ko:#ef917f;--wax:#c45a44;--land:#1a150f;--sea:#000;--coast:#a5916c;--forest:#74804e;--desk:#000;--bind:#000;--ln2:#6b5c48;--bindink:#c9b893;--gold:#d8a94f;--grain:none;--taches:none;color-scheme:dark}
 :root[data-taille="grand"]{font-size:112.5%}
 :root[data-taille="tres-grand"]{font-size:125%}
 
@@ -200,16 +200,17 @@ textarea{resize:vertical}
 /* Le trait reste fin à tous les niveaux de zoom, comme une gravure. */
 #map .land,#map .rip,#map .riv,#map .mt path,#map .fo path,#map .fo circle,#map .ma,#map .vag path{vector-effect:non-scaling-stroke}
 #map .vag path{fill:none;stroke:var(--coast);stroke-width:1;stroke-linecap:round;opacity:.32}
+#map .rhumb{fill:none;stroke:var(--coast);stroke-width:.6;opacity:.3;vector-effect:non-scaling-stroke}
 #map .rip{fill:none;stroke-linejoin:round}
 #map .rip.c{stroke:var(--coast)}#map .rip.s{stroke:var(--sea)}
 #map .land{fill:var(--land);stroke:var(--coast);stroke-width:1.8;stroke-linejoin:round}
 #map .riv{fill:none;stroke:var(--bk);stroke-linecap:round;stroke-linejoin:round}
-#map .riv.l{stroke-width:4;opacity:.22}#map .riv.f{stroke-width:2;opacity:.85}
+#map .riv.l{stroke-width:4.4;opacity:.16}#map .riv.f{stroke-width:1.1}#map .riv.f2{stroke-width:1.7}#map .riv.f3{stroke-width:2.4}
 #map .mt .m{fill:var(--land);stroke:var(--coast);stroke-width:1.3;stroke-linejoin:round}
-#map .mt .o{fill:var(--coast);opacity:.16;stroke:none}
-#map .mt .h{fill:none;stroke:var(--coast);stroke-width:.9;stroke-linecap:round;opacity:.75}
-#map .fo .t{fill:var(--forest);stroke:var(--coast);stroke-width:.9}
-#map .fo .k{stroke:var(--coast);stroke-width:1.2;stroke-linecap:round}
+#map .mt .o{fill:var(--coast);opacity:.12;stroke:none}
+#map .mt .h{fill:none;stroke:var(--coast);stroke-width:.75;stroke-linecap:round;opacity:.8}
+#map .fo .t{fill:var(--forest);stroke:var(--coast);stroke-width:.8;stroke-linejoin:round}#map .fo .s{fill:var(--coast);opacity:.28}
+#map .fo .k{stroke:var(--coast);stroke-width:1;stroke-linecap:round}
 #map .ma{fill:none;stroke:var(--forest);stroke-width:1.2;stroke-linecap:round}
 #map .orn{fill:none;stroke:var(--coast);stroke-width:.8;stroke-linejoin:round;stroke-linecap:round}
 #map .orn .p{fill:var(--land)}#map .orn .d{fill:var(--coast)}#map .orn .w{fill:var(--wax);stroke:none}
@@ -217,8 +218,10 @@ textarea{resize:vertical}
 #map .ct1{font:600 10.5px var(--display);letter-spacing:.14em}
 #map .ct2{font:italic 8.5px var(--serif);letter-spacing:.04em}
 #map .rn{font:600 9px var(--display)}
-#map .rg{font-family:var(--display);font-weight:600;fill:var(--coast);opacity:.78;letter-spacing:.16em;text-transform:uppercase;text-anchor:middle;pointer-events:none}
-#map .rg.mer{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:.32em;opacity:.7}
+#map .rg{font-family:var(--display);font-weight:600;fill:var(--coast);letter-spacing:.24em;text-transform:uppercase;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:var(--land);stroke-width:3px;stroke-linejoin:round}
+#map .rg.mer{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:.32em;stroke:var(--sea)}
+#map .rg.pre{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:.12em;text-transform:none}
+#map .rg.grand{letter-spacing:.42em}
 #map .rl{font-family:var(--serif);font-style:italic;fill:var(--bk);pointer-events:none}
 #map .pin{cursor:pointer}
 #map .pin .dot{fill:var(--land);stroke:var(--bk);stroke-width:1.8}
@@ -227,14 +230,25 @@ textarea{resize:vertical}
 #map .pin.LJ .dot{stroke:var(--ink)}#map .pin.LJ .pt{fill:var(--ink)}
 #map .pin text{font:400 12.5px var(--serif);fill:var(--ink);paint-order:stroke;stroke:var(--land);stroke-width:3.2px;stroke-linejoin:round}
 #map .pin .hit{fill:transparent}
-#map .pin.sel .dot{stroke:var(--ac);stroke-width:3}
+/* Lieu choisi : pastille cerclée d'or et nom souligné à la plume, sans le cadre rectangulaire du navigateur. */
+#map .pin:focus{outline:none}
+#map .pin.sel .dot,#map .pin:focus-visible .dot{stroke:var(--ac);stroke-width:3}
+#map .pin.sel text,#map .pin:focus-visible text{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 #map .ring{fill:none;stroke:var(--ac);stroke-width:2;transform-box:fill-box;transform-origin:center}
 @media (prefers-reduced-motion:no-preference){#map .ring{animation:ring 2s ease-out infinite}}
 @keyframes ring{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.5);opacity:0}}
-.mapctl{position:absolute;z-index:2;left:14px;top:14px;display:flex;flex-direction:column;gap:6px}
-.mapctl .ic{background:var(--sf);border:1px solid var(--coast);color:var(--coast);box-shadow:0 2px 6px rgb(40 25 10 / .2)}
+/* Filet gradué, comme l'échelle des degrés sur les cartes anciennes. */
+#mapsvg::after{content:"";position:absolute;inset:1px;z-index:2;pointer-events:none;opacity:.5;
+ --h:repeating-linear-gradient(90deg,var(--coast) 0 10px,transparent 0 20px);--v:repeating-linear-gradient(180deg,var(--coast) 0 10px,transparent 0 20px);
+ background:var(--h) top/100% 4px no-repeat,var(--h) bottom/100% 4px no-repeat,var(--v) left/4px 100% no-repeat,var(--v) right/4px 100% no-repeat}
+/* Commandes de zoom : une seule plaquette gravée plutôt que trois boutons flottants. */
+.mapctl{position:absolute;z-index:2;left:16px;top:16px;display:flex;flex-direction:column;background:var(--grain),var(--sf);border:1px solid var(--coast);border-radius:22px;box-shadow:inset 0 0 0 2px var(--sf),inset 0 0 0 2.6px color-mix(in srgb,var(--coast) 45%,transparent),0 2px 6px rgb(40 25 10 / .18);overflow:hidden}
+.mapctl .ic{width:42px;height:44px;border-radius:0;color:var(--coast)}
+.mapctl .ic+.ic{border-top:1px solid color-mix(in srgb,var(--coast) 30%,transparent)}
+.mapctl .ic svg{width:20px;height:20px}
 .mapcard{position:absolute;z-index:2;left:14px;right:14px;bottom:14px;background:var(--grain),var(--sf);border:1px solid var(--coast);border-radius:6px;padding:8px 14px 12px;box-shadow:inset 0 0 0 3px var(--sf),inset 0 0 0 4px color-mix(in srgb,var(--ln) 85%,transparent),0 6px 24px rgb(0 0 0 / .25)}
 .mapcard .ct{margin:.2em 0 0}
+.mapcard.haut{top:14px;bottom:auto}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85rem;color:var(--mu);margin:10px 0}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:2px solid var(--c);background:radial-gradient(var(--c) 0 2px,var(--land) 2.5px)}
 .legend i.L{--c:var(--bk)}.legend i.J{--c:var(--ac)}.legend i.LJ{--c:var(--ink)}.legend i.ici{--c:var(--ac);background:none}
@@ -331,3 +345,109 @@ textarea{resize:vertical}
 @keyframes vt-out-r{to{transform:translateX(28%);opacity:0}}
 @keyframes vt-fade-in{from{opacity:0}}
 @keyframes vt-fade-out{to{opacity:0}}
+
+/* ===== Direction artistique : un seul système d'ornements =====
+   Ornements à l'encre de la carte (--coast), rubriques en rouge de cire (--wax),
+   or seulement sur le cuir et les filets de sélection. Bleu et ambre restent la provenance. */
+:root{
+ --orn:color-mix(in srgb,var(--coast) 70%,transparent);
+ --loz:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 0l5 5-5 5-5-5Z'/%3E%3C/svg%3E");
+ --fleuron:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14'%3E%3Cpath d='M0 7L80 6.3V7.7ZM200 7L120 6.3V7.7ZM84 7l3-3 3 3-3 3ZM110 7l3-3 3 3-3 3Z'/%3E%3Cpath fill-rule='evenodd' d='M100 0l7 7-7 7-7-7ZM100 3.2L96.2 7l3.8 3.8L103.8 7Z'/%3E%3Ccircle cx='100' cy='7' r='1.5'/%3E%3C/svg%3E");
+ --coin0:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='rotate(0 20 20)'%3E%3Cpath fill-rule='evenodd' d='M8 1l7 7-7 7-7-7ZM8 4.6L4.6 8 8 11.4 11.4 8Z'/%3E%3Cpath d='M15 8L39 7.5V8.5ZM8 15L7.5 39H8.5Z'/%3E%3Ccircle cx='8' cy='8' r='1.3'/%3E%3C/g%3E%3C/svg%3E");
+ --coin90:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='rotate(90 20 20)'%3E%3Cpath fill-rule='evenodd' d='M8 1l7 7-7 7-7-7ZM8 4.6L4.6 8 8 11.4 11.4 8Z'/%3E%3Cpath d='M15 8L39 7.5V8.5ZM8 15L7.5 39H8.5Z'/%3E%3Ccircle cx='8' cy='8' r='1.3'/%3E%3C/g%3E%3C/svg%3E");
+ --coin180:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='rotate(180 20 20)'%3E%3Cpath fill-rule='evenodd' d='M8 1l7 7-7 7-7-7ZM8 4.6L4.6 8 8 11.4 11.4 8Z'/%3E%3Cpath d='M15 8L39 7.5V8.5ZM8 15L7.5 39H8.5Z'/%3E%3Ccircle cx='8' cy='8' r='1.3'/%3E%3C/g%3E%3C/svg%3E");
+ --coin270:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='rotate(270 20 20)'%3E%3Cpath fill-rule='evenodd' d='M8 1l7 7-7 7-7-7ZM8 4.6L4.6 8 8 11.4 11.4 8Z'/%3E%3Cpath d='M15 8L39 7.5V8.5ZM8 15L7.5 39H8.5Z'/%3E%3Ccircle cx='8' cy='8' r='1.3'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Titres de section : losange rubriqué et filet qui s'efface */
+main>h3:not(.ct):not(.gh),.set>h3{display:flex;align-items:center;gap:10px}
+main>h3:not(.ct):not(.gh)::before,.set>h3::before{content:"";flex:0 0 auto;width:7px;height:7px;background:var(--wax);transform:rotate(45deg)}
+main>h3:not(.ct):not(.gh)::after,.set>h3::after{content:"";flex:1;min-width:24px;height:1px;background:linear-gradient(90deg,var(--orn),transparent)}
+.gh::after{content:"";flex:1;align-self:center;min-width:24px;height:8px;background:var(--orn);-webkit-mask:var(--loz) right center/8px 8px no-repeat,linear-gradient(90deg,#000 30%,rgb(0 0 0 / .15)) left center/calc(100% - 12px) 1px no-repeat;mask:var(--loz) right center/8px 8px no-repeat,linear-gradient(90deg,#000 30%,rgb(0 0 0 / .15)) left center/calc(100% - 12px) 1px no-repeat}
+.gh span{font:italic 400 1rem var(--serif);color:var(--mu);font-variant-numeric:oldstyle-nums}
+
+/* Listes : nom en romain, signet à queue d'aronde, chevron discret */
+.ro{position:relative;display:block;width:100%;min-height:52px;text-align:left;background:none;border:0;border-bottom:1px solid var(--ln);padding:12px 30px 12px 20px}
+.ro::before{content:"";position:absolute;left:2px;top:0;bottom:14px;width:6px;border-radius:0;background:var(--bk);clip-path:polygon(0 0,100% 0,100% 100%,50% calc(100% - 5px),0 100%)}
+.ro.J::before{background:var(--ac)}
+.ro.LJ::before{width:9px;background:linear-gradient(90deg,var(--bk) 0 4px,transparent 4px 5px,var(--ac) 5px);clip-path:polygon(0 0,100% 0,100% 100%,75% calc(100% - 4px),55% 100%,45% 100%,25% calc(100% - 4px),0 100%)}
+.ro::after{content:"";position:absolute;right:10px;top:50%;width:7px;height:7px;margin-top:-4px;border:solid var(--mu);border-width:1.5px 1.5px 0 0;transform:rotate(45deg);opacity:.55}
+.ro b{display:block;font:400 1.2rem/1.2 var(--serif);margin-bottom:2px}
+
+/* Fiche : fleuron, lettrine rubriquée encadrée, notice du bestiaire */
+.fleur{display:block;height:14px;width:min(200px,60%);margin:16px auto 8px;background:var(--orn);-webkit-mask:var(--fleuron) center/contain no-repeat;mask:var(--fleuron) center/contain no-repeat}
+.lead::first-letter{float:left;font:400 2.9em/1 var(--serif);padding:.14em .16em .04em;margin:.12em .16em 0 0;color:var(--wax);text-shadow:none;background:var(--sf);border:1px solid color-mix(in srgb,var(--wax) 55%,transparent);box-shadow:inset 0 0 0 2px var(--sf),inset 0 0 0 3px color-mix(in srgb,var(--wax) 30%,transparent)}
+.kv{display:flex;align-items:baseline;gap:10px;margin:0;padding:7px 0;border-bottom:1px dotted var(--ln)}
+.kv b{flex:0 0 6.2rem;min-width:0;display:block;font:600 .74rem/1.3 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.kv span{min-width:0}
+
+/* Accueil : frontispice, cadre fileté à coins losangés */
+.onbc{position:relative;padding-left:26px;padding-right:26px}
+.onbc::before{content:"";position:absolute;inset:calc(10px + env(safe-area-inset-top,0px)) 10px calc(10px + env(safe-area-inset-bottom,0px));pointer-events:none;border:1px solid var(--orn);outline:1px solid color-mix(in srgb,var(--coast) 30%,transparent);outline-offset:-5px}
+.onbc::after{content:"";position:absolute;inset:calc(3px + env(safe-area-inset-top,0px)) 3px calc(3px + env(safe-area-inset-bottom,0px));pointer-events:none;background:var(--orn);-webkit-mask:var(--coin0) top left/40px no-repeat,var(--coin90) top right/40px no-repeat,var(--coin180) bottom right/40px no-repeat,var(--coin270) bottom left/40px no-repeat;mask:var(--coin0) top left/40px no-repeat,var(--coin90) top right/40px no-repeat,var(--coin180) bottom right/40px no-repeat,var(--coin270) bottom left/40px no-repeat}
+.onbc>.grow:first-child{flex:.45}
+.onbc .hero~h2,.onbc .hero~.fleur+p{text-align:center}
+
+/* Pastilles : étiquettes à coins vifs, sélection encre filetée d'or, zone tactile de 44 px */
+.ch{position:relative;min-height:38px;border-radius:4px;border-color:color-mix(in srgb,var(--ln2) 60%,var(--ln))}
+.ch::after{content:"";position:absolute;inset:-3px -2px}
+.ch.on{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink),inset 0 0 0 3px color-mix(in srgb,var(--gold) 70%,transparent)}
+/* Fiche : barre d'actions régulière, icône au-dessus du libellé */
+.acts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;margin:12px 0 14px}
+.acts .ch{flex-direction:column;justify-content:center;gap:3px;min-height:56px;padding:6px 4px;font-size:.8rem;line-height:1.15;text-align:center}
+.acts .ch svg{width:20px;height:20px}
+/* Livres : onglets typographiques */
+.seg[role="tablist"]{border:0;border-bottom:1px solid var(--ln);border-radius:0;padding:0;gap:0}
+.seg[role="tablist"] button{position:relative;border-radius:0;font:600 min(.78rem,13px)/1.2 var(--display);letter-spacing:.09em;text-transform:uppercase;min-height:44px}
+.seg[role="tablist"] button.on{background:none;color:var(--ink);box-shadow:inset 0 -2px 0 var(--ink)}
+.seg[role="tablist"] button.on::after{content:"";position:absolute;left:50%;bottom:-4px;width:7px;height:7px;margin-left:-3.5px;background:var(--wax);transform:rotate(45deg)}
+/* Réglages : choix encadré, à coins vifs comme .pr */
+.seg[role="radiogroup"]{border-radius:6px;border-color:color-mix(in srgb,var(--ln2) 60%,var(--ln))}
+.seg[role="radiogroup"] button{border-radius:3px}
+.seg[role="radiogroup"] button.on{box-shadow:inset 0 0 0 2px var(--ink),inset 0 0 0 3px color-mix(in srgb,var(--gold) 70%,transparent)}
+
+/* Spoilers sous un sceau de cire (plat, sans reflet) */
+.sp{display:flex;align-items:center;gap:14px;width:100%;min-height:48px;text-align:left;margin:12px 0;border:1px solid var(--ln);border-radius:4px;background:var(--sf);box-shadow:inset 0 0 0 3px var(--sf),inset 0 0 0 4px color-mix(in srgb,var(--ln) 70%,transparent);padding:10px 14px}
+.sp::before{content:"";flex:0 0 auto;width:30px;height:30px;border-radius:46% 54% 52% 48%/50% 46% 54% 50%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Ccircle cx='15' cy='15' r='10' fill='none' stroke='%23000' stroke-opacity='.28' stroke-width='1'/%3E%3Cpath d='M15 9.5l5.5 5.5-5.5 5.5-5.5-5.5Z' fill='%23000' fill-opacity='.3'/%3E%3C/svg%3E") center/100% no-repeat,var(--wax);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--wax) 80%,#000),0 1px 1.5px rgb(0 0 0 / .3)}
+
+/* Œil de sorceleur : iris ambre, pupille fendue (--bind est sombre dans tous les thèmes) */
+.st.on i::after{width:3px;height:11px;margin:-5.5px 0 0 -1.5px;background:var(--bind)}
+.pick i{position:relative;border:2px solid var(--ln2)}
+.pick[aria-pressed="true"] i{border:2px solid var(--ac);background:radial-gradient(circle,var(--ac) 0 6px,transparent 6.5px)}
+.pick[aria-pressed="true"] i::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:10px;margin:-5px 0 0 -1.5px;border-radius:50%;background:var(--bind)}
+/* Interrupteurs : éteint = contour et bouton estompé, allumé = ambre plein */
+.sw{background:none;box-shadow:inset 0 0 0 1.5px var(--ln2)}
+.sw::after{background:var(--mu)}
+.sw:checked{background:var(--ac);box-shadow:none}
+.sw:checked::after{background:var(--sf);box-shadow:0 1px 2px rgb(0 0 0 / .3)}
+/* Champs de saisie : bord visible (3:1) */
+input[type=search],input[type=text],textarea,.fake{border-color:var(--ln2)}
+/* Quiz : lettres en médaillon, progression en filet à losange */
+.opts{counter-reset:o}
+.opt{display:flex;align-items:center;gap:12px}
+.opt::before{counter-increment:o;content:counter(o,upper-alpha);flex:0 0 auto;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;font:700 .8rem/1 var(--display);color:var(--mu);border:1px solid var(--ln);box-shadow:inset 0 0 0 2px var(--sf),inset 0 0 0 3px color-mix(in srgb,var(--ln) 80%,transparent)}
+.opt.good::before{background:var(--ok);border-color:var(--ok);color:var(--sf)}
+.opt.bad::before{background:var(--ko);border-color:var(--ko);color:var(--sf)}
+.bar-p{height:2px;border-radius:0;overflow:visible}
+.bar-p i{position:relative}
+.bar-p i::after{content:"";position:absolute;right:-4px;top:-3px;width:8px;height:8px;background:var(--ac);transform:rotate(45deg)}
+
+/* Colophon, chiffres romains, losanges de frise et de signes, cartouches de la lignée */
+.ft{border-top:0;margin-top:40px;padding-top:0;text-align:center;font:italic .85rem/1.5 var(--serif);color:var(--mu)}
+.ft::before{content:"";display:block;height:14px;max-width:160px;margin:0 auto 10px;background:var(--orn);-webkit-mask:var(--fleuron) center/contain no-repeat;mask:var(--fleuron) center/contain no-repeat}
+.books .num{font:600 1.15rem/1 var(--display);letter-spacing:.04em;padding-top:8px;text-align:center;color:var(--bk)}
+.ti::before{left:-6px;top:8px;width:10px;height:10px;border-radius:0;transform:rotate(45deg);box-shadow:0 0 0 3px var(--bg)}
+.ti b{font:600 .92rem/1.35 var(--display);letter-spacing:.05em}
+.sg i{width:8px;height:8px;border-radius:1px;transform:rotate(45deg)}
+.node{box-shadow:inset 0 0 0 2px var(--sf),inset 0 0 0 3px color-mix(in srgb,var(--ln) 80%,transparent)}
+.node.k{box-shadow:inset 0 0 0 2px var(--sf),inset 0 0 0 3px color-mix(in srgb,var(--bk) 35%,transparent)}
+.node.me{box-shadow:inset 0 0 0 2px var(--sf),inset 0 0 0 3px color-mix(in srgb,var(--ac) 45%,transparent)}
+.node.plain{box-shadow:none}
+
+/* Petit écran : le titre de la barre tient en entier */
+@media (max-width:380px){.bar h1{font-size:1rem;letter-spacing:.03em}}
+
+/* Carte : halo des régions proportionnel au zoom, carte d'info au ras du filet */
+#map .rg{stroke-width:calc(var(--k) * 3px)}
+.mapcard{left:10px;right:10px;bottom:10px}
+.mapcard.haut{top:10px;bottom:auto}

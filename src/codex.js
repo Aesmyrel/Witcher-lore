@@ -1317,16 +1317,16 @@ sources: [
 /* Carte schématique du Continent : positions dans un cadre de 400 × 560, sans échelle. */
 carte: {
   lieux: {
-    "novigrad": [136, 140], "oxenfurt": [172, 148], "velen": [160, 180], "vizima": [206, 226], "verger-blanc": [184, 246],
-    "kaer-morhen": [326, 96], "thanedd": [100, 210], "kerack": [110, 262], "cintra": [108, 332], "brokilon": [168, 274],
-    "sodden": [206, 300], "melitele": [236, 256], "mahakam": [268, 244], "vengerberg": [302, 214], "dol-blathanna": [350, 194],
-    "riv": [318, 296], "skellige": [46, 314], "kaer-trolde": [62, 294], "yaruga": [262, 322], "toussaint": [300, 424],
+    "novigrad": [136, 140], "oxenfurt": [172, 148], "velen": [160, 180], "vizima": [206, 226], "verger-blanc": [188, 246],
+    "kaer-morhen": [326, 96], "thanedd": [86, 206], "kerack": [113, 267], "cintra": [104, 343], "brokilon": [168, 274],
+    "sodden": [206, 300], "melitele": [236, 256], "mahakam": [276, 236], "vengerberg": [302, 214], "dol-blathanna": [350, 194],
+    "riv": [318, 296], "skellige": [42, 314], "kaer-trolde": [58, 294], "yaruga": [262, 322], "toussaint": [300, 424],
     "nilfgaard": [222, 508]
   },
   regions: [
-    { t: "Kovir", x: 250, y: 36 }, { t: "Rédanie", x: 230, y: 108 }, { t: "Kaedwen", x: 300, y: 62 },
-    { t: "Temeria", x: 236, y: 196 }, { t: "Aedirn", x: 334, y: 174 }, { t: "Lyria et Rivia", x: 322, y: 284 },
-    { t: "Empire de Nilfgaard", x: 232, y: 456 }, { t: "Grande Mer", x: 52, y: 230, mer: true }
+    { t: "Kovir", x: 250, y: 36 }, { t: "Rédanie", x: 200, y: 114 }, { t: "Kaedwen", x: 300, y: 58 },
+    { t: "Temeria", x: 222, y: 206 }, { t: "Aedirn", x: 326, y: 174 }, { t: "Lyria et Rivia", x: 316, y: 282 },
+    { t: "Empire de Nilfgaard", x: 240, y: 462 }, { t: "Grande Mer", x: 52, y: 230, mer: true }
   ],
   horsCarte: ["blaviken", "brenna", "korath", "stygga", "tor-zireael", "tir-na-lia", "ile-brumes"]
 }

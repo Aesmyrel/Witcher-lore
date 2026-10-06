@@ -67,6 +67,11 @@ const save=()=>{try{const o={};KEEP.forEach(k=>o[k]=S[k]);localStorage.setItem("
 
 /* ---------- Outils ---------- */
 const $=s=>document.querySelector(s);
+/* Espaces insécables du français : jamais de « ni de : ; ? ! isolé en bout ou en début de ligne. */
+const FR_SP=/([«‹])\s|\s([»›;!?])|\s(:)(?=\s)/g;
+function frsp(root){if(!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
+ while(n=w.nextNode()){const v=n.nodeValue;if(!/[«»‹›:;!?]/.test(v)||n.parentNode.closest("textarea"))continue;
+  const r=v.replace(FR_SP,(m,a,b,c)=>a?a+"\u00a0":"\u00a0"+(b||c));if(r!==v)n.nodeValue=r}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const inFrame=(()=>{try{return window.top!==window.self}catch(e){return true}})();
@@ -90,8 +95,10 @@ const anyRow=x=>MID[x.id]?mrow(x):row(x);
 const chip=id=>{const x=any(id);return x&&vis(x)?`<button class="ch" data-o="${id}">${esc(x.nom)}</button>`:""};
 const chips=ids=>{const h=ids.map(chip).join("");return h?`<div class="chips">${h}</div>`:""};
 const oil=c=>c==="Humains"?"Venin du pendu (épée d'acier)":"Huile "+C.classes[c]+(c==="Bêtes"?"":" (épée d'argent)");
-const kv=(k,v)=>v?`<p class="kv"><b>${k}</b> ${v}</p>`:"";
+const kv=(k,v)=>v?`<p class="kv"><b>${k}</b><span>${v}</span></p>`:"";
 const bl=(t,x,j,n)=>`<div class="bl${j?" j":""}"><h3>${t}</h3><p>${esc(x)}</p>${n?`<p class="note">${n}</p>`:""}</div>`;
+/* Fleuron gravé : marque la pause entre l'en-tête d'une fiche et son texte. */
+const FLEUR='<div class="fleur" aria-hidden="true"></div>';
 const pl=(n,s)=>n+" "+s+(n>1?"s":"");
 const dayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const livre=id=>"« "+ID[id].nom+" »";
@@ -202,7 +209,7 @@ function codex(){
  h+=`<div class="tiles"><button class="tile" data-o="lignee">${ICO.tree}<b>Lignée de Ciri</b><small>De Lara Dorren à Ciri</small></button><button class="tile" data-t="mot">${ICO.lang}<b>Langue ancienne</b><small>${C.lexique.length} mots elfes</small></button></div>`;
  const rec=S.hist.filter(i=>any(i)&&vis(any(i))).slice(0,6);
  if(rec.length&&S.ty==="all")h+=`<h3>Consultés récemment</h3>${chips(rec)}`;
- h+=`<div class="fl">${T.map(([k,n])=>`<button class="ch${S.ty===k?" on":""}" data-t="${k}">${n}${k==="fav"&&fav.length?" ("+fav.length+")":""}</button>`).join("")}</div><p class="mu sm">Trait bleu : issu des livres. Trait ambre : issu du jeu. Les deux : présent dans les deux.</p>`;
+ h+=`<div class="fl">${T.map(([k,n])=>`<button class="ch${S.ty===k?" on":""}" data-t="${k}">${n}${k==="fav"&&fav.length?" ("+fav.length+")":""}</button>`).join("")}</div><p class="mu sm">Signet bleu : issu des livres. Signet ambre : issu du jeu. Les deux signets : présent dans les deux.</p>`;
  if(S.ty==="mot")return h+lex("");
  if(S.ty==="fav")return h+(fav.length?fav.map(i=>anyRow(any(i))).join(""):`<p class="mu">Votre carnet est vide. Touchez l'étoile d'une fiche pour l'y ranger.</p>`);
  const l=E.filter(e=>vis(e)&&(S.ty==="all"||e.t===S.ty));
@@ -241,7 +248,7 @@ function resultats(){
 
 function bestiaire(){
  const f=[["all","Tous"],...Object.keys(C.classes).map(c=>[c,c])].map(([k,n])=>`<button class="ch${S.cl===k?" on":""}" data-c="${k}">${n}</button>`).join("");
- return `<p class="mu">Ce que le jeu recommande, et ce que les livres en disent.</p><div class="srch"><input id="bq" type="search" enterkeyhint="search" placeholder="Chercher une créature, en français ou en anglais" aria-label="Chercher une créature" value="${esc(S.bq)}" autocomplete="off">${micBtn("bq")}</div><div class="fl">${f}</div><div id="blst">${blst()}</div>`}
+ return `<p class="mu">Ce que le jeu recommande, et ce que les livres en disent.</p><div class="srch"><input id="bq" type="search" enterkeyhint="search" placeholder="Une créature, en français ou en anglais" aria-label="Chercher une créature" value="${esc(S.bq)}" autocomplete="off">${micBtn("bq")}</div><div class="fl">${f}</div><div id="blst">${blst()}</div>`}
 function blst(){const q=norm(S.bq.trim());
  const base=M.filter(m=>vis(m)&&(S.cl==="all"||m.cl===S.cl));
  const l=termes(q).length?cherche(base,m=>m.nom,m=>[m.nom,m.en||"",m.cl].join(" "),q):base;
@@ -262,7 +269,7 @@ function fiche(e){
  const vj=(e.jeu||[]).filter(jv),sealed=(e.jeu||[]).length-vj.length;
  let h=`<p class="eb">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><h2>${esc(e.nom)}</h2>`;
  if(e.alias&&e.alias.length)h+=`<p class="mu">Aussi appelé : ${esc(e.alias.join(", "))}</p>`;
- h+=`<p class="mu">${esc(e.role)}</p>`+actions(e)+`<p class="lead">${esc(e.resume)}</p>`;
+ h+=`<p class="mu">${esc(e.role)}</p>`+actions(e)+FLEUR+`<p class="lead">${esc(e.resume)}</p>`;
  if(e.t==="livre")h+=kv("Titre original",esc(e.vo)+", "+e.annee)+kv("Genre",esc(e.genre))+`<p><button class="ch${S.lus[e.id]?" on":""}" data-lu="${e.id}" aria-pressed="${!!S.lus[e.id]}">${S.lus[e.id]?"Lu ✓":"Marquer comme lu"}</button></p>`;
  if(e.nouvelles)h+=`<h3>Les nouvelles</h3>`+e.nouvelles.map(n=>`<p><b>${esc(n.t)}.</b> ${esc(n.d)}</p>`).join("");
  if(e.livres)h+=bl("Dans les livres",e.livres);
@@ -276,7 +283,7 @@ function fiche(e){
 
 function monstre(m){
  if(!vis(m)&&!S.force[m.id])return gate(m);
- return `<p class="eb">Bestiaire · ${esc(m.cl)}</p><h2>${esc(m.nom)}</h2>${m.en?`<p class="mu">En anglais : ${esc(m.en)}</p>`:""}`+actions(m)
+ return `<p class="eb">Bestiaire · ${esc(m.cl)}</p><h2>${esc(m.nom)}</h2>${m.en?`<p class="mu">En anglais : ${esc(m.en)}</p>`:""}`+actions(m)+FLEUR
   +kv("Huile",oil(m.cl))+kv("Signes",m.signes&&m.signes.map(sg).join(""))+kv("Bombes",m.bombes&&esc(m.bombes.join(", ")))
   +kv("Potions",m.potions&&esc(m.potions.join(", ")))+kv("Autres",m.autres&&esc(m.autres.join(", ")))+kv("Insensible à",m.immun&&sg(m.immun))
   +`<p>${esc(m.conseil)}</p>`+(m.origine?bl("Origines",m.origine):"")+(m.livres?bl("Dans les livres",m.livres):"")
@@ -300,20 +307,22 @@ ${revOK(ID.duny)?"":revBtn(ID.duny,"duny")}${chips(["sang-ancien","loi-surprise"
 /* ---------- Carte ---------- */
 const MW=400,MH=560;
 let mv={x:0,y:0,w:MW,h:MH};
-const COTE=[[178,0],[174,14],[164,26],[168,40],[156,52],[160,66],[148,78],[144,92],[152,104],[140,116],[138,128],[132,138],[126,148],[128,160],[120,172],[126,184],[116,196],[110,206],[112,218],[104,230],[114,242],[106,252],[100,264],[102,276],[94,288],[100,298],[92,310],[88,320],[94,332],[90,344],[100,356],[96,368],[106,380],[102,394],[112,406],[108,420],[118,434],[114,448],[124,462],[120,478],[130,492],[126,508],[136,522],[132,540],[140,560]];
-const PONTAR=[[132,140],[150,146],[172,148],[192,142],[214,150],[236,144],[258,152],[282,146],[306,154],[330,148]];
-const YARUGA=[[88,320],[108,318],[128,322],[150,316],[172,322],[196,316],[220,324],[244,318],[262,322],[286,316],[310,324],[336,318],[356,326]];
+const COTE=[[190,0],[184,8],[172,12],[164,22],[168,34],[160,44],[150,48],[144,58],[150,70],[158,80],[156,94],[146,104],[140,118],[146,128],[138,136],[132,141],[124,146],[116,152],[120,164],[128,172],[124,184],[114,192],[106,200],[110,212],[118,222],[116,234],[108,244],[102,252],[100,262],[106,270],[100,280],[94,290],[98,300],[106,308],[104,316],[100,322],[94,328],[86,334],[78,342],[82,352],[94,356],[100,366],[98,380],[106,392],[112,404],[110,418],[118,430],[124,446],[120,460],[128,474],[134,490],[130,504],[138,518],[146,532],[142,546],[150,560]];
+const PONTAR=[[132,140],[146,145],[160,149],[172,148],[186,145],[200,145],[214,149],[230,151],[248,145],[266,142],[284,144],[300,150],[316,149],[334,145]];
+const YARUGA=[[100,322],[114,322],[128,325],[142,322],[156,316],[172,318],[188,324],[206,321],[224,314],[244,317],[262,322],[280,321],[298,314],[318,317],[334,323],[350,321],[362,315]];
 const MONTS=[
- [298,84],[316,78],[340,76],[352,88],[364,78],[366,102],[384,90],[344,110],[300,114],[388,118],[376,130],
- [374,152],[388,172],[372,194],[388,214],[376,236],[390,256],
- [246,212],[262,222],[286,228],
- [272,394],[290,386],[308,392],[326,386],[344,394],
- [322,488],[340,478],[358,490],[376,478],[350,504]];
-const FORET=[[150,276],[142,284],[152,286],[160,293],[146,296],[168,297],[156,303],[175,290],[138,293],[164,306],[181,300],[148,307]];
-const MARAIS=[[144,192],[158,196],[172,192],[186,197]];
-const ILES=[[44,310,12,8,-20],[28,328,8,6,10],[60,330,7,5,0],[40,344,6,4,15],[64,296,7,5,-10],[100,211,4,3,0]];
+ [302,84],[316,79],[331,76],[346,80],[360,75],[374,82],[352,94],[367,97],[379,106],[360,112],[374,122],[364,134],[377,143],[367,157],[378,166],[368,180],[377,192],
+ [372,236],[381,247],[369,256],[379,266],
+ [260,222],[272,214],[286,222],
+ [266,398],[281,389],[296,394],[311,385],[326,391],[341,398],[288,404],[318,402],
+ [322,488],[336,479],[351,489],[366,480],[346,503],[362,500]];
+const FORET=[[144,285],[154,285],[140,291],[151,291],[161,291],[171,291],[136,297],[146,297],[156,297],[166,297],[176,297],[141,303],[151,303],[161,303],[171,303],[180,303],[148,309],[158,309],[168,309]];
+const MARAIS=[[136,193],[150,190],[164,195],[143,202],[157,204],[171,201]];
+const ILES=[[40,310,12,8,-20],[24,328,8,6,10],[56,330,7,5,0],[36,344,6,4,15],[60,296,7,5,-10],[86,206,5,3.5,0]];
 const COURT={melitele:"Ellander",yaruga:"Yaruga",nilfgaard:"Nilfgaard",korath:"Korath"};
-const GAUCHE={"dol-blathanna":1,"novigrad":1,"kaer-morhen":1,"verger-blanc":1};
+/* Côté de l'étiquette : e (droite, par défaut), w (gauche), n (dessus), s (dessous). */
+const ETIQ={"dol-blathanna":"w","novigrad":"w","kaer-morhen":"w","verger-blanc":"w","thanedd":"w","kaer-trolde":"n","oxenfurt":"n","yaruga":"s"};
+const POSE={e:'x="10" y="4"',w:'x="-10" y="4" text-anchor="end"',n:'x="0" y="-10" text-anchor="middle"',s:'x="0" y="19" text-anchor="middle"'};
 const poly=p=>"M"+p.map(q=>q.join(" ")).join("L");
 const court=e=>COURT[e.id]||e.nom.replace(/^(Le |La |Les |L')/,"");
 /* Le décor de la carte est calculé une seule fois, avec un hasard fixe : il reste identique d'un affichage à l'autre. */
@@ -322,16 +331,22 @@ const DECOR=(()=>{
  // Côtes tracées « à la main » : chaque segment est redécoupé et légèrement dévié.
  const brouille=(p,amp,k)=>{const r=[p[0]];for(let i=1;i<p.length;i++){const[x0,y0]=p[i-1],[x1,y1]=p[i],dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy)||1;
   for(let j=1;j<k;j++){const t=j/k,d=(alea()-.5)*2*amp;r.push([f(x0+dx*t-dy/L*d),f(y0+dy*t+dx/L*d)])}r.push(p[i])}return r};
- const cote=poly(brouille(COTE,2.4,3));
+ const cote=poly(brouille(brouille(COTE,1.8,3),.9,2));
  const iles=ILES.map(([x,y,rx,ry,a])=>{const c=Math.cos(a*Math.PI/180),s=Math.sin(a*Math.PI/180),q=[];
   for(let i=0;i<12;i++){const t=i/12*2*Math.PI,k=.8+alea()*.34,px=Math.cos(t)*rx*k,py=Math.sin(t)*ry*k;q.push([f(x+px*c-py*s),f(y+px*s+py*c)])}return poly(q)+"Z"}).join("");
  // Rivières sinueuses : courbes passant par les points du tracé.
- const lisse=p=>{let d=`M${p[0][0]} ${p[0][1]}`;for(let i=0;i<p.length-1;i++){const a=p[i-1]||p[i],b=p[i],c=p[i+1],e=p[i+2]||c;
+ // n : ne trace que le début du cours (de l'embouchure vers la source), pour l'élargir vers la mer.
+ const lisse=(p,n=p.length)=>{let d=`M${p[0][0]} ${p[0][1]}`;for(let i=0;i<n-1;i++){const a=p[i-1]||p[i],b=p[i],c=p[i+1],e=p[i+2]||c;
   d+=`C${f(b[0]+(c[0]-a[0])/6)} ${f(b[1]+(c[1]-a[1])/6)} ${f(c[0]-(e[0]-b[0])/6)} ${f(c[1]-(e[1]-b[1])/6)} ${c[0]} ${c[1]}`}return d};
  // Montagnes hachurées, du fond vers l'avant.
- const monts=MONTS.map(([x,y])=>[x,y,.85+alea()*.35]).sort((a,b)=>a[1]-b[1]).map(([x,y,k])=>{const w=7*k,h=9*k;
-  return `<path class="m" d="M${f(x-w)} ${y+3}L${f(x-w*.45)} ${f(y-h*.5)}L${f(x-w*.1)} ${f(y-h)}L${f(x+w*.35)} ${f(y-h*.45)}L${f(x+w)} ${y+3}"/><path class="o" d="M${f(x-w*.1)} ${f(y-h)}L${f(x+w*.35)} ${f(y-h*.45)}L${f(x+w)} ${y+3}L${f(x+w*.05)} ${y+3}Z"/><path class="h" d="M${f(x+w*.25)} ${f(y-h*.5)}l-1.4 ${f(h*.55)}M${f(x+w*.52)} ${f(y-h*.2)}l-1.2 ${f(h*.45)}M${f(x+w*.78)} ${f(y+.6)}l-.8 1.8"/>`}).join("");
- const arbres=FORET.slice().sort((a,b)=>a[1]-b[1]).map(([x,y])=>`<path class="k" d="M${x} ${y}v4"/><circle class="t" cx="${x}" cy="${y-1}" r="3.4"/>`).join("");
+ // Montagnes gravées : versants courbes, arête et face d'ombre hachurée.
+ const monts=MONTS.map(([x,y])=>[x,y,.85+alea()*.35]).sort((a,b)=>a[1]-b[1]).map(([x,y,k])=>{const w=7.5*k,H=12*k,b=y+3,px=x-w*.08,py=b-H,rx=x+w*.14;
+  const gauche=`M${f(x-w)} ${b}C${f(x-w*.62)} ${f(b-H*.38)} ${f(x-w*.34)} ${f(b-H*.86)} ${f(px)} ${f(py)}`,droite=`C${f(px+w*.3)} ${f(b-H*.9)} ${f(x+w*.55)} ${f(b-H*.42)} ${f(x+w)} ${b}`;
+  let h="";for(const t of [.3,.5,.7,.88]){const sx=px+(rx-px)*t,sy=py+H*t,L=(x+w-sx)*.62*(1-t*.25);h+=`M${f(sx+.6)} ${f(sy)}l${f(L)} ${f(Math.min(H*.2,b-sy-.4))}`}
+  return `<path class="m" d="${gauche}${droite}"/><path class="o" d="M${f(px)} ${f(py)}Q${f(x+w*.06)} ${f(b-H*.45)} ${f(rx)} ${b}L${f(x+w)} ${b}C${f(x+w*.55)} ${f(b-H*.42)} ${f(px+w*.3)} ${f(b-H*.9)} ${f(px)} ${f(py)}Z"/><path class="h" d="${h}"/>`}).join("");
+ // Forêt : houppiers arrondis serrés, ombrés à droite, dessinés du fond vers l'avant.
+ const arbres=FORET.map(([x,y])=>[f(x+(alea()-.5)*4.4),f(y+(alea()-.5)*3),2.6+alea()*.9]).sort((a,b)=>a[1]-b[1]).map(([X,Y,r])=>
+  `<path class="k" d="M${X} ${f(Y-.5)}v2.4"/><path class="t" d="M${f(X-r)} ${f(Y-.6)}C${f(X-r-.9)} ${f(Y-r*1.4)} ${f(X-r*.55)} ${f(Y-r*2.3)} ${X} ${f(Y-r*2.15)}C${f(X+r*.55)} ${f(Y-r*2.3)} ${f(X+r+.9)} ${f(Y-r*1.4)} ${f(X+r)} ${f(Y-.6)}Q${X} ${f(Y+.7)} ${f(X-r)} ${f(Y-.6)}Z"/><path class="s" d="M${f(X+r*.15)} ${f(Y-r*2.05)}C${f(X+r*.9)} ${f(Y-r*2)} ${f(X+r+.6)} ${f(Y-r*1.2)} ${f(X+r)} ${f(Y-.6)}Q${f(X+r*.5)} ${f(Y+.2)} ${f(X+r*.1)} ${f(Y-.1)}C${f(X+r*.7)} ${f(Y-r*.8)} ${f(X+r*.6)} ${f(Y-r*1.6)} ${f(X+r*.15)} ${f(Y-r*2.05)}Z"/>`).join("");
  const marais=MARAIS.map(([x,y])=>`M${x-3} ${y}l1.4 -3M${x} ${y}v-3.6M${x+3} ${y}l-1.4 -3M${x-4.5} ${y+1}h9`).join("");
  // Rose des vents.
  const pointe=(deg,L,w,cl="d")=>{const r=deg*Math.PI/180,ux=Math.sin(r),uy=-Math.cos(r),px=Math.cos(r),py=Math.sin(r),T=`${f(ux*L)} ${f(uy*L)}`;
@@ -339,30 +354,39 @@ const DECOR=(()=>{
  let graduations="";for(let i=0;i<32;i++){const t=i*Math.PI/16,r=i%4?20.4:19;graduations+=`M${f(Math.sin(t)*r)} ${f(-Math.cos(t)*r)}L${f(Math.sin(t)*22)} ${f(-Math.cos(t)*22)}`}
  const rose=`<g class="orn" transform="translate(58 424)"><circle class="p" r="22"/><circle r="18.6"/><path d="${graduations}"/>${[45,135,225,315].map(d=>pointe(d,13,2.8)).join("")}${[90,180,270].map(d=>pointe(d,21,4.2)).join("")}${pointe(0,21,4.2,"w")}<circle class="p" r="1.8"/><text class="rn" y="-25.5">N</text></g>`;
  const navire=`<path class="p" d="M-7 -15Q0 -13 7 -15L6 -4Q0 -2 -6 -4Z"/><path d="M0 -3V-19M0 -19l5 1.6L0 -15.8"/><path class="d" d="M-11 -2H11Q8 4.5 0 4.5Q-8 4.5 -11 -2Z"/><path d="M-15 8q2.5 -2 5 0t5 0t5 0t5 0t5 0t5 0"/>`;
- const navires=`<g class="orn" transform="translate(64 184)">${navire}</g><g class="orn" transform="translate(80 376) scale(-.75 .75)">${navire}</g>`;
- const cartouche=`<g class="orn" transform="translate(64 512)"><path class="p" d="M-46 -17H46Q52 -17 52 -11V11Q52 17 46 17H-46Q-52 17 -52 11V-11Q-52 -17 -46 -17Z"/><path d="M-48.5 -13.5H48.5V13.5H-48.5Z" opacity=".55"/><path class="w" d="M-52 0l3 -3 3 3 -3 3ZM52 0l-3 -3 -3 3 3 3Z"/><text class="ct1" y="-1">Le Continent</text><text class="ct2" y="9.5">Royaumes du Nord</text></g>`;
- return {cote,iles,pontar:lisse(PONTAR),yaruga:lisse(YARUGA),monts,arbres,marais,rose,navires,cartouche}})();
+ const navires=`<g class="orn" transform="translate(100 72)">${navire}</g><g class="orn" transform="translate(70 384) scale(-.75 .75)">${navire}</g>`;
+ // Cartouche à coins rentrants, comme sur les cartes gravées.
+ const cartouche=`<g class="orn" transform="translate(64 512)"><path class="p" d="M-46 -18H46A6 6 0 0 0 52 -12V12A6 6 0 0 0 46 18H-46A6 6 0 0 0 -52 12V-12A6 6 0 0 0 -46 -18Z"/><path d="M-44 -14.5H44A5 5 0 0 0 48.5 -10V10A5 5 0 0 0 44 14.5H-44A5 5 0 0 0 -48.5 10V-10A5 5 0 0 0 -44 -14.5Z" opacity=".55"/><path d="M-30 2.2H-4M4 2.2H30"/><path class="d" d="M0 .2l2 2 -2 2 -2 -2Z"/><path class="w" d="M-52 0l3 -3 3 3 -3 3ZM52 0l-3 -3 -3 3 3 3Z"/><text class="ct1" y="-3">Le Continent</text><text class="ct2" y="11.5">Royaumes du Nord</text></g>`;
+ // Lignes de rhumb : seize directions qui partent de la rose, visibles seulement en mer.
+ let rhumbs="";for(let i=0;i<16;i++){const t=i*Math.PI/8;rhumbs+=`M${f(58+Math.sin(t)*24)} ${f(424-Math.cos(t)*24)}L${f(58+Math.sin(t)*640)} ${f(424-Math.cos(t)*640)}`}
+ return {cote,iles,rhumbs,rivs:[PONTAR,YARUGA].map(p=>[lisse(p),lisse(p,Math.ceil(p.length*.68)),lisse(p,Math.ceil(p.length*.36))]),monts,arbres,marais,rose,navires,cartouche}})();
 function carteSVG(){
  const cur=new Set([...C.chapitres[S.ch].entrees,...(S.hos?C.dlc.hos.entrees:[]),...(S.bw?C.dlc.bw.entrees:[])]),k=mv.w/MW,D=DECOR;
- const pins=Object.entries(C.carte.lieux).map(([id,[x,y]])=>{const e=any(id);if(!e||!vis(e))return"";const g=GAUCHE[id];
-  return `<g class="pin ${e.src}${cur.has(id)?" here":""}${S.sel===id?" sel":""}" data-pin="${id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y}) scale(${k})" tabindex="0" role="button" aria-label="${esc(e.nom)}"><circle class="hit" r="16"/>${cur.has(id)?'<circle class="ring" r="12"/>':""}<circle class="dot" r="5.5"/><circle class="pt" r="2.2"/><text x="${g?-10:10}" y="4"${g?' text-anchor="end"':""}>${esc(court(e))}</text></g>`}).join("");
+ const pins=Object.entries(C.carte.lieux).map(([id,[x,y]])=>{const e=any(id);if(!e||!vis(e))return"";
+  return `<g class="pin ${e.src}${cur.has(id)?" here":""}${S.sel===id?" sel":""}" data-pin="${id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y}) scale(${k})" tabindex="0" role="button" aria-label="${esc(e.nom)}"><circle class="hit" r="16"/>${cur.has(id)?'<circle class="ring" r="12"/>':""}<circle class="dot" r="5.5"/><circle class="pt" r="2.2"/><text ${POSE[ETIQ[id]||"e"]}>${esc(court(e))}</text></g>`}).join("");
  const rivage=D.cote+D.iles;
  return `<svg id="map" viewBox="${mv.x} ${mv.y} ${mv.w} ${mv.h}" style="--k:${k};touch-action:${mv.w>=MW?"pan-y":"none"}" role="img" aria-label="Carte schématique du Continent">
 <defs><pattern id="vag" class="vag" width="28" height="20" patternUnits="userSpaceOnUse"><path d="M3 6q2.5 -2.4 5 0t5 0"/><path d="M17 16q2.5 -2.4 5 0t5 0"/></pattern></defs>
-<rect class="sea" x="-50" y="-50" width="${MW+100}" height="${MH+100}"/><rect x="-50" y="-50" width="${MW+100}" height="${MH+100}" fill="url(#vag)"/>
+<rect class="sea" x="-50" y="-50" width="${MW+100}" height="${MH+100}"/><rect x="-50" y="-50" width="${MW+100}" height="${MH+100}" fill="url(#vag)"/><path class="rhumb" d="${D.rhumbs}"/>
 <path class="rip c" d="${rivage}" stroke-width="23" opacity=".3"/><path class="rip s" d="${rivage}" stroke-width="21.4"/>
 <path class="rip c" d="${rivage}" stroke-width="15" opacity=".45"/><path class="rip s" d="${rivage}" stroke-width="13.4"/>
 <path class="rip c" d="${rivage}" stroke-width="7.6" opacity=".65"/><path class="rip s" d="${rivage}" stroke-width="5.9"/>
 <path class="land" d="${D.cote}L${MW+60} ${MH+60}L${MW+60} -60Z"/><path class="land" d="${D.iles}"/>
 ${D.navires}${D.rose}${D.cartouche}
 <g class="fo">${D.arbres}</g><path class="ma" d="${D.marais}"/>
-<path class="riv l" d="${D.pontar}"/><path class="riv f" id="riv-pontar" d="${D.pontar}"/><path class="riv l" d="${D.yaruga}"/><path class="riv f" d="${D.yaruga}"/>
+${D.rivs.map(([a,b,c],i)=>`<path class="riv l" d="${b}"/><path class="riv f"${i?"":' id="riv-pontar"'} d="${a}"/><path class="riv f2" d="${b}"/><path class="riv f3" d="${c}"/>`).join("")}
 <g class="mt">${D.monts}</g>
-<text class="rl" dy="-3.5" style="font-size:calc(var(--k) * 11px)"><textPath href="#riv-pontar" startOffset="74%" text-anchor="middle">Pontar</textPath></text>
-${C.carte.regions.map(r=>r.mer?`<text class="rg mer" x="${r.x}" y="${r.y}" style="font-size:calc(var(--k) * 11.5px)">${esc(r.t).split(" ").map((m,i)=>`<tspan x="${r.x}" dy="${i?"1.35em":"0"}">${m}</tspan>`).join("")}</text>`:`<text class="rg" x="${r.x}" y="${r.y}" style="font-size:calc(var(--k) * 11px)">${esc(r.t)}</text>`).join("")}
+<text class="rl" dy="-3.5" style="font-size:calc(var(--k) * 11px)"><textPath href="#riv-pontar" startOffset="66%" text-anchor="middle">Pontar</textPath></text>
+${C.carte.regions.map((r,i)=>{const m=/^(Empire de|Royaume de) (.+)$/.exec(r.t);
+ if(r.mer)return `<text class="rg mer" x="${r.x}" y="${r.y}" style="font-size:calc(var(--k) * 12px)">${esc(r.t).split(" ").map((m,i)=>`<tspan x="${r.x}" dy="${i?"1.35em":"0"}">${m}</tspan>`).join("")}</text>`;
+ // Un empire : petit titre en italique, puis son nom en grandes capitales posées sur un arc.
+ if(m)return `<path id="arc${i}" d="M${r.x-96} ${r.y+8}Q${r.x} ${r.y-10} ${r.x+96} ${r.y+8}" fill="none"/><text class="rg pre" x="${r.x}" y="${r.y-14}" style="font-size:calc(var(--k) * 10.5px)">${esc(m[1])}</text><text class="rg grand" style="font-size:calc(var(--k) * 15px)"><textPath href="#arc${i}" startOffset="50%">${esc(m[2])}</textPath></text>`;
+ return `<text class="rg" x="${r.x}" y="${r.y}" style="font-size:calc(var(--k) * 11.5px)">${esc(r.t)}</text>`}).join("")}
 ${pins}</svg>`}
 function mapCard(){const e=S.sel&&any(S.sel);if(!e||!vis(e))return"";
- return `<div class="mapcard" id="mapcard"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><p class="eb" style="margin:6px 0 0">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><button class="ic" data-act="mapclose" aria-label="Fermer">${ICO.close}</button></div><h3 class="ct">${esc(e.nom)}</h3><p class="mu sm">${esc(e.role)}</p><button class="pr" data-o="${e.id}">Ouvrir la fiche</button></div>`}
+ // Lieu dans le bas de la vue : la fiche s'ouvre en haut pour ne pas le cacher.
+ const p=C.carte.lieux[e.id],haut=p&&(p[1]-mv.y)/mv.h>.5;
+ return `<div class="mapcard${haut?" haut":""}" id="mapcard"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><p class="eb" style="margin:6px 0 0">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><button class="ic" data-act="mapclose" aria-label="Fermer">${ICO.close}</button></div><h3 class="ct">${esc(e.nom)}</h3><p class="mu sm">${esc(e.role)}</p><button class="pr" data-o="${e.id}">Ouvrir la fiche</button></div>`}
 function carte(){
  const pl=Object.keys(C.carte.lieux).map(i=>any(i)).filter(e=>e&&vis(e)).sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
  const hc=C.carte.horsCarte.map(i=>ID[i]).filter(e=>e&&vis(e));
@@ -375,7 +399,7 @@ function setVB(){const s=$("#map");if(!s)return;const k=mv.w/MW;s.setAttribute("
  s.querySelectorAll("[data-pin]").forEach(g=>g.setAttribute("transform",`translate(${g.dataset.x} ${g.dataset.y}) scale(${k})`));s.style.touchAction=mv.w>=MW?"pan-y":"none"}
 function clampV(){mv.x=Math.min(Math.max(mv.x,0),MW-mv.w);mv.y=Math.min(Math.max(mv.y,0),MH-mv.h)}
 function zoomAt(base,f,fx,fy){const w=Math.min(MW,Math.max(100,base.w*f)),h=w*MH/MW;mv={x:base.x+(base.w-w)*fx,y:base.y+(base.h-h)*fy,w,h};clampV();setVB()}
-function selectPin(id){S.sel=id;const w=$("#mapcardw");if(w)w.innerHTML=mapCard();
+function selectPin(id){S.sel=id;const w=$("#mapcardw");if(w){w.innerHTML=mapCard();frsp(w)}
  document.querySelectorAll("#map [data-pin]").forEach(g=>g.classList.toggle("sel",g.dataset.pin===id));if(id)vib(6)}
 function focusPin(id){const p=C.carte.lieux[id];if(!p)return;const w=180,h=w*MH/MW;mv={x:p[0]-w/2,y:p[1]-h/2,w,h};clampV()}
 function mapInit(){
@@ -400,13 +424,14 @@ function livres(){
  const seg=[["lecture","Lecture"],["contes","Contes"],["frise","Frise"],["ecrans","Écrans"]];
  return `<div class="seg" role="tablist" aria-label="Rubriques">${seg.map(([k,n])=>`<button role="tab" aria-selected="${S.lv===k}" class="${S.lv===k?"on":""}" data-lv="${k}">${n}</button>`).join("")}</div>`
   +({lecture,contes,frise,ecrans}[S.lv]||lecture)()}
+const ROM=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
 function lecture(){
  const nl=BOOKS.filter(b=>S.lus[b.id]).length;
  const quand=id=>C.chapitres.filter(c=>c.lireIds.includes(id)).map(c=>c.court).concat(Object.values(C.dlc).filter(d=>d.lireIds.includes(id)).map(d=>d.nom));
  return `<p>Commencez par les deux recueils de nouvelles, puis lisez les cinq romans de la saga dans l'ordre. « La Saison des orages » se glisse où vous voulez après les nouvelles, et « La Croisée des corbeaux », une préquelle, se lit à tout moment.</p><p class="mu sm">Cochez les livres lus : leurs rebondissements s'afficheront d'eux-mêmes dans les fiches.</p>
 <div class="prog"><div class="bar-p"><i style="width:${Math.round(nl/BOOKS.length*100)}%"></i></div><span>${nl} sur ${BOOKS.length} lus</span></div><ol class="books">`
  +BOOKS.map((b,i)=>{const q=quand(b.id),lu=!!S.lus[b.id];
-  return `<li class="${lu?"lu":""}"><span class="num">${i+1}</span><div class="bi"><h3 class="ct"><button class="lnk" data-o="${b.id}">${esc(b.nom)}</button></h3><p class="mu sm">${esc(b.genre)} · ${esc(b.vo)}, ${b.annee}</p><p>${esc(b.resume)}</p>${q.length?`<p class="sm"><b>Idéal pendant :</b> ${esc(q.join(", "))}</p>`:""}<button class="ch${lu?" on":""}" data-lu="${b.id}" aria-pressed="${lu}">${lu?"Lu ✓":"Marquer comme lu"}</button></div></li>`}).join("")
+  return `<li class="${lu?"lu":""}"><span class="num" aria-hidden="true">${ROM[i]||i+1}</span><div class="bi"><h3 class="ct"><button class="lnk" data-o="${b.id}">${esc(b.nom)}</button></h3><p class="mu sm">${esc(b.genre)} · ${esc(b.vo)}, ${b.annee}</p><p>${esc(b.resume)}</p>${q.length?`<p class="sm"><b>Idéal pendant :</b> ${esc(q.join(", "))}</p>`:""}<button class="ch${lu?" on":""}" data-lu="${b.id}" aria-pressed="${lu}">${lu?"Lu ✓":"Marquer comme lu"}</button></div></li>`}).join("")
  +`</ol><p class="mu sm">En français, la saga est publiée chez Bragelonne, et en poche chez Milady. Les traductions d'origine sont de Laurence Dyèvre, Alexandre Dayet, Lydia Waleryszak et Caroline Raszka-Dewez. Depuis 2024, Bragelonne réédite la série dans une traduction révisée par Lydia Cantin-Waleryszak, qui a aussi traduit « La Croisée des corbeaux ».</p>`}
 function contes(){
  const card=s=>`<div class="srcard">${fig(s)}<p class="eb">${esc(s.origine)}</p><h3 class="ct">${esc(s.conte)}</h3><p class="mu sm">Dans le Sorceleur : ${esc(s.oeuvre)}</p><p>${esc(s.texte)}</p>${TTS?`<div class="chips">${lireBtn(s.id)}</div>`:""}${chips(s.liens)}</div>`;
@@ -417,11 +442,11 @@ ${fk.length?`<h3 class="gh">Folklore slave</h3>${fk.map(card).join("")}`:""}
 <p class="mu sm">Illustrations du domaine public, issues de Wikimedia Commons. Le détail des œuvres figure dans les réglages.</p>`}
 function frise(){
  const l=C.chrono.map((x,i)=>({...x,k:"f"+i})).filter(x=>!x.c||x.c<=S.ch);
- return `<p class="mu">Des origines du monde jusqu'aux jeux. Point bleu : les livres. Point ambre : les jeux.</p><div class="tl">`+l.map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}`
+ return `<p class="mu">Des origines du monde jusqu'aux jeux. Losange bleu : les livres. Losange ambre : les jeux.</p><div class="tl">`+l.map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}`
   +(x.rev&&!revOK(x,x.k)?revBtn(x,x.k):`<p>${esc(x.d)}</p>`)
   +(x.lien&&chip(x.lien)?`<button class="ch" data-o="${x.lien}">Voir la fiche</button>`:"")+`</div>`).join("")+`</div>`}
 function ecrans(){
- return `<p class="mu">Les jeux et adaptations nés des livres de Sapkowski. Point bleu : films et séries. Point ambre : jeux.</p><div class="tl">`
+ return `<p class="mu">Les jeux et adaptations nés des livres de Sapkowski. Losange bleu : films et séries. Losange ambre : jeux.</p><div class="tl">`
   +C.ecrans.filter(x=>!x.c||x.c<=S.ch).map(x=>`<div class="ti ${x.jeu?"J":"L"}"><b>${esc(x.quand)}</b><br>${esc(x.titre)}<p>${esc(x.d)}</p></div>`).join("")+`</div>`}
 
 /* ---------- Quiz ---------- */
@@ -475,11 +500,11 @@ function renderOnb(){
  const n=standalone()?3:4,st=Math.min(S.onb,n-1);
  const dots=`<div class="dots" aria-hidden="true">${Array.from({length:n},(_,i)=>`<i class="${i===st?"on":""}"></i>`).join("")}</div>`;
  let h="";
- if(st===0)h=`<div class="hero">${EMBLEME}</div><h2>Compagnon du Sorceleur</h2><p>Le lore des livres d'Andrzej Sapkowski, au rythme de votre partie de The Witcher 3.</p><ul class="feat"><li>${ICO.codex}<span>Un codex de ${E.length} fiches qui ne dévoile rien de ce qui vient après dans le jeu.</span></li><li>${ICO.carte}<span>La carte du Continent, le bestiaire et la lignée de Ciri.</span></li><li>${ICO.invite}<span>Un quiz et des défis à envoyer à vos amis.</span></li></ul><div class="grow"></div>${dots}<button class="pr wide" data-onb="next">Commencer</button>`;
+ if(st===0)h=`<div class="grow"></div><div class="hero">${EMBLEME}</div><h2>Compagnon du Sorceleur</h2>${FLEUR}<p>Le lore des livres d'Andrzej Sapkowski, au rythme de votre partie de The Witcher 3.</p><ul class="feat"><li>${ICO.codex}<span>Un codex de ${E.length} fiches qui ne dévoile rien de ce qui vient après dans le jeu.</span></li><li>${ICO.carte}<span>La carte du Continent, le bestiaire et la lignée de Ciri.</span></li><li>${ICO.invite}<span>Un quiz et des défis à envoyer à vos amis.</span></li></ul><div class="grow"></div>${dots}<button class="pr wide" data-onb="next">Commencer</button>`;
  else if(st===1)h=`<p class="eb">Étape 1</p><h2>Où en êtes-vous dans le jeu ?</h2><p class="mu">Tout ce qui vient après restera caché. Vous pourrez changer à tout moment.</p>${C.chapitres.map((c,i)=>`<button class="pick" data-onbch="${i}" aria-pressed="${i===S.ch}"><i></i><span>${esc(c.nom)}<small>${esc(c.lieux)}</small></span></button>`).join("")}${sw("onb-hos",S.hos,"J'ai commencé Hearts of Stone")}${sw("onb-bw",S.bw,"J'ai commencé Blood and Wine")}<div class="grow"></div>${dots}<div class="onbb"><button class="ch" data-onb="prev">Retour</button><button class="pr" data-onb="next">Continuer</button></div>`;
  else if(st===2)h=`<p class="eb">Étape 2</p><h2>Quels livres avez-vous lus ?</h2><p class="mu">Leurs rebondissements s'afficheront dans les fiches. Les autres resteront cachés derrière un bouton.</p>${BOOKS.map(b=>sw("onb-lu-"+b.id,!!S.lus[b.id],esc(b.nom),esc(b.genre))).join("")}<div class="grow"></div>${dots}<div class="onbb"><button class="ch" data-onb="prev">Retour</button><button class="pr" data-onb="${n===3?"done":"next"}">${n===3?"C'est parti":"Continuer"}</button></div>`;
  else h=`<p class="eb">Dernière étape</p><h2>Installez l'application</h2><p class="mu">Le compagnon s'ouvrira depuis votre écran d'accueil, en plein écran, même sans connexion.</p>${installHow()}<div class="grow"></div>${dots}<div class="onbb"><button class="ch" data-onb="prev">Retour</button><button class="pr" data-onb="done">${installEvt?"Plus tard":"C'est parti"}</button></div>`;
- o.innerHTML=`<div class="onbc" role="dialog" aria-modal="true" aria-label="Bienvenue">${h}</div>`;o.hidden=false}
+ o.innerHTML=`<div class="onbc" role="dialog" aria-modal="true" aria-label="Bienvenue">${h}</div>`;frsp(o);o.hidden=false}
 
 /* ---------- Rendu ---------- */
 const footer=()=>`<footer class="ft"><p>Guide non officiel, réalisé par des fans. La saga du Sorceleur est l'œuvre d'Andrzej Sapkowski ; The Witcher est une série de jeux de CD Projekt Red.</p></footer>`;
@@ -496,7 +521,7 @@ function render(){
  if(a&&a!==document.body&&a.closest&&a.closest("#main,#bar"))cle=[...a.attributes].filter(x=>x.name==="id"||x.name.startsWith("data-")).map(x=>`[${x.name}="${CSS.escape(x.value)}"]`).join("");
  renderBar();renderTabs();
  const v=S.id?(ID[S.id]?fiche(ID[S.id]):monstre(MID[S.id])):S.page?({quiz,demander,reglages,recherche,lignee}[S.page])():({partie,codex,carte,bestiaire,livres}[S.tab]||partie)();
- $("#main").innerHTML=v+(S.page==="reglages"?"":footer());
+ $("#main").innerHTML=v+(S.page==="reglages"?"":footer());frsp($("#main"));
  const r=$("#route .on");if(r){const p=r.parentNode;p.scrollLeft=r.offsetLeft-p.clientWidth/2+r.offsetWidth/2}
  if(S.tab==="carte"&&!S.id&&!S.page)mapInit();
  if(cle){let x=null;try{x=document.querySelector(cle)}catch(e){}if(x&&!x.disabled)x.focus({preventScroll:true});else{const nx=$('[data-act="next"]');if(nx)nx.focus({preventScroll:true})}}
@@ -567,7 +592,7 @@ function openSheet(tok,msg){
  if(tok&&!msg)h+=`<p><button class="lnk" data-share="">Partager plutôt l'accueil du compagnon</button></p>`;
  h+=`<div class="qrw"><canvas id="qr" width="400" height="400" role="img" aria-label="QR code du lien" hidden></canvas><p class="mu sm">À scanner avec l'appareil photo d'un téléphone.</p></div>`;
  if(location.protocol==="file:")h+=`<p class="mu sm">Vous consultez une copie enregistrée sur cet appareil. Vous pouvez aussi envoyer le fichier lui-même : il s'ouvre dans n'importe quel navigateur.</p>`;
- $("#sh-body").innerHTML=h;ouvrirCouche();$("#sheet").hidden=false;$("#sh-x").focus();
+ $("#sh-body").innerHTML=h;frsp($("#sh-body"));ouvrirCouche();$("#sheet").hidden=false;$("#sh-x").focus();
  drawQR($("#qr"),url).catch(()=>{const w=$(".qrw");if(w)w.hidden=true})}
 let retourFocus=null;
 function ouvrirCouche(){if(!retourFocus||!retourFocus.isConnected)retourFocus=document.activeElement;if(!(history.state&&history.state.ov))try{history.pushState({...(history.state||{}),ov:1},"")}catch(e){}}
@@ -805,8 +830,8 @@ document.addEventListener("change",ev=>{const t=ev.target,id=t.id;if(!id)return;
  else return;
  save();if(!id.startsWith("onb-"))render()});
 document.addEventListener("input",ev=>{const t=ev.target;
- if(t.id==="q"){S.q=t.value;$("#lst").innerHTML=resultats()}
- else if(t.id==="bq"){S.bq=t.value;$("#blst").innerHTML=blst()}
+ if(t.id==="q"){S.q=t.value;$("#lst").innerHTML=resultats();frsp($("#lst"))}
+ else if(t.id==="bq"){S.bq=t.value;$("#blst").innerHTML=blst();frsp($("#blst"))}
  else if(t.id==="qs")S.ask.q=t.value});
 document.addEventListener("keydown",ev=>{
  if(ev.key==="Escape"&&(!$("#lb").hidden||!$("#sheet").hidden))closeSheet();
@@ -825,7 +850,7 @@ if(S.eveil)setWake(true);
    On cherche donc une nouvelle version à chaque retour au premier plan, et on l'applique dès que ce n'est pas gênant. */
 let majAttente=false,majDepuis=Date.now(),majTouche=false,majVerif=0;
 // Ne jamais recharger sous les yeux de quelqu'un qui joue, écoute, lit une réponse, cherche ou partage.
-const majOccupe=()=>!!S.quiz||!!lu||!!(S.ask&&(S.ask.busy||S.page==="demander"&&(S.ask.out||S.ask.q)))||(S.page==="recherche"&&!!S.q)||!$("#sheet").hidden||!$("#lb").hidden||/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||"");
+const majOccupe=()=>!!S.quiz&&S.page==="quiz"||!!lu||!!(S.ask&&(S.ask.busy||S.page==="demander"&&(S.ask.out||S.ask.q)))||(S.page==="recherche"&&!!S.q)||!$("#sheet").hidden||!$("#lb").hidden||/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||"");
 let majProposee=false;
 const majProposer=()=>{majProposee=true;toast("Nouvelle version du compagnon disponible","reload","Recharger")};
 function majAppliquer(){try{if(Date.now()-(+sessionStorage.getItem("cs-maj")||0)<15000)return false;sessionStorage.setItem("cs-maj",String(Date.now()))}catch(e){}location.reload();return true}
@@ -841,7 +866,9 @@ try{if(navigator.serviceWorker&&/^https?:$/.test(location.protocol)){
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState!=="visible")return;
   if(majAttente&&!majOccupe()&&majAppliquer())return;
   majDepuis=Date.now();majTouche=false;majProposee=false;if(majAttente&&!majOccupe())majProposer();majVerifier()});
- document.addEventListener("click",()=>setTimeout(()=>{if(majAttente&&!majProposee&&!document.hidden&&!majOccupe())majProposer()},0));
+ // Après chaque geste : on retire « Recharger » si l'on vient de s'occuper (quiz, partage…), on le propose une fois libre.
+ document.addEventListener("click",()=>setTimeout(()=>{if(!majAttente||document.hidden)return;const t=$("#toast");
+  if(majOccupe()){if(!t.hidden&&t.querySelector('[data-act="reload"]')){t.hidden=true;majProposee=false}}else if(!majProposee)majProposer()},0));
  for(const t of["pointerdown","keydown"])addEventListener(t,()=>{majTouche=true},{capture:true,passive:true});
  setInterval(()=>{if(!document.hidden)majVerifier()},18e5)}}catch(e){}
 if(matchMedia("(min-width: 900px)").matches){const c=$("#desk-qr");if(c)drawQR(c,LIEN.pages).catch(()=>{})}

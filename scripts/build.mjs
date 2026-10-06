@@ -182,11 +182,9 @@ self.addEventListener("activate", (e) => {
     // Seuls les caches du compagnon sont concernés : d'autres sites GitHub Pages partagent la même origine.
     const anciens = (await caches.keys()).filter((k) => k.startsWith("compagnon-") && k !== VERSION);
     // Les pages publiées avant le numéro de version ne cherchent pas de mise à jour d'elles-mêmes.
-    let pagesAnciennes = false;
-    for (const k of anciens) {
-      const r = await (await caches.open(k)).match(self.registration.scope);
-      if (r && !(await r.text()).includes('name="compagnon-version"')) pagesAnciennes = true;
-    }
+    // On les reconnaît au nom de leur cache : leur service worker y recopiait la page en ligne, même plus récente.
+    const SANS_NUMERO = ["compagnon-da0e7b419b", "compagnon-93fdae5799", "compagnon-53112f08f2", "compagnon-9112ce6611"];
+    const pagesAnciennes = anciens.some((k) => SANS_NUMERO.includes(k));
     await Promise.all(anciens.map((k) => caches.delete(k)));
     await self.clients.claim();
     if (!anciens.length) return;
@@ -195,8 +193,8 @@ self.addEventListener("activate", (e) => {
     for (const c of await self.clients.matchAll({ type: "window" })) {
       c.postMessage("maj");
       c.postMessage({ maj: VERSION });
-      // Une ancienne page restée en arrière-plan est rechargée tout de suite : on la retrouvera à jour.
-      if (pagesAnciennes && c.visibilityState === "hidden") c.navigate(c.url).catch(() => {});
+      // Une ancienne page ne se rechargerait jamais d'elle-même : on la recharge, visible ou en arrière-plan.
+      if (pagesAnciennes && c.navigate) c.navigate(c.url).catch(() => {});
     }
   })());
 });
