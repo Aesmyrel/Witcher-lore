@@ -91,7 +91,7 @@ if (errors.length) {
 // ---------- Assemblage ----------
 const title = "Compagnon du Sorceleur";
 const description = "Le lore des livres de Sapkowski au rythme de votre partie de The Witcher 3 : codex sans spoilers, carte, bestiaire, lignée de Ciri et défis entre amis.";
-const pagesUrl = "https://couefficguillaume-collab.github.io/Witcher-lore/";
+const pagesUrl = "https://aesmyrel.github.io/Witcher-lore/";
 const fonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cinzel:wght@600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">`;

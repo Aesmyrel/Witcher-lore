@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-title" content="Sorceleur">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
-<meta name="compagnon-version" content="4b0729788c">
+<meta name="compagnon-version" content="deaf37aa91">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:title" content="Compagnon du Sorceleur">
 <meta property="og:description" content="Le lore des livres de Sapkowski au rythme de votre partie de The Witcher 3 : codex sans spoilers, carte, bestiaire, lignée de Ciri et défis entre amis.">
-<meta property="og:url" content="https://couefficguillaume-collab.github.io/Witcher-lore/">
-<meta property="og:image" content="https://couefficguillaume-collab.github.io/Witcher-lore/og.png">
+<meta property="og:url" content="https://aesmyrel.github.io/Witcher-lore/">
+<meta property="og:image" content="https://aesmyrel.github.io/Witcher-lore/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -2606,7 +2606,7 @@ E.forEach(e=>ID[e.id]=e);M.forEach(m=>MID[m.id]=m);
 const BOOKS=E.filter(e=>e.t==="livre").sort((a,b)=>a.ordre-b.ordre);
 const SIGNES=["Aard","Igni","Yrden","Quen","Axii"];
 /* Adresses publiques du compagnon, utilisées pour les liens de partage. */
-const LIEN={artifact:"https://claude.ai/artifact/XHmn6MRvrESmEH8ux3peXH",pages:"https://couefficguillaume-collab.github.io/Witcher-lore/"};
+const LIEN={artifact:"https://claude.ai/artifact/XHmn6MRvrESmEH8ux3peXH",pages:"https://aesmyrel.github.io/Witcher-lore/"};
 const VERSION="3.0";
 const TYPES={perso:"Personnage",lieu:"Lieu",faction:"Peuple ou faction",concept:"Notion",livre:"Livre"};
 const SRC={L:"Livres",J:"Jeu",LJ:"Livres et jeu"};
@@ -2786,8 +2786,9 @@ function partie(){
  const c=C.chapitres[S.ch];let h=stepper();
  h+=`<p class="eb">Étape ${S.ch+1} sur ${C.chapitres.length}</p><h2>${esc(c.nom)}</h2><p class="mu">${esc(c.lieux)}</p><p>${esc(c.intro)}</p>${TTS?`<div class="chips">${lireBtn("chapitre","Écouter ce chapitre")}</div>`:""}`;
  h+=`<div class="bl"><h3>À lire dans les livres</h3><p>${esc(c.lire)}</p>${chips(c.lireIds)}</div>`;
+ h+=`<div class="tiles"><button class="tile" data-act="jouer">${ICO.target}<b>Pendant que je joue</b><small>Les faiblesses des monstres du coin</small></button><button class="tile" data-act="faiblesse">${ICO.bestiaire}<b>Par signe ou bombe</b><small>Qui craint Igni, la Poussière de lune…</small></button></div>`;
  const ls=ents(c.entrees);if(ls.length)h+=`<h3>Autour de vous</h3>`+ls.map(row).join("");
- const ms=(c.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m));if(ms.length)h+=`<h3>Monstres du coin</h3>`+ms.map(mrow).join("")+`<div class="chips"><button class="ch" data-act="faiblesse">Chercher par signe ou par bombe</button></div>`;
+ const ms=(c.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m));if(ms.length)h+=`<h3>Monstres du coin</h3>`+ms.map(mrow).join("");
  for(const k of["hos","bw"])if(S[k]){const d=C.dlc[k];
   h+=`<h3>${d.nom}</h3><p>${esc(d.intro)}</p><div class="bl"><p>${esc(d.lire)}</p></div>`+ents(d.entrees).map(row).join("")+(d.monstres||[]).map(i=>MID[i]).filter(m=>m&&vis(m)).map(mrow).join("")}
  h+=eclair();
@@ -2857,8 +2858,10 @@ function resultats(){
 const BV=[["toutes","Toutes"],["region","Par région"],["faible","Par faiblesse"]];
 const REGION={0:"Blanchefleur",hos:"Hearts of Stone",bw:"Toussaint"};
 const byNom=(a,b)=>a.nom.localeCompare(b.nom,"fr");
-const regions=()=>[...C.chapitres.map((c,i)=>[String(i),REGION[i]||c.court,c.monstres||[]]).filter(r=>+r[0]<=S.ch),...["hos","bw"].filter(k=>S[k]).map(k=>[k,REGION[k],C.dlc[k].monstres||[]])]
- .map(([k,n,ids])=>[k,n,ids.map(i=>MID[i]).filter(m=>m&&vis(m))]).filter(r=>r[2].length);
+/* Une région réunit les créatures qu'on y rattache et celles qu'on peut croiser dès ce chapitre (champ porte) : aucune n'est oubliée. */
+const PORTE={};M.forEach(m=>{if(m.porte)(PORTE[m.porte.d||m.porte.c]=PORTE[m.porte.d||m.porte.c]||[]).push(m.id)});
+const regions=()=>[...C.chapitres.map((c,i)=>[String(i),REGION[i]||c.court,c.monstres||[],PORTE[i]]).filter(r=>+r[0]<=S.ch),...["hos","bw"].filter(k=>S[k]).map(k=>[k,REGION[k],C.dlc[k].monstres||[],PORTE[k]])]
+ .map(([k,n,ids,p])=>[k,n,[...new Set([...ids,...(p||[])])].map(i=>MID[i]).filter(m=>m&&vis(m))]).filter(r=>r[2].length);
 const region=()=>{const R=regions();return R.find(r=>r[0]===S.br)||R.filter(r=>/^\d+$/.test(r[0])).pop()||R[0]};
 const faibles=()=>{const b=new Set(),a=new Set();M.filter(vis).forEach(m=>{(m.bombes||[]).forEach(x=>b.add(x));(m.autres||[]).forEach(x=>a.add(x))});
  return[...SIGNES.map(x=>["s",x]),...[...b].sort((x,y)=>x.localeCompare(y,"fr")).map(x=>["b",x]),...[...a].sort().map(x=>["a",x])]};
@@ -3398,7 +3401,8 @@ function act(a){
  else if(a==="lire-stop")lireStop();
  else if(a==="nano-dl")nanoDownload();
  else if(a==="reload")location.reload();
- else if(a==="faiblesse"){S.bv="faible";save();go("bestiaire")}}
+ else if(a==="faiblesse"){S.bv="faible";S.bq="";save();go("bestiaire")}
+ else if(a==="jouer"){S.bv="region";S.br=null;S.bq="";save();go("bestiaire")}}
 
 function onbStep(d){
  if(d==="next")S.onb++;else if(d==="prev")S.onb=Math.max(0,S.onb-1);

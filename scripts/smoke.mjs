@@ -94,8 +94,9 @@ async function run(ctxOpts, label, capture) {
   await expect("bestiaire", "Noyeurs");
   // Pendant que je joue : faiblesses sur la ligne même de la créature, tri par région et par faiblesse
   if (!(await text()).includes("Huile contre les nécrophages")) fail(`${label}: l'huile n'apparaît pas dans la liste du bestiaire`);
-  await page.click('[data-bv="region"]'); await pause(page);
+  await go("partie"); await page.click('[data-act="jouer"]'); await pause(page);
   if (!(await page.locator("[data-br].on").count()) || !(await page.locator("#blst .ro").count())) fail(`${label}: la vue par région est vide`);
+  if (!(await page.locator("#blst").textContent()).includes("Leshen")) fail(`${label}: la vue par région oublie les créatures qu'on peut croiser dès ce chapitre (Leshen à Velen)`);
   await page.click('[data-bv="faible"]'); await page.click('[data-bf="s:Igni"]'); await pause(page);
   if (!(await page.locator("#blst .ro").count())) fail(`${label}: aucune créature ne craint Igni`);
   await page.click('[data-bv="toutes"]'); await pause(page);

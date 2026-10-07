@@ -29,7 +29,7 @@ retour en arrière par le bouton du téléphone (ou en glissant depuis le bord g
 1. **Mettre l'application en ligne avec GitHub Pages** (gratuit, ouvert à tous sans compte) :
    dans le dépôt, *Settings* → *Pages* → *Build and deployment* → *Source : Deploy from a branch*,
    branche **main**, dossier **/ (root)**, puis *Save*.
-   Une à deux minutes plus tard, elle est en ligne sur https://couefficguillaume-collab.github.io/Witcher-lore/.
+   Une à deux minutes plus tard, elle est en ligne sur https://aesmyrel.github.io/Witcher-lore/.
 2. **L'installer sur un téléphone** : ouvrir ce lien, puis
    - sur Android (Chrome) : accepter la proposition d'installation, ou menu ⋮ → *Installer l'application* ;
    - sur iPhone (Safari) : bouton Partager → *Sur l'écran d'accueil*.
