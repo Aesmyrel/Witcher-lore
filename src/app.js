@@ -170,12 +170,13 @@ const credit=s=>`${s.artiste}, « ${s.conte||s.titre} », ${s.annee}`;
 /* Planches gravées : une œuvre ancienne en tête de fiche, mise en cache à la première consultation. */
 const GRAV=C.gravures||[];
 const gravFor=id=>GRAV.find(g=>g.liens.includes(id));
-const planche=g=>g?`<figure class="planche"><button data-lb="${g.id}" aria-label="Agrandir : ${esc(credit(g))}"><img src="${g.img}" alt="${esc(g.titre)}, ${esc(g.artiste)}" loading="lazy" decoding="async" onerror="this.closest('figure').hidden=true"></button><figcaption>${esc(credit(g))}. Domaine public.</figcaption></figure>`:"";
+const planche=g=>g?`<figure class="planche"><button data-lb="${g.id}" aria-label="Agrandir : ${esc(credit(g))}"><img src="${g.img}" alt="${esc(g.titre||g.conte)}, ${esc(g.artiste)}" loading="lazy" decoding="async" onerror="this.closest('figure').hidden=true"></button><figcaption>${esc(credit(g))}. Domaine public.</figcaption></figure>`:"";
 const fig=s=>`<figure class="fig"><button data-lb="${s.id}" aria-label="Agrandir l'illustration : ${esc(credit(s))}"><img src="${s.img}" alt="${esc(s.conte)}, illustration de ${esc(s.artiste)}" loading="lazy" decoding="async"></button><figcaption>${esc(credit(s))}. Domaine public.</figcaption></figure>`;
 const srcVis=s=>{const x=any(s.liens[0]);return !x||vis(x)};
 const srcsFor=id=>SRCS.filter(s=>s.liens.includes(id)&&srcVis(s));
-function srcBlock(id){const l=srcsFor(id);if(!l.length)return"";
- return `<h3>Aux sources</h3>`+l.map(s=>`${fig(s)}<p><b>${esc(s.conte)}</b>. ${esc(s.texte)}</p>`).join("")}
+/* sans : illustration déjà affichée en tête de fiche, à ne pas répéter. */
+function srcBlock(id,sans){const l=srcsFor(id);if(!l.length)return"";
+ return `<h3>Aux sources</h3>`+l.map(s=>`${s.id===sans?"":fig(s)}<p><b>${esc(s.conte)}</b>. ${esc(s.texte)}</p>`).join("")}
 
 /* ---------- Vues principales ---------- */
 function stepper(){
@@ -312,11 +313,13 @@ function fiche(e){
 
 function monstre(m){
  if(!vis(m)&&!S.force[m.id])return gate(m);
+ /* Sans planche gravée, l'illustration du conte qui l'a inspirée passe en tête de fiche. */
+ const pl=gravFor(m.id)||srcsFor(m.id)[0];
  return `<p class="eb">Bestiaire · ${esc(m.cl)}</p><h2>${esc(m.nom)}</h2>${m.en?`<p class="mu">En anglais : ${esc(m.en)}</p>`:""}`+actions(m)+FLEUR
   +kv("Huile",oil(m.cl))+kv("Signes",m.signes&&m.signes.map(sg).join(""))+kv("Bombes",m.bombes&&esc(m.bombes.join(", ")))
   +kv("Potions",m.potions&&esc(m.potions.join(", ")))+kv("Autres",m.autres&&esc(m.autres.join(", ")))+kv("Insensible à",m.immun&&sg(m.immun))
-  +`<p>${esc(m.conseil)}</p>`+planche(gravFor(m.id))+(m.origine?bl("Origines",m.origine):"")+(m.livres?bl("Dans les livres",m.livres):"")
-  +srcBlock(m.id)+(m.lien&&chip(m.lien)?`<h3>Voir aussi</h3>${chips([m.lien])}`:"")}
+  +`<p>${esc(m.conseil)}</p>`+planche(pl)+(m.origine?bl("Origines",m.origine):"")+(m.livres?bl("Dans les livres",m.livres):"")
+  +srcBlock(m.id,pl&&pl.id)+(m.lien&&chip(m.lien)?`<h3>Voir aussi</h3>${chips([m.lien])}`:"")}
 
 function lignee(){
  const node=(id,nom,sub,cls)=>{const e=ID[id];const inner=`<b>${esc(nom)}</b>${sub?`<small>${sub}</small>`:""}`;
