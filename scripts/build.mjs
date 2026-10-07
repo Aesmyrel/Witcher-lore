@@ -75,6 +75,11 @@ for (const s of C.sources) {
   if (!fs.existsSync(path.join(root, s.img))) errors.push(`${s.id} : image introuvable ${s.img}`);
   else images.push(s.img);
 }
+for (const g of C.gravures || []) {
+  for (const k of ["id", "img", "titre", "artiste", "annee", "page"]) if (!g[k]) errors.push(`${g.id} : champ « ${k} » manquant`);
+  g.liens.forEach((id) => ref(g.id, id));
+  if (!fs.existsSync(path.join(root, g.img))) errors.push(`${g.id} : image introuvable ${g.img}`);
+}
 for (const id of Object.keys(C.carte.lieux)) ref("carte", id);
 for (const id of C.carte.horsCarte) ref("carte hors carte", id);
 for (const s of [codexSrc, appSrc]) if (/<\/script/i.test(s)) errors.push("« </script » interdit dans les scripts");

@@ -162,7 +162,11 @@ function feedback(q,a){const ok=a===q.ok;
  return `<p class="fb ${ok?"ok":"ko"}" role="status">${ok?"Bonne réponse.":"Raté. La bonne réponse : "+esc(q.opts[q.ok])+"."}</p><p>${esc(q.why)}</p>${q.lien?chips([q.lien]):""}`}
 
 /* ---------- Illustrations ---------- */
-const credit=s=>`${s.artiste}, « ${s.conte} », ${s.annee}`;
+const credit=s=>`${s.artiste}, « ${s.conte||s.titre} », ${s.annee}`;
+/* Planches gravées : une œuvre ancienne en tête de fiche, mise en cache à la première consultation. */
+const GRAV=C.gravures||[];
+const gravFor=id=>GRAV.find(g=>g.liens.includes(id));
+const planche=g=>g?`<figure class="planche"><button data-lb="${g.id}" aria-label="Agrandir : ${esc(credit(g))}"><img src="${g.img}" alt="${esc(g.titre)}, ${esc(g.artiste)}" loading="lazy" decoding="async" onerror="this.closest('figure').hidden=true"></button><figcaption>${esc(credit(g))}. Domaine public.</figcaption></figure>`:"";
 const fig=s=>`<figure class="fig"><button data-lb="${s.id}" aria-label="Agrandir l'illustration : ${esc(credit(s))}"><img src="${s.img}" alt="${esc(s.conte)}, illustration de ${esc(s.artiste)}" loading="lazy" decoding="async"></button><figcaption>${esc(credit(s))}. Domaine public.</figcaption></figure>`;
 const srcVis=s=>{const x=any(s.liens[0]);return !x||vis(x)};
 const srcsFor=id=>SRCS.filter(s=>s.liens.includes(id)&&srcVis(s));
@@ -269,7 +273,7 @@ function fiche(e){
  const vj=(e.jeu||[]).filter(jv),sealed=(e.jeu||[]).length-vj.length;
  let h=`<p class="eb">${TYPES[e.t]} · <span class="src ${e.src}">${SRC[e.src]}</span></p><h2>${esc(e.nom)}</h2>`;
  if(e.alias&&e.alias.length)h+=`<p class="mu">Aussi appelé : ${esc(e.alias.join(", "))}</p>`;
- h+=`<p class="mu">${esc(e.role)}</p>`+actions(e)+FLEUR+`<p class="lead">${esc(e.resume)}</p>`;
+ h+=`<p class="mu">${esc(e.role)}</p>`+actions(e)+planche(gravFor(e.id))+FLEUR+`<p class="lead">${esc(e.resume)}</p>`;
  if(e.t==="livre")h+=kv("Titre original",esc(e.vo)+", "+e.annee)+kv("Genre",esc(e.genre))+`<p><button class="ch${S.lus[e.id]?" on":""}" data-lu="${e.id}" aria-pressed="${!!S.lus[e.id]}">${S.lus[e.id]?"Lu ✓":"Marquer comme lu"}</button></p>`;
  if(e.nouvelles)h+=`<h3>Les nouvelles</h3>`+e.nouvelles.map(n=>`<p><b>${esc(n.t)}.</b> ${esc(n.d)}</p>`).join("");
  if(e.livres)h+=bl("Dans les livres",e.livres);
@@ -283,7 +287,7 @@ function fiche(e){
 
 function monstre(m){
  if(!vis(m)&&!S.force[m.id])return gate(m);
- return `<p class="eb">Bestiaire · ${esc(m.cl)}</p><h2>${esc(m.nom)}</h2>${m.en?`<p class="mu">En anglais : ${esc(m.en)}</p>`:""}`+actions(m)+FLEUR
+ return `<p class="eb">Bestiaire · ${esc(m.cl)}</p><h2>${esc(m.nom)}</h2>${m.en?`<p class="mu">En anglais : ${esc(m.en)}</p>`:""}`+actions(m)+planche(gravFor(m.id))+FLEUR
   +kv("Huile",oil(m.cl))+kv("Signes",m.signes&&m.signes.map(sg).join(""))+kv("Bombes",m.bombes&&esc(m.bombes.join(", ")))
   +kv("Potions",m.potions&&esc(m.potions.join(", ")))+kv("Autres",m.autres&&esc(m.autres.join(", ")))+kv("Insensible à",m.immun&&sg(m.immun))
   +`<p>${esc(m.conseil)}</p>`+(m.origine?bl("Origines",m.origine):"")+(m.livres?bl("Dans les livres",m.livres):"")
@@ -491,7 +495,7 @@ ${TTS?`<div class="set"><h3>Lecture à voix haute</h3><p class="mu sm">Le bouton
 ${PSYNC?`<div class="set"><h3>Rappels</h3>${sw("o-rappel",S.rappel,"Rappel de la question du jour","Une notification par jour, quand Android le juge opportun")}</div>`:""}
 <div class="set"><h3>Application</h3>${installHow()}<div class="chips"><button class="ch" data-share="">${ICO.share}Partager le compagnon</button><button class="ch" data-act="onb">Revoir l'accueil</button></div>
 ${S.reset?`<div class="pend"><p>Effacer votre avancée, vos lectures et votre carnet sur cet appareil ?</p><div class="row"><button class="pr" data-act="reset-ok">Tout effacer</button><button class="ch" data-act="reset-no">Annuler</button></div></div>`:`<p><button class="lnk" data-act="reset">Effacer mes données</button></p>`}</div>
-<div class="set"><h3>Crédits des illustrations</h3><p class="mu sm">Œuvres du domaine public, via Wikimedia Commons.</p>${SRCS.map(s=>`<p class="sm">${esc(credit(s))}. <a href="${esc(s.page)}" target="_blank" rel="noopener">Source</a></p>`).join("")}</div>
+<div class="set"><h3>Crédits des illustrations</h3><p class="mu sm">Œuvres du domaine public, via Wikimedia Commons.</p>${[...SRCS,...GRAV].map(s=>`<p class="sm">${esc(credit(s))}. <a href="${esc(s.page)}" target="_blank" rel="noopener">Source</a></p>`).join("")}</div>
 <p class="mu sm">Compagnon du Sorceleur, version ${VERSION}. Guide non officiel, réalisé par des fans. La saga du Sorceleur est l'œuvre d'Andrzej Sapkowski ; The Witcher est une série de jeux de CD Projekt Red.</p>`}
 
 /* ---------- Accueil guidé ---------- */
@@ -608,8 +612,8 @@ function shareScore(){
  const url=shareUrl(tok);
  if(!inFrame&&navigator.share){navigator.share({title:"Compagnon du Sorceleur",text:msg,url}).catch(e=>{if(e&&e.name!=="AbortError")openSheet(tok,msg)});return}
  try{navigator.clipboard.writeText(msg+"\n"+url).then(()=>toast("Message copié : collez-le dans votre conversation"),()=>openSheet(tok,msg))}catch(e){openSheet(tok,msg)}}
-function openLb(id){const s=SRCS.find(x=>x.id===id);if(!s)return;const l=$("#lb");
- l.innerHTML=`<img src="${s.img}" alt="${esc(s.conte)}"><p>${esc(credit(s))}. Domaine public.</p><button class="ch" id="lb-x">Fermer</button>`;ouvrirCouche();l.hidden=false;$("#lb-x").focus()}
+function openLb(id){const s=SRCS.find(x=>x.id===id)||GRAV.find(x=>x.id===id);if(!s)return;const l=$("#lb");
+ l.innerHTML=`<img src="${s.img}" alt="${esc(s.conte||s.titre)}"><p>${esc(credit(s))}. Domaine public.</p><button class="ch" id="lb-x">Fermer</button>`;ouvrirCouche();l.hidden=false;$("#lb-x").focus()}
 
 /* ---------- Demander à Claude ---------- */
 async function ask(){

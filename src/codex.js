@@ -2015,6 +2015,28 @@ sources: [
     liens: ["m-sirenes", "skellige"] }
 ],
 
+/* Planches gravées : œuvres du domaine public affichées en tête des fiches liées. */
+gravures: [
+  { id: "gr-noyeurs", img: "img/gravures/noyeurs.webp", titre: "Nøkken", artiste: "Theodor Kittelsen", annee: 1904,
+    page: "https://commons.wikimedia.org/wiki/File:Kittelsen_-_N%C3%B8kken_(Nasjonalmuseet)2.jpg", liens: ["m-noyeurs"] },
+  { id: "gr-peste", img: "img/gravures/peste.webp", titre: "La Peste dans l'escalier", artiste: "Theodor Kittelsen", annee: 1896,
+    page: "https://commons.wikimedia.org/wiki/File:Theodor_Kittelsen_-_Pesta_i_trappen,_1896_(Pesta_on_the_Stairs).jpg", liens: ["m-vierge-peste"] },
+  { id: "gr-trolls", img: "img/gravures/trolls.webp", titre: "La Princesse et les Trolls", artiste: "John Bauer", annee: 1913,
+    page: "https://commons.wikimedia.org/wiki/File:John_Bauer_-_The_Princess_and_the_Trolls_-_Google_Art_Project.jpg", liens: ["m-trolls"] },
+  { id: "gr-loup-garou", img: "img/gravures/loup-garou.webp", titre: "Le Loup-garou", artiste: "Lucas Cranach l'Ancien", annee: "vers 1512",
+    page: "https://commons.wikimedia.org/wiki/File:Werwolf.png", liens: ["m-loup-garou"] },
+  { id: "gr-vampire", img: "img/gravures/vampire.webp", titre: "Le Vampire", artiste: "Philip Burne-Jones", annee: 1897,
+    page: "https://commons.wikimedia.org/wiki/File:Philip_Burne-Jones_-_The_Vampire.jpg", liens: ["m-bruxa"] },
+  { id: "gr-sirenes", img: "img/gravures/sirenes.webp", titre: "Ulysse et les Sirènes", artiste: "John William Waterhouse", annee: 1891,
+    page: "https://commons.wikimedia.org/wiki/File:John_William_Waterhouse_-_Ulysses_and_the_Sirens_(1891).jpg", liens: ["m-sirenes"] },
+  { id: "gr-cyclope", img: "img/gravures/cyclope.webp", titre: "Le Cyclope", artiste: "Odilon Redon", annee: "vers 1914",
+    page: "https://commons.wikimedia.org/wiki/File:Redon.cyclops.jpg", liens: ["m-cyclope"] },
+  { id: "gr-harpies", img: "img/gravures/harpies.webp", titre: "La Forêt des suicidés, L'Enfer de Dante", artiste: "Gustave Doré", annee: 1861,
+    page: "https://commons.wikimedia.org/wiki/File:DVinfernoForestOfSuicides_m.jpg", liens: ["m-harpies"] },
+  { id: "gr-wyverne", img: "img/gravures/wyverne.webp", titre: "Dragon ailé, Histoire des serpents et des dragons", artiste: "Ulisse Aldrovandi", annee: 1640,
+    page: "https://commons.wikimedia.org/wiki/File:Dragon_1_Aldrovandi.jpg", liens: ["m-vouivres"] }
+],
+
 /* Carte schématique du Continent : positions dans un cadre de 400 × 560, sans échelle. */
 carte: {
   lieux: {

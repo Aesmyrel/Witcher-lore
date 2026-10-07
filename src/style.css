@@ -150,6 +150,11 @@ textarea{resize:vertical}
 .fig button{margin-top:5px}
 .fig figcaption{font-size:.8rem;color:var(--mu);margin-top:6px}
 .srcard{border-bottom:1px solid var(--ln);padding:6px 0 16px}
+/* Planche gravée en tête de fiche : l'œuvre entière, encadrée, légèrement patinée pour s'accorder au parchemin. */
+.planche{margin:14px 0 2px;text-align:center}
+.planche button{display:block;width:100%;padding:0;border:0;background:none}
+.planche img{display:block;width:100%;height:auto;max-height:440px;object-fit:contain;background:var(--sf);border:1px solid var(--ln);border-radius:3px;box-shadow:0 0 0 4px var(--sf),0 0 0 5px var(--ln),0 6px 18px rgb(40 25 10 / .18);filter:sepia(.18) contrast(1.03)}
+.planche figcaption{font:italic .8rem/1.4 var(--serif);color:var(--mu);margin-top:9px}
 .srcard .ct{margin-top:.4em}
 .lb{position:fixed;inset:0;z-index:50;background:rgb(6 10 12 / .92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));color:#e4e9e7}
 .lb img{max-width:100%;max-height:78vh;object-fit:contain;border-radius:6px}
