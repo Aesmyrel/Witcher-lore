@@ -94,11 +94,35 @@ async function run(ctxOpts, label, capture) {
   await expect("bestiaire", "Noyeurs");
   // Pendant que je joue : faiblesses sur la ligne même de la créature, tri par région et par faiblesse
   if (!(await text()).includes("Huile contre les nécrophages")) fail(`${label}: l'huile n'apparaît pas dans la liste du bestiaire`);
+  // Les deux tuiles de la page Partie ouvrent des sous-pages de Partie, avec leur flèche de retour
+  const sousPage = async (titre) => {
+    if ((await page.locator(".bar h1").textContent()) !== titre) fail(`${label}: titre « ${titre} » absent`);
+    if (!(await page.locator(".bar [data-b]").count())) fail(`${label}: pas de flèche de retour sur « ${titre} »`);
+    if (!(await page.locator('#tabs [data-tab="partie"].on').count())) fail(`${label}: l'onglet Partie ne reste pas allumé sur « ${titre} »`);
+    if (await page.locator("[data-bv]").count()) fail(`${label}: les onglets du bestiaire s'affichent sur « ${titre} »`);
+  };
   await go("partie"); await page.click('[data-act="jouer"]'); await pause(page);
+  await sousPage("Pendant que je joue");
   if (!(await page.locator("[data-br].on").count()) || !(await page.locator("#blst .ro").count())) fail(`${label}: la vue par région est vide`);
   if (!(await page.locator("#blst").textContent()).includes("Leshen")) fail(`${label}: la vue par région oublie les créatures qu'on peut croiser dès ce chapitre (Leshen à Velen)`);
-  await page.click('[data-bv="faible"]'); await page.click('[data-bf="s:Igni"]'); await pause(page);
+  await page.locator('#blst [data-o="m-leshen"]').first().click(); await pause(page);
+  if (!(await text()).includes("Huile contre les vestiges")) fail(`${label}: fiche du Leshen non ouverte depuis « Pendant que je joue »`);
+  await page.click(".bar [data-b]"); await pause(page);
+  if ((await page.locator(".bar h1").textContent()) !== "Pendant que je joue") fail(`${label}: Retour ne revient pas à « Pendant que je joue »`);
+  await page.click(".bar [data-b]"); await pause(page);
+  if ((await page.locator(".bar h1").textContent()) !== "Ma partie") fail(`${label}: Retour ne revient pas à « Ma partie »`);
+  await page.click('[data-act="faiblesse"]'); await pause(page);
+  await sousPage("Par signe ou bombe");
+  await page.click('[data-bf="s:Igni"]'); await pause(page);
   if (!(await page.locator("#blst .ro").count())) fail(`${label}: aucune créature ne craint Igni`);
+  await page.click(".bar [data-b]"); await pause(page);
+  // L'onglet Bestiaire garde sa propre vue, et ses onglets fonctionnent toujours
+  await go("bestiaire");
+  if (!(await page.locator('[data-bv="toutes"][aria-selected="true"]').count())) fail(`${label}: les sous-pages ont changé la vue de l'onglet Bestiaire`);
+  // Le signe choisi dans la sous-page reste sélectionné ici : un second clic le désélectionnerait.
+  await page.click('[data-bv="faible"]'); await pause(page);
+  if (!(await page.locator('[data-bf="s:Igni"].on').count())) { await page.click('[data-bf="s:Igni"]'); await pause(page); }
+  if (!(await page.locator("#blst .ro").count())) fail(`${label}: la vue par faiblesse du Bestiaire est vide`);
   await page.click('[data-bv="toutes"]'); await pause(page);
 
   // Quiz complet
