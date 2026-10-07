@@ -1705,7 +1705,7 @@ anecdotes: [
   { t: "Le nom elfique de Ciri, Zireael, signifie « hirondelle », comme la potion de soin des sorceleurs.", lien: "ciri" },
   { t: "Geralt s'est choisi lui-même le nom « de Riv », pour inspirer confiance à ses clients.", lien: "geralt" },
   { t: "Toutes les juments de Geralt s'appellent Ablette, de livre en livre.", lien: "ablette" },
-  { t: "Le druide de Skellige, Ermion dans la version originale de TW3, n'est autre que Sac-à-souris, un familier de la cour de Cintra dans les livres.", lien: "ermion", c: 3 },
+  { t: "Le druide Sac-à-souris que Geralt retrouve à Skellige est celui de la cour de Cintra dans les livres. La version originale du jeu l'a rebaptisé Ermion.", lien: "ermion", c: 3 },
   { t: "Triss est surnommée « la Quatorzième de la Colline » : on l'a crue morte à la bataille de Sodden.", lien: "triss" },
   { t: "Dudu, le doppler de Novigrad, apparaît dès la nouvelle « Le Feu éternel ».", lien: "dudu", c: 2 },
   { t: "Coën fait partie des sorceleurs qui ont entraîné Ciri à Kaer Morhen, mais on ne le croise pas dans TW3.", lien: "coen" },
