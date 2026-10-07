@@ -456,3 +456,10 @@ input[type=search],input[type=text],textarea,.fake{border-color:var(--ln2)}
 #map .rg{stroke-width:calc(var(--k) * 3px)}
 .mapcard{left:10px;right:10px;bottom:10px}
 .mapcard.haut{top:10px;bottom:auto}
+
+/* Bestiaire, manette en main : huile, signes et bombes sur la ligne même de la créature */
+.ro .cb{display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px;margin-top:3px}
+.ro .cb .sg{margin-right:0}
+.ro .cb .bo{color:var(--ink)}
+.ro .cb .im{font-style:italic}
+.ch .dot{flex:0 0 auto;width:8px;height:8px;border-radius:1px;transform:rotate(45deg)}

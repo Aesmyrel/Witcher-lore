@@ -92,6 +92,13 @@ async function run(ctxOpts, label, capture) {
   if (!img) fail(`${label}: illustration non chargée`);
   await expect("m-sirenes", "Sirine et Alkonost");
   await expect("bestiaire", "Noyeurs");
+  // Pendant que je joue : faiblesses sur la ligne même de la créature, tri par région et par faiblesse
+  if (!(await text()).includes("Huile contre les nécrophages")) fail(`${label}: l'huile n'apparaît pas dans la liste du bestiaire`);
+  await page.click('[data-bv="region"]'); await pause(page);
+  if (!(await page.locator("[data-br].on").count()) || !(await page.locator("#blst .ro").count())) fail(`${label}: la vue par région est vide`);
+  await page.click('[data-bv="faible"]'); await page.click('[data-bf="s:Igni"]'); await pause(page);
+  if (!(await page.locator("#blst .ro").count())) fail(`${label}: aucune créature ne craint Igni`);
+  await page.click('[data-bv="toutes"]'); await pause(page);
 
   // Quiz complet
   await expect("quiz", "Défi entre amis");
