@@ -195,6 +195,12 @@ for (const { d } of lots) {
 }
 // Contrôle final : le fichier réécrit redonne exactement les données attendues.
 const relu = charger(src);
-if (JSON.stringify(relu) !== JSON.stringify(C)) { console.error("La réécriture ne redonne pas les mêmes données : rien n'est écrit."); process.exit(1); }
+// Comparaison indépendante de l'ordre des champs (l'outil les range dans un ordre fixe), mais pas de celui des listes.
+const canon = (v) => Array.isArray(v) ? v.map(canon) : v && typeof v === "object" ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])])) : v;
+if (JSON.stringify(canon(relu)) !== JSON.stringify(canon(C))) {
+  // Indique le premier écart, pour corriger l'outil plutôt que les données.
+  const ecart = (a, b, ch) => { if (JSON.stringify(a) === JSON.stringify(b)) return null; if (a && b && typeof a === "object" && typeof b === "object") { for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) { const r = ecart(a[k], b[k], ch + "." + k); if (r) return r; } } return `${ch} : ${JSON.stringify(a)?.slice(0, 160)} ≠ ${JSON.stringify(b)?.slice(0, 160)}`; };
+  console.error("La réécriture ne redonne pas les mêmes données : rien n'est écrit.\n" + ecart(canon(relu), canon(C), "CODEX")); process.exit(1);
+}
 fs.writeFileSync(fichier, src);
 console.log("src/codex.js réécrit.");
