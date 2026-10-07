@@ -2034,7 +2034,27 @@ gravures: [
   { id: "gr-harpies", img: "img/gravures/harpies.webp", titre: "La Forêt des suicidés, L'Enfer de Dante", artiste: "Gustave Doré", annee: 1861,
     page: "https://commons.wikimedia.org/wiki/File:DVinfernoForestOfSuicides_m.jpg", liens: ["m-harpies"] },
   { id: "gr-wyverne", img: "img/gravures/wyverne.webp", titre: "Dragon ailé, Histoire des serpents et des dragons", artiste: "Ulisse Aldrovandi", annee: 1640,
-    page: "https://commons.wikimedia.org/wiki/File:Dragon_1_Aldrovandi.jpg", liens: ["m-vouivres"] }
+    page: "https://commons.wikimedia.org/wiki/File:Dragon_1_Aldrovandi.jpg", liens: ["m-vouivres"] },
+  { id: "gr-basilic", img: "img/gravures/basilic.webp", titre: "Basilic", artiste: "Gravure anonyme", annee: 1640,
+    page: "https://commons.wikimedia.org/wiki/File:Basilisk_(1640).png", liens: ["m-basilics"] },
+  { id: "gr-cauchemar", img: "img/gravures/cauchemar.webp", titre: "Le Cauchemar", artiste: "Johann Heinrich Füssli", annee: 1781,
+    page: "https://commons.wikimedia.org/wiki/File:John_Henry_Fuseli_-_The_NightmareFXD.jpg", liens: ["m-hym"] },
+  { id: "gr-sabbat", img: "img/gravures/sabbat.webp", titre: "Le Sabbat des sorcières", artiste: "Francisco de Goya", annee: "1797-1798",
+    page: "https://commons.wikimedia.org/wiki/File:Francisco_de_Goya_y_Lucientes_-_Witches_Sabbath_-_Google_Art_Project.jpg", liens: ["m-chort"] },
+  { id: "gr-golem", img: "img/gravures/golem.webp", titre: "Le rabbin Loew et le Golem", artiste: "Mikoláš Aleš", annee: 1899,
+    page: "https://commons.wikimedia.org/wiki/File:Golem_%E2%80%93_Mikol%C3%A1%C5%A1_Ale%C5%A1_(Star%C3%A9_pov%C4%9Bsti_%C4%8Desk%C3%A9).jpg", liens: ["m-golems"] },
+  { id: "gr-feu-follet", img: "img/gravures/feu-follet.webp", titre: "Le Feu follet", artiste: "Arnold Böcklin", annee: 1862,
+    page: "https://commons.wikimedia.org/wiki/File:Arnold_B%C3%B6cklin_-_Das_Irrlicht_-1882.jpeg", liens: ["m-ignis-fatuus"] },
+  { id: "gr-stryge", img: "img/gravures/stryge.webp", titre: "Le Stryge", artiste: "Charles Meryon", annee: 1853,
+    page: "https://commons.wikimedia.org/wiki/File:Meryon_-_Le_Stryge_(The_vampire),_1866,1013.578.jpg", liens: ["m-gargouille"] },
+  { id: "gr-chasse", img: "img/gravures/chasse.webp", titre: "La Chasse sauvage d'Odin", artiste: "Peter Nicolai Arbo", annee: 1872,
+    page: "https://commons.wikimedia.org/wiki/File:La_caza_salvaje_de_Od%C3%ADn,_por_Peter_Nicolai_Arbo.jpg", liens: ["chasse"] },
+  { id: "gr-viviane", img: "img/gravures/viviane.webp", titre: "L'Enchantement de Merlin", artiste: "Edward Burne-Jones", annee: "1872-1877",
+    page: "https://commons.wikimedia.org/wiki/File:Edward_Burne-Jones_-_The_Beguiling_of_Merlin,_1873-1874.jpg", liens: ["nimue"] },
+  { id: "gr-vendanges", img: "img/gravures/vendanges.webp", titre: "Septembre (détail), Très Riches Heures du duc de Berry", artiste: "Frères de Limbourg, Barthélemy d'Eyck et Jean Colombe", annee: "XVe siècle",
+    page: "https://commons.wikimedia.org/wiki/File:Les_Tr%C3%A8s_Riches_Heures_du_duc_de_Berry_septembre.jpg", liens: ["toussaint"] },
+  { id: "gr-geants", img: "img/gravures/geants.webp", titre: "Les Géants s'emparent de Freia, L'Or du Rhin", artiste: "Arthur Rackham", annee: 1910,
+    page: "https://commons.wikimedia.org/wiki/File:Rhinegold_and_the_Valkyries_p_032.jpg", liens: ["m-geant-glace"] }
 ],
 
 /* Carte schématique du Continent : positions dans un cadre de 400 × 560, sans échelle. */
